@@ -47,7 +47,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('countSttDonTiep','DonTiep\SttDonTiepController@countSttDonTiep');
         
         Route::get('getListPatientByKhoaPhong/{phongId}/{benhVienId}','DonTiep\DonTiepController@getListPatientByKhoaPhong');
-        Route::get('getHsbaByHsbaId/{hsbaId}/{phongId}','DonTiep\DonTiepController@getByHsbaId');
+        Route::get('getHsbaByHsbaId/{hsbaId}/{phongId}/{benhVienId}','DonTiep\DonTiepController@getByHsbaId');
         Route::post('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient');
         
         Route::post('scanqrcode', 'DonTiep\ScanQRCodeController@getInfoFromCard');
@@ -128,6 +128,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::post('updateDanhMucDichVu/{dmdvId}','DanhMuc\DanhMucController@updateDanhMucDichVu');
     	Route::delete('deleteDanhMucDichVu/{dmdvId}','DanhMuc\DanhMucController@deleteDanhMucDichVu');
     	Route::get('getYLenhByLoaiNhom/{loaiNhom}','DanhMuc\DanhMucController@getYLenhByLoaiNhom');
+    	Route::get('getDanhMucDichVuPhongOc','DanhMuc\DanhMucController@getDanhMucDichVuPhongOc');
     	Route::get('getListDanhMucTongHop','DanhMuc\DanhMucController@getListDanhMucTongHop');
     	Route::get('getAllKhoaDanhMucTongHop','DanhMuc\DanhMucController@getAllKhoaDanhMucTongHop');
 		Route::get('getDmthById/{dmthId}','DanhMuc\DanhMucController@getDmthById');
@@ -201,8 +202,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::post('confirmGiaiTrinh','PhacDoDieuTri\PhacDoDieuTriController@confirmGiaiTrinh');
     });
     
-    Route::group(['prefix' => 'noitru'], function () {
-        Route::post('luuNhapKhoa','NoiTru\NoiTruController@luuNhapKhoa');
+    Route::group(['prefix' => 'hanhchinh'], function () {
+        Route::post('luuNhapKhoa','HanhChinh\HanhChinhController@luuNhapKhoa');
     });
     
     Route::group(['prefix' => 'hsbakp'], function () {
@@ -244,6 +245,9 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::post('updatePhongBenh/{id}','NoiTru\PhongBenhController@updatePhongBenh');
      	Route::delete('deletePhongBenh/{id}','NoiTru\PhongBenhController@deletePhongBenh');
  		Route::get('getPhongBenhById/{id}','NoiTru\PhongBenhController@getPhongBenhById');
+ 		Route::get('getPhongBenhConTrongByKhoa/{khoaId}/{loaiPhong}', 'HanhChinh\PhongBenhController@getPhongBenhConTrongByKhoa');
+ 		Route::get('getGiuongBenhChuaSuDungByPhong/{phongId}','HanhChinh\PhongBenhController@getGiuongBenhChuaSuDungByPhong');
+ 		Route::get('getLoaiPhongByKhoaId/{khoaId}','HanhChinh\PhongBenhController@getLoaiPhongByKhoaId');      
     });
 
     Route::group(['prefix' => 'phieuyeucau'], function () {
