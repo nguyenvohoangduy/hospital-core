@@ -1,0 +1,32 @@
+PUT /dmtvt_v2
+{
+    "settings": {
+      "analysis": {
+        "analyzer": {
+          "folding": {
+            "tokenizer": "standard",
+            "filter":  [ "lowercase", "asciifolding" ]
+          }
+        },
+        "normalizer": {
+          "lowerasciinormalizer": {
+            "type": "custom",
+            "filter":  [ "lowercase", "asciifolding" ]
+          }
+        }
+      }
+    },
+    "mappings": {
+      "doc": {
+         "properties": {
+            "ten": {
+               "type": "keyword",
+               "normalizer": "lowerasciinormalizer" 
+            },
+            "ten_khong_dau": {
+               "type": "keyword"
+            }
+         }
+      }
+   }
+}
