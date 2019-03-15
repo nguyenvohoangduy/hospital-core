@@ -204,9 +204,9 @@ class HanhChinhService {
         $hsbaDonViParams['khoa_hien_tai'] = $request['khoa_id'];
         
         // //phòng hành chính của khoa chuyển đến
-        $phong = $this->phongRepository->getPhongHanhChinhByKhoaID($request['khoa_id']);
+        $phong = $this->phongRepository->getPhongNoiTruByKhoaId($request['khoa_id']);
         $hsbaDonViParams['phong_hien_tai'] = $phong->id;
-        $hsbaDonViParams['loai_benh_an'] = $phong->loai_benh_an;
+        $hsbaDonViParams['loai_benh_an'] = $hsbaKp['loai_benh_an'];
         $hsbaDonViParams['trang_thai'] = self::TT_CHO_DIEU_TRI; //0: chờ điều trị
         $hsbaDonViParams['hsba_id'] = $request['hsba_id'];
         $hsbaDonViParams['benh_nhan_id'] = $hsbaKp['benh_nhan_id'];
@@ -222,13 +222,13 @@ class HanhChinhService {
     }
     
     private function createHSBA(array $request) {
-        $phong = $this->phongRepository->getPhongHanhChinhByKhoaID($request['khoa_id']);
+        $phong = $this->phongRepository->getPhongNoiTruByKhoaId($request['khoa_id']);
         $hsba = $this->hsbaRepository->getById($request['hsba_id']);
         $hsbaNew = $hsba->toArray();
         $hsbaNew['loai_benh_an'] = $phong->loai_benh_an;
         $hsbaNew['benh_nhan_id'] = $request['benh_nhan_id'];
         $hsbaNew['khoa_id'] = $request['khoa_id'];
-        $hsbaNew['phong_id'] = $request['phong_id'];
+        $hsbaNew['phong_id'] = $phong->id;
         $hsbaNew['hinh_thuc_vao_vien'] = self::NHAN_TU_KKB;
         $hsbaNew['trang_thai_hsba'] = 0;
         $hsbaNew['ngay_tao'] = Carbon::now()->toDateTimeString();
