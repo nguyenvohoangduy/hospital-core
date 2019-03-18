@@ -109,70 +109,138 @@ class DanhMucThuocVatTuService
         return $data;
     }
     
-    public function pushToElasticSearch()
-    {
-        $lastParams = [
-            'index' => 'dmtvt',
-            'type' => 'doc',
-            'size' => 1,
-            'body' => [
-                'sort' =>[
-                    'id' => [
-                        'order' => 'desc'
-                        ]
-                ]
-            ]
-        ];
-        $last = Elasticsearch::search($lastParams);
-        $lastId = $last['hits']['hits'][0]['_source']['id'];
+    // public function pushToElasticSearch()
+    // {
+    //     $lastParams = [
+    //         'index' => 'dmtvt',
+    //         'type' => 'doc',
+    //         'size' => 1,
+    //         'body' => [
+    //             'sort' =>[
+    //                 'id' => [
+    //                     'order' => 'desc'
+    //                     ]
+    //             ]
+    //         ]
+    //     ];
+    //     $last = Elasticsearch::search($lastParams);
+    //     $lastId = $last['hits']['hits'][0]['_source']['id'];
         
-        $data = $this->repository->getThuocVatTu($lastId);
-        foreach($data as $item) {
+    //     $data = $this->repository->getThuocVatTu($lastId);
+    //     foreach($data as $item) {
             
-            $params = [
-                            'body' => [
-                                'id'                    => $item->id,
-                                'nhom_danh_muc_id'      => $item->nhom_danh_muc_id,
-                                'ten'                   => $item->ten,
-                                'ten_khong_dau'         => Util::convertViToEn(strtolower($item->ten)),
-                                'ten_bhyt'              => $item->ten_bhyt,
-                                'ten_nuoc_ngoai'        => $item->ten_nuoc_ngoai,
-                                'ma'                    => $item->ma,
-                                'ma_bhyt'               => $item->ma_bhyt,
-                                'don_vi_tinh_id'        => $item->don_vi_tinh_id,
-                                'don_vi_tinh'           => $item->don_vi_tinh,
-                                'stt'                   => $item->stt,
-                                'nhan_vien_tao'         => $item->nhan_vien_tao,
-                                'nhan_vien_cap_nhat'    => $item->nhan_vien_cap_nhat,
-                                'thoi_gian_tao'         => $item->thoi_gian_tao,
-                                'thoi_gian_cap_nhat'    => $item->thoi_gian_cap_nhat,
-                                'hoat_chat_id'          => $item->hoat_chat_id,
-                                'hoat_chat'             => $item->hoat_chat,
-                                'biet_duoc_id'          => $item->biet_duoc_id,
-                                'nong_do'               => $item->nong_do,
-                                'duong_dung'            => $item->duong_dung,
-                                'dong_goi'              => $item->dong_goi,
-                                'hang_san_xuat'         => $item->hang_san_xuat,
-                                'nuoc_san_xuat'         => $item->nuoc_san_xuat,
-                                'trang_thai'            => $item->trang_thai,
-                                'kho_id'                => $item->kho_id,
-                                'loai_nhom'             => $item->loai_nhom,
-                                'gia'                   => $item->gia,
-                                'gia_bhyt'              => $item->gia_bhyt,
-                                'gia_nuoc_ngoai'        => $item->gia_nuoc_ngoai
-                            ],
-                            'index' => 'dmtvt',
-                            'type' => 'doc',
-                            'id' => $item->id,
-                        ];
-            $return = Elasticsearch::index($params);  
-        };
+    //         $params = [
+    //                         'body' => [
+    //                             'id'                    => $item->id,
+    //                             'nhom_danh_muc_id'      => $item->nhom_danh_muc_id,
+    //                             'ten'                   => $item->ten,
+    //                             'ten_khong_dau'         => Util::convertViToEn(strtolower($item->ten)),
+    //                             'ten_bhyt'              => $item->ten_bhyt,
+    //                             'ten_nuoc_ngoai'        => $item->ten_nuoc_ngoai,
+    //                             'ma'                    => $item->ma,
+    //                             'ma_bhyt'               => $item->ma_bhyt,
+    //                             'don_vi_tinh_id'        => $item->don_vi_tinh_id,
+    //                             'don_vi_tinh'           => $item->don_vi_tinh,
+    //                             'stt'                   => $item->stt,
+    //                             'nhan_vien_tao'         => $item->nhan_vien_tao,
+    //                             'nhan_vien_cap_nhat'    => $item->nhan_vien_cap_nhat,
+    //                             'thoi_gian_tao'         => $item->thoi_gian_tao,
+    //                             'thoi_gian_cap_nhat'    => $item->thoi_gian_cap_nhat,
+    //                             'hoat_chat_id'          => $item->hoat_chat_id,
+    //                             'hoat_chat'             => $item->hoat_chat,
+    //                             'biet_duoc_id'          => $item->biet_duoc_id,
+    //                             'nong_do'               => $item->nong_do,
+    //                             'duong_dung'            => $item->duong_dung,
+    //                             'dong_goi'              => $item->dong_goi,
+    //                             'hang_san_xuat'         => $item->hang_san_xuat,
+    //                             'nuoc_san_xuat'         => $item->nuoc_san_xuat,
+    //                             'trang_thai'            => $item->trang_thai,
+    //                             'kho_id'                => $item->kho_id,
+    //                             'loai_nhom'             => $item->loai_nhom,
+    //                             'gia'                   => $item->gia,
+    //                             'gia_bhyt'              => $item->gia_bhyt,
+    //                             'gia_nuoc_ngoai'        => $item->gia_nuoc_ngoai,
+    //                             'he_so_le_1'            => $item->he_so_le_1,
+    //                             'he_so_le_2'            => $item->he_so_le_2
+    //                         ],
+    //                         'index' => 'dmtvt',
+    //                         'type' => 'doc',
+    //                         'id' => $item->id
+    //                     ];
+    //         $return = Elasticsearch::index($params);  
+    //     };
+    // }
+    
+    public function pushToElasticSearch() {
+        $data = $this->repository->getThuocVatTu();
+        
+        $params = ['body' => []];
+        
+        for ($i = 1; $i <= count($data); $i++) {
+            $params['body'][] = [
+                'index' => [
+                    '_index' => 'dmtvt_v2',
+                    '_type' => 'doc',
+                    '_id' => $i
+                ]
+            ];
+        
+            $params['body'][] = [
+                'id'                    => $data[$i-1]->id,
+                'nhom_danh_muc_id'      => $data[$i-1]->nhom_danh_muc_id,
+                'ten'                   => $data[$i-1]->ten,
+                'ten_khong_dau'         => Util::convertViToEn(strtolower($data[$i-1]->ten)),
+                'ten_bhyt'              => $data[$i-1]->ten_bhyt,
+                'ten_nuoc_ngoai'        => $data[$i-1]->ten_nuoc_ngoai,
+                'ma'                    => $data[$i-1]->ma,
+                'ma_bhyt'               => $data[$i-1]->ma_bhyt,
+                'don_vi_tinh_id'        => $data[$i-1]->don_vi_tinh_id,
+                'don_vi_tinh'           => $data[$i-1]->don_vi_tinh,
+                'stt'                   => $data[$i-1]->stt,
+                'nhan_vien_tao'         => $data[$i-1]->nhan_vien_tao,
+                'nhan_vien_cap_nhat'    => $data[$i-1]->nhan_vien_cap_nhat,
+                'thoi_gian_tao'         => $data[$i-1]->thoi_gian_tao,
+                'thoi_gian_cap_nhat'    => $data[$i-1]->thoi_gian_cap_nhat,
+                'hoat_chat_id'          => $data[$i-1]->hoat_chat_id,
+                'hoat_chat'             => $data[$i-1]->hoat_chat,
+                'biet_duoc_id'          => $data[$i-1]->biet_duoc_id,
+                'nong_do'               => $data[$i-1]->nong_do,
+                'duong_dung'            => $data[$i-1]->duong_dung,
+                'dong_goi'              => $data[$i-1]->dong_goi,
+                'hang_san_xuat'         => $data[$i-1]->hang_san_xuat,
+                'nuoc_san_xuat'         => $data[$i-1]->nuoc_san_xuat,
+                'trang_thai'            => $data[$i-1]->trang_thai,
+                'kho_id'                => $data[$i-1]->kho_id,
+                'loai_nhom'             => $data[$i-1]->loai_nhom,
+                'gia'                   => $data[$i-1]->gia,
+                'gia_bhyt'              => $data[$i-1]->gia_bhyt,
+                'gia_nuoc_ngoai'        => $data[$i-1]->gia_nuoc_ngoai,
+                'he_so_le_1'            => $data[$i-1]->he_so_le_1,
+                'he_so_le_2'            => $data[$i-1]->he_so_le_2
+            ];
+        
+            // Every 1000 documents stop and send the bulk request
+            if ($i % 1000 == 0) {
+                $responses = Elasticsearch::bulk($params);
+        
+                // erase the old bulk request
+                $params = ['body' => []];
+        
+                // unset the bulk response when you are done to save memory
+                unset($responses);
+            }
+        }
+        
+        // Send the last batch if it exists
+        if (!empty($params['body'])) {
+            $responses = Elasticsearch::bulk($params);
+        }        
     }
     
     public function searchThuocVatTuByKeywords($keyWords)
     {
         $params = [
-            'index' => 'dmtvt',
+            'index' => 'dmtvt_by_kho',
             'type' => 'doc',
             'body' => [
                 'from' => 0,
