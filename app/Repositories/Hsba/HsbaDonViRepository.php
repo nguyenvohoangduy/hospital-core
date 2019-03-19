@@ -70,6 +70,12 @@ class HsbaDonViRepository extends BaseRepositoryV2
         return $id;
     }
     
+    public function update($hsbaDonViId,array $params)
+    {
+        $hsbaDonVi = $this->model->findOrFail($hsbaDonViId);
+		$hsbaDonVi->update($params);
+    }    
+    
     public function getListPhongNoiTru() {
         $page = $this->page;
         $limit = $this->limit;

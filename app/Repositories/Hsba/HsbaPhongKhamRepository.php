@@ -20,7 +20,8 @@ class HsbaPhongKhamRepository extends BaseRepositoryV2
                         'khoa_id' => $params['khoa_id'],
                         'benh_vien_id' => $params['benh_vien_id'],
                         'hsba_id' => $params['hsba_id'],
-                        'hsba_khoa_phong_id' => $params['hsba_khoa_phong_id'],
+                        //'hsba_khoa_phong_id' => $params['hsba_khoa_phong_id'],
+                        'hsba_don_vi_id' => $params['hsba_don_vi_id'],
                         'auth_users_id' => null,
                     ];
                     

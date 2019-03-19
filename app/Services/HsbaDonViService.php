@@ -44,4 +44,9 @@ class HsbaDonViService
         $data = $this->hsbaDonViRepository->getByHsbaId($hsbaId, $phongId);
         return $data;
     }
+    
+    public function update($hsbaDonViId, array $params)
+    {
+        $this->hsbaDonViRepository->update($hsbaDonViId, $params);
+    }    
 }
