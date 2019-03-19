@@ -10,6 +10,7 @@ class PhongRepository extends BaseRepositoryV2
     const BENH_AN_KHAM_BENH = 24;
     const TRANG_THAI_HOAT_DONG = 1;
     const PHONG_HANH_CHINH = 1;
+    const PHONG_NOI_TRU = 3;
     
     public function getModel()
     {
@@ -57,6 +58,16 @@ class PhongRepository extends BaseRepositoryV2
                                 ['khoa_id', '=', $khoaId],
                                 ['loai_phong', '=', self::PHONG_HANH_CHINH],
                                 ['loai_benh_an', '!=', self::BENH_AN_KHAM_BENH]
+                            ])
+                            ->get()
+                            ->first();
+        return $phong;
+    }
+    
+    public function getPhongNoiTruByKhoaId($khoaId) {
+        $phong = $this->model->where([
+                                ['khoa_id', '=', $khoaId],
+                                ['loai_phong', '=', self::PHONG_NOI_TRU]
                             ])
                             ->get()
                             ->first();

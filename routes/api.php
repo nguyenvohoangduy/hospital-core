@@ -203,7 +203,14 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });
     
     Route::group(['prefix' => 'hanhchinh'], function () {
+        Route::get('list/{benhVienId}/phongcho','HanhChinh\HanhChinhController@getListPhongHanhChinh');
+        Route::get('getPhongChoByHsbaId/{hsbaId}/{phongId}','HanhChinh\HanhChinhController@getPhongChoByHsbaId');
         Route::post('luuNhapKhoa','HanhChinh\HanhChinhController@luuNhapKhoa');
+    });
+    
+    Route::group(['prefix' => 'noitru'], function () {
+        Route::get('list/{benhVienId}','NoiTru\NoiTruController@getListPhongNoiTru');
+        Route::get('getByHsbaId/{hsbaId}/{phongId}','NoiTru\NoiTruController@getByHsbaId');
     });
     
     Route::group(['prefix' => 'hsbakp'], function () {
@@ -240,18 +247,18 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });    
     
     Route::group(['prefix' => 'phongbenh'], function () {
-		Route::get('getListPhongBenh','NoiTru\PhongBenhController@getListPhongBenh');
-		Route::post('createPhongBenh','NoiTru\PhongBenhController@createPhongBenh');
-     	Route::post('updatePhongBenh/{id}','NoiTru\PhongBenhController@updatePhongBenh');
-     	Route::delete('deletePhongBenh/{id}','NoiTru\PhongBenhController@deletePhongBenh');
- 		Route::get('getPhongBenhById/{id}','NoiTru\PhongBenhController@getPhongBenhById');
+ 		Route::get('getListPhongBenh','HanhChinh\PhongBenhController@getListPhongBenh');
+		Route::post('createPhongBenh','HanhChinh\PhongBenhController@createPhongBenh');
+     	Route::post('updatePhongBenh/{id}','HanhChinh\PhongBenhController@updatePhongBenh');
+     	Route::delete('deletePhongBenh/{id}','HanhChinh\PhongBenhController@deletePhongBenh');
+ 		Route::get('getPhongBenhById/{id}','HanhChinh\PhongBenhController@getPhongBenhById');
  		Route::get('getPhongBenhConTrongByKhoa/{khoaId}/{loaiPhong}', 'HanhChinh\PhongBenhController@getPhongBenhConTrongByKhoa');
  		Route::get('getGiuongBenhChuaSuDungByPhong/{phongId}','HanhChinh\PhongBenhController@getGiuongBenhChuaSuDungByPhong');
- 		Route::get('getLoaiPhongByKhoaId/{khoaId}','HanhChinh\PhongBenhController@getLoaiPhongByKhoaId');      
+ 		Route::get('getLoaiPhongByKhoaId/{khoaId}','HanhChinh\PhongBenhController@getLoaiPhongByKhoaId');
     });
 
     Route::group(['prefix' => 'phieuyeucau'], function () {
-		Route::get('getTonKhaDungById/{id}/{khoId}','PhieuYeuCau\PhieuYeuCauController@getTonKhaDungById');
+		Route::get('getTonKhaDungByThuocVatTuId/{id}','PhieuYeuCau\PhieuYeuCauController@getTonKhaDungByThuocVatTuId');
 		Route::post('createPhieuYeuCau','PhieuYeuCau\PhieuYeuCauController@createPhieuYeuCau');
     });
     
