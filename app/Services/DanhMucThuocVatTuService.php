@@ -262,10 +262,10 @@ class DanhMucThuocVatTuService
         return $result;
     }      
     
-    public function searchThuocVatTuByListId(array $listId)
+    public function searchThuocVatTuByListId($index, array $listId)
     {
         $params = [
-            'index' => 'dmtvt',
+            'index' => $index,
             'type' => 'doc',
             'body' => [
                 'from' => 0,
@@ -318,4 +318,149 @@ class DanhMucThuocVatTuService
         
         return $result;        
     }  
+    
+    // public function pushSlkdToElasticSearch()
+    // {
+    //     $lastParams = [
+    //         'index' => 'sl_kha_dung_tvt',
+    //         'type' => 'doc',
+    //         'size' => 1,
+    //         'body' => [
+    //             'sort' =>[
+    //                 'id' => [
+    //                     'order' => 'desc'
+    //                 ]
+    //             ]
+    //         ]
+    //     ];
+    //     $last = Elasticsearch::search($lastParams);
+    //     $lastId = $last['hits']['hits'][0]['_source']['id'];
+        
+    //     $data = $this->repository->getSoLuongKhaDung($lastId);
+    //     foreach($data as $item) {
+    //         $params = [ 'index' => 'sl_kha_dung_tvt',
+    //                     'type' => 'doc',
+    //                     'id' => $item->id,
+    //                     'body' => [
+    //                         'id'                => $item->id,
+    //                         'sl_kha_dung'       => $item->sl_kha_dung
+    //                     ]
+    //                 ];
+    //         $return = Elasticsearch::index($params);  
+    //     };
+    // }
+    
+    public function pushTvtByKhoToElasticSearch($khoId)
+    {
+        $data = $this->repository->getThuocVatTuByKhoId($khoId);
+        
+        $params = ['body' => []];
+        
+        for ($i = 1; $i <= count($data); $i++) {
+            $params['body'][] = [
+                'index' => [
+                    '_index' => 'dmtvt_kho_' . $khoId,
+                    '_type' => 'doc',
+                    '_id' => $i
+                ]
+            ];
+        
+            $params['body'][] = [
+                'id'                    => $data[$i-1]->id,
+                'nhom_danh_muc_id'      => $data[$i-1]->nhom_danh_muc_id,
+                'ten'                   => $data[$i-1]->ten,
+                'ten_khong_dau'         => Util::convertViToEn(strtolower($data[$i-1]->ten)),
+                'ten_bhyt'              => $data[$i-1]->ten_bhyt,
+                'ten_nuoc_ngoai'        => $data[$i-1]->ten_nuoc_ngoai,
+                'ma'                    => $data[$i-1]->ma,
+                'ma_bhyt'               => $data[$i-1]->ma_bhyt,
+                'don_vi_tinh_id'        => $data[$i-1]->don_vi_tinh_id,
+                'don_vi_tinh'           => $data[$i-1]->don_vi_tinh,
+                'stt'                   => $data[$i-1]->stt,
+                'nhan_vien_tao'         => $data[$i-1]->nhan_vien_tao,
+                'nhan_vien_cap_nhat'    => $data[$i-1]->nhan_vien_cap_nhat,
+                'thoi_gian_tao'         => $data[$i-1]->thoi_gian_tao,
+                'thoi_gian_cap_nhat'    => $data[$i-1]->thoi_gian_cap_nhat,
+                'hoat_chat_id'          => $data[$i-1]->hoat_chat_id,
+                'hoat_chat'             => $data[$i-1]->hoat_chat,
+                'biet_duoc_id'          => $data[$i-1]->biet_duoc_id,
+                'nong_do'               => $data[$i-1]->nong_do,
+                'duong_dung'            => $data[$i-1]->duong_dung,
+                'dong_goi'              => $data[$i-1]->dong_goi,
+                'hang_san_xuat'         => $data[$i-1]->hang_san_xuat,
+                'nuoc_san_xuat'         => $data[$i-1]->nuoc_san_xuat,
+                'trang_thai'            => $data[$i-1]->trang_thai,
+                'kho_id'                => $data[$i-1]->kho_id,
+                'loai_nhom'             => $data[$i-1]->loai_nhom,
+                'gia'                   => $data[$i-1]->gia,
+                'gia_bhyt'              => $data[$i-1]->gia_bhyt,
+                'gia_nuoc_ngoai'        => $data[$i-1]->gia_nuoc_ngoai,
+                'he_so_le_1'            => $data[$i-1]->he_so_le_1,
+                'he_so_le_2'            => $data[$i-1]->he_so_le_2
+            ];
+        
+            // Every 1000 documents stop and send the bulk request
+            if ($i % 1000 == 0) {
+                $responses = Elasticsearch::bulk($params);
+        
+                // erase the old bulk request
+                $params = ['body' => []];
+        
+                // unset the bulk response when you are done to save memory
+                unset($responses);
+            }
+        }
+        
+        // Send the last batch if it exists
+        if (!empty($params['body'])) {
+            $responses = Elasticsearch::bulk($params);
+        } 
+    }
+    
+    public function searchThuocVatTuByKhoId($khoId, $keyword)
+    {
+        $params = [
+            'index' => 'dmtvt_kho_' . $khoId,
+            'type' => 'doc',
+            'body' => [
+                'from' => 0,
+                'size' => 10000,
+                'query' => [
+                    'bool' => [
+                        'should' => [
+                            'wildcard' => [
+                                'ten' => '*'.$keyword.'*',
+                            ], 
+                            'wildcard' => [
+                                'hoat_chat' => '*'.$keyword.'*'
+                            ]
+                        ]    
+                    ]
+                ]
+            ]
+        ];
+        $response = Elasticsearch::search($params);   
+        
+        $result=[];
+        foreach($response['hits']['hits'] as $item) {
+            $result[] = $item['_source'];
+        };
+        
+        return $result;        
+    } 
+    
+    public function updateSoLuongKhaDungById(array $input)
+    {
+        $params = [
+            'index' => 'dmtvt_kho_' . $input['kho_id'],
+            'type' => 'doc',
+            'id' => $input['danh_muc_thuoc_vat_tu_id'],
+            'body' => [
+                'doc' => [
+                    'sl_kha_dung' => $input['sl_kha_dung']
+                ]
+            ]
+        ];
+        $response = Elasticsearch::update($params); 
+    }
 }

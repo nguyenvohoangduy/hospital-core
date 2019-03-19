@@ -119,6 +119,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('getAllCanLamSang/{hsbaId}','PhongKham\PhongKhamController@getAllCanLamSang');
         Route::get('searchListIcd10ByCode/{icd10Code}','PhongKham\PhongKhamController@searchListIcd10ByCode');
         Route::get('searchThuocVatTuByTenVaHoatChat/{keyword}','PhongKham\PhongKhamController@searchThuocVatTuByTenVaHoatChat');
+        Route::get('searchThuocVatTuByKhoId/{khoId}/{keyword}','PhongKham\PhongKhamController@searchThuocVatTuByKhoId');
+        Route::post('saveThuocVatTu','PhongKham\PhongKhamController@saveThuocVatTu');
     });
     
     Route::group(['prefix' => 'danhmuc'], function () {
@@ -206,6 +208,14 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::post('luuNhapKhoa','HanhChinh\HanhChinhController@luuNhapKhoa');
     });
     
+    Route::group(['prefix' => 'hoatchat'], function () {
+        Route::get('getAll','HoatChat\HoatChatController@getAll');
+    });
+    
+    Route::group(['prefix' => 'noitru'], function () {
+        Route::post('luuNhapKhoa','NoiTru\NoiTruController@luuNhapKhoa');
+    });
+    
     Route::group(['prefix' => 'hsbakp'], function () {
         Route::get('list/{benhVienId}/khoakhambenh','Hsba\HsbaKhoaPhongController@getListKhoaKhamBenh');
     });
@@ -228,8 +238,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::post('updateKho/{id}','Kho\KhoController@updateKho');
      	Route::delete('deleteKho/{id}','Kho\KhoController@deleteKho');
  		Route::get('getKhoById/{id}','Kho\KhoController@getKhoById');
- 		Route::get('searchThuocVatTuByListId','Kho\KhoController@searchThuocVatTuByListId');
- 		
+ 		//Route::get('searchThuocVatTuByListId','Kho\KhoController@searchThuocVatTuByListId');
+ 		Route::get('getKhoByListId/{listId}','Kho\KhoController@getKhoByListId');
  		//Route::get('getListThuocVatTu/{keyWords}','Kho\KhoController@getListThuocVatTu');
  		Route::get('getAllThuocVatTu','Kho\KhoController@getAllThuocVatTu');
  		Route::get('searchThuocVatTuByKeywords/{keyWords}','Kho\KhoController@searchThuocVatTuByKeywords');

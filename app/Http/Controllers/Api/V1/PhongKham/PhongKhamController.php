@@ -13,6 +13,7 @@ use App\Services\PhacDoDieuTriService;
 use App\Services\PhieuYLenhService;
 use App\Services\DanhMucDichVuService;
 use App\Services\DanhMucThuocVatTuService;
+use App\Services\TheKhoService;
 use Validator;
 use App\Http\Requests\UploadFileFormRequest;
 
@@ -29,7 +30,8 @@ class PhongKhamController extends APIController
         PhacDoDieuTriService $pddtService,
         PhieuYLenhService $phieuYLenhService,
         DanhMucDichVuService $dmdvService,
-        DanhMucThuocVatTuService $dmTvtService
+        DanhMucThuocVatTuService $dmTvtService,
+        TheKhoService $theKhoService
     )
     {
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
@@ -42,6 +44,7 @@ class PhongKhamController extends APIController
         $this->phieuYLenhService = $phieuYLenhService;
         $this->dmdvService = $dmdvService;
         $this->dmTvtService = $dmTvtService;
+        $this->theKhoService = $theKhoService;
     }
     
     public function update($hsbaKhoaPhongId, Request $request)
@@ -156,6 +159,61 @@ class PhongKhamController extends APIController
             }
         
             return $this->respond($bool);
+        } else {
+            $this->setStatusCode(400);
+            return $this->respond([]);
+        }
+    }
+    
+    public function saveThuocVatTu(Request $request)
+    {
+        $input = $request->all();
+        $result = [];
+        $flag = false;
+        
+        if($input['data']) {
+            foreach($input['data'] as $item) {
+                $quantity = $this->theKhoService->getTonKhaDungById($item['id'], $item['kho_id']);
+                if($quantity['so_luong_kha_dung'] < $item['so_luong']) {
+                    $flag = true;
+                    $result[] = [
+                        'id'            => $item['id'],
+                        'ten'           => $item['ten'],
+                        'so_luong'      => $quantity['so_luong_kha_dung'],
+                        'don_vi_tinh'   => $item['don_vi_tinh']
+                    ];
+                }
+            }
+            
+            if($flag) {
+                return $this->respond($result);
+            } else {
+                $bool = $this->yLenhService->saveThuocVatTu($input);
+                if($bool) {
+                    $this->setStatusCode(201);
+                } else {
+                    $this->setStatusCode(400);
+                }
+                return $this->respond([]);
+                
+                // $phieuDieuTri = $this->dieuTriService->getPhieuDieuTri($input);
+        
+                // if($phieuDieuTri) {
+                //     $input['dieu_tri_id'] = $phieuDieuTri->id;
+                //     $bool = $this->yLenhService->saveYLenh($input);
+                    
+                //     if($bool) {
+                //         $this->setStatusCode(201);
+                //     } else {
+                //         $this->setStatusCode(400);
+                //     }
+                
+                //     return $this->respond($bool);
+                // } else {
+                //     $this->setStatusCode(400);
+                //     return $this->respond([]);
+                // }
+            }
         } else {
             $this->setStatusCode(400);
             return $this->respond([]);
@@ -382,4 +440,16 @@ class PhongKhamController extends APIController
         
         return $this->respond($data);
     } 
+    
+    public function searchThuocVatTuByKhoId($khoId, $keyword)
+    {
+        if($keyword) {
+            $data = $this->dmTvtService->searchThuocVatTuByKhoId($khoId, $keyword);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
 }

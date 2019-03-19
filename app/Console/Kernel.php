@@ -13,7 +13,9 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\PushDmtvt::class
+        Commands\PushDmtvt::class,
+        Commands\PushSoLuongKhaDungTvt::class,
+        Commands\PushTvtTheoKho::class
     ];
 
     /**

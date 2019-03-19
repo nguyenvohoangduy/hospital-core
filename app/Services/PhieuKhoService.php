@@ -8,6 +8,7 @@ use App\Repositories\Kho\ChiTietPhieuKhoRepository;
 use App\Repositories\Kho\GioiHanRepository;
 use App\Repositories\Kho\KhoRepository;
 use App\Repositories\DanhMuc\DanhMucThuocVatTuRepository;
+use App\Services\DanhMucThuocVatTuService;
 use Cviebrock\LaravelElasticsearch\Facade as Elasticsearch;
 use Illuminate\Http\Request;
 use DB;
@@ -29,14 +30,16 @@ class PhieuKhoService {
     const LOAI_PHIEU_NHAP = 0;
     const LOAI_PHIEU_XUAT = 1;
     
-    public function __construct(
+    public function __construct
+    (
         PhieuKhoRepository $phieuKhoRepository,
         TheKhoRepository $theKhoRepository,
         ChiTietPhieuKhoRepository $chiTietPhieuKhoRepository,
         KhoRepository $khoRepository,
         GioiHanRepository $gioiHanRepository,
-        DanhMucThuocVatTuRepository $danhMucThuocVatTuRepository
-        )
+        DanhMucThuocVatTuRepository $danhMucThuocVatTuRepository,
+        DanhMucThuocVatTuService $danhMucThuocVatTuService
+    )
     {
         $this->phieuKhoRepository = $phieuKhoRepository;
         $this->theKhoRepository = $theKhoRepository;
@@ -44,6 +47,7 @@ class PhieuKhoService {
         $this->khoRepository = $khoRepository;
         $this->gioiHanRepository = $gioiHanRepository;
         $this->danhMucThuocVatTuRepository = $danhMucThuocVatTuRepository;
+        $this->danhMucThuocVatTuService = $danhMucThuocVatTuService;
     }
     
     public function createPhieuKho(array $input)
@@ -198,7 +202,8 @@ class PhieuKhoService {
             $maPhieu = $this->phieuKhoRepository->getMaPhieu();
             
             $phieuKhoParams = [];
-            $phieuKhoParams['kho_id']=$input['kho_id'];
+            $phieuKhoParams['phong_id']=$input['phong_id'] ?? null;
+            $phieuKhoParams['kho_id']=$input['kho_id'] ?? null;
             $phieuKhoParams['kho_id_xu_ly']=$input['kho_id_xu_ly'];
             $phieuKhoParams['ten_kho_xu_ly']=$input['ten_kho_xu_ly'];
             $phieuKhoParams['loai_phieu']=$input['loai_phieu'];
@@ -216,13 +221,20 @@ class PhieuKhoService {
                 $theKhoParams['danh_muc_thuoc_vat_tu_id']=$item['id'];
                 $theKhoParams['so_luong']=$item['so_luong'];
  
-                $theKhoId = $this->theKhoRepository->updateTheKho($theKhoParams);
+                $theKho = $this->theKhoRepository->updateTheKho($theKhoParams);
                 
-                if($theKhoId>0) {
+                //update so_luong_kha_dung in table gioi_han
+                $theKhoParams['sl_kha_dung'] = $theKho['sl_kha_dung'];
+                $this->gioiHanRepository->updateSoLuongKhaDung($theKhoParams);
+                
+                //update so_luong_kha_dung in elasticsearch
+                $this->danhMucThuocVatTuService->updateSoLuongKhaDungById($theKhoParams);
+                
+                if($theKho) {
                     $chiTietPhieuKhoParams = [];
                     $chiTietPhieuKhoParams['phieu_kho_id']=$phieuKhoId;
                     $chiTietPhieuKhoParams['danh_muc_thuoc_vat_tu_id']=$item['id'];
-                    $chiTietPhieuKhoParams['the_kho_id']=$theKhoId;
+                    $chiTietPhieuKhoParams['the_kho_id']=$theKho['id'];
                     $chiTietPhieuKhoParams['so_luong_yeu_cau']=$item['so_luong'];
                     $chiTietPhieuKhoParams['trang_thai'] = self::THUOC_VAT_TU_KHONG_DUYET; 
                     $this->chiTietPhieuKhoRepository->createChiTietPhieuKho($chiTietPhieuKhoParams); 
