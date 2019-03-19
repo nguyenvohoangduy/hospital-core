@@ -96,8 +96,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('goiSttPhongKham','PhongKham\SttPhongKhamController@goiSttPhongKham');
         Route::get('loadSttPhongKham','PhongKham\SttPhongKhamController@loadSttPhongKham');
         Route::get('finishSttPhongKham/{sttId}','PhongKham\SttPhongKhamController@finishSttPhongKham');
-        Route::get('batDauKham/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@batDauKham');
-		Route::post('updateHsbaKhoaPhong/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@update');
+        Route::get('batDauKham/{hsbaDonViId}','PhongKham\PhongKhamController@batDauKham');
+		Route::post('updateHsbaDonVi/{hsbaDonViId}','PhongKham\PhongKhamController@update');
 		Route::get('getHsbaKhoaPhongById/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@getById');
 		Route::post('updateInfoDieuTri','PhongKham\PhongKhamController@updateInfoDieuTri');
 		Route::get('getListPhongKham/{hsbaId}','PhongKham\PhongKhamController@getListPhongKham');
@@ -109,7 +109,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getPddtByIcd10Code/{icd10Code}','PhongKham\PhongKhamController@getPddtByIcd10Code');
 		Route::get('getListPhieuYLenh/{id}/{type}','PhongKham\PhongKhamController@getListPhieuYLenh');
 		Route::get('getDetailPhieuYLenh/{id}/{type}','PhongKham\PhongKhamController@getDetailPhieuYLenh');	
-		Route::post('updateHsbaPhongKham/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@updateHsbaPhongKham');
+		Route::post('updateHsbaPhongKham/{hsbaDonViId}','PhongKham\PhongKhamController@updateHsbaPhongKham');
 		Route::get('getDetailHsbaPhongKham/{hsbaId}/{phongId}','PhongKham\PhongKhamController@getDetailHsbaPhongKham');
         Route::get('countItemYLenh/{hsbaId}','PhongKham\PhongKhamController@countItemYLenh');
         Route::get('countItemThuocVatTu/{hsbaId}','PhongKham\PhongKhamController@countItemThuocVatTu');
@@ -213,8 +213,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('getByHsbaId/{hsbaId}/{phongId}','NoiTru\NoiTruController@getByHsbaId');
     });
     
-    Route::group(['prefix' => 'hsbakp'], function () {
-        Route::get('list/{benhVienId}/khoakhambenh','Hsba\HsbaKhoaPhongController@getListKhoaKhamBenh');
+    Route::group(['prefix' => 'hsbadv'], function () {
+        Route::get('list/{benhVienId}/khoakhambenh','Hsba\HsbaDonViController@getListKhoaKhamBenh');
     });
     
     Route::group(['prefix' => 'hsba'], function () {

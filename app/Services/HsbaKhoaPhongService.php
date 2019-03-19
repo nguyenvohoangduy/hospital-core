@@ -171,22 +171,6 @@ class HsbaKhoaPhongService
     
     public function batDauKham($hsbaKhoaPhongId)
     {
-        $this->hsbaKhoaPhongRepository->batDauKham($hsbaKhoaPhongId);
-    }
-    
-    public function getListPhongHanhChinh($benhVienId, $khoaId, $phongId, $limit, $page, $options) {
-        $repo = $this->hsbaKhoaPhongRepository;
-        $repo = $repo   ->setKhoaPhongParams($benhVienId, $khoaId, $phongId)
-                        ->setKeyWordParams($options['keyword']??null)
-                        ->setKhoangThoiGianRaVienParams($options['thoi_gian_ra_vien_from']??null, $options['thoi_gian_ra_vien_to']??null)
-                        ->setPaginationParams($limit, $page);
-        $data = $repo->getListPhongHanhChinh();                
-        return $data;
-    }
-    
-    public function getPhongChoByHsbaId($hsbaId, $phongId)
-    {
-        $data = $this->hsbaKhoaPhongRepository->getPhongChoByHsbaId($hsbaId, $phongId);
-        return $data;
+        $this->hsbaDonViRepository->batDauKham($hsbaKhoaPhongId);
     }
 }
