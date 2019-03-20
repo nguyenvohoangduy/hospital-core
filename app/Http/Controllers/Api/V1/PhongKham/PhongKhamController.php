@@ -14,8 +14,10 @@ use App\Services\PhacDoDieuTriService;
 use App\Services\PhieuYLenhService;
 use App\Services\DanhMucDichVuService;
 use App\Services\DanhMucThuocVatTuService;
+use App\Services\MauHoiBenhService;
 use Validator;
 use App\Http\Requests\UploadFileFormRequest;
+use App\Http\Requests\MauHoiBenhFormRequest;
 
 class PhongKhamController extends APIController
 {
@@ -31,7 +33,8 @@ class PhongKhamController extends APIController
         PhacDoDieuTriService $pddtService,
         PhieuYLenhService $phieuYLenhService,
         DanhMucDichVuService $dmdvService,
-        DanhMucThuocVatTuService $dmTvtService
+        DanhMucThuocVatTuService $dmTvtService,
+        MauHoiBenhService $mauHoiBenhService
     )
     {
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
@@ -45,6 +48,7 @@ class PhongKhamController extends APIController
         $this->phieuYLenhService = $phieuYLenhService;
         $this->dmdvService = $dmdvService;
         $this->dmTvtService = $dmTvtService;
+        $this->mauHoiBenhService = $mauHoiBenhService;
     }
     
     public function update($hsbaDonViId, Request $request)
@@ -385,4 +389,37 @@ class PhongKhamController extends APIController
         
         return $this->respond($data);
     } 
+    
+    public function createMauHoiBenh(MauHoiBenhFormRequest $request) {
+        $input = $request->all();
+        $this->mauHoiBenhService->create($input);
+    }
+    
+    public function getMauHoiBenhByChucNangAndUserId($chucNang, $userId)
+    {
+        $isNumeric = is_numeric($userId);
+
+        if($isNumeric) {
+            $data = $this->mauHoiBenhService->getMauHoiBenhByChucNangAndUserId($chucNang, $userId);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
+    
+    public function getMauHoiBenhById($id)
+    {
+        $isNumeric = is_numeric($id);
+
+        if($isNumeric) {
+            $data = $this->mauHoiBenhService->getById($id);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
 }
