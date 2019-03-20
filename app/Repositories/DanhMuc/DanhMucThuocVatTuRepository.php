@@ -127,29 +127,29 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
         return $result;
     }
     
-    public function getAllThuocVatTu()
-    {
-        $where=[
-            ['danh_muc_thuoc_vat_tu.trang_thai','=', self::TRANG_THAI_SU_DUNG],
-            ['hoat_chat.trang_thai','=', self::TRANG_THAI_SU_DUNG],
-            ];
-        $column=[
-            'danh_muc_thuoc_vat_tu.*',
-            'hoat_chat.ten as hoat_chat',
-            'don_vi_tinh.ten as don_vi_tinh',
-            'gioi_han.kho_id'
-            ];
-        $result = $this->model
-                    ->leftJoin('don_vi_tinh','don_vi_tinh.id','=','danh_muc_thuoc_vat_tu.don_vi_tinh_id')
-                    ->leftJoin('hoat_chat','hoat_chat.id','=','danh_muc_thuoc_vat_tu.hoat_chat_id')
-                    ->leftJoin('gioi_han','gioi_han.danh_muc_thuoc_vat_tu_id','=','danh_muc_thuoc_vat_tu.id')
-                    ->where($where)
-                    ->limit(1)
-                    ->orderBy('id','ASC')
-                    ->get($column);
+    // public function getAllThuocVatTu()
+    // {
+    //     $where=[
+    //         ['danh_muc_thuoc_vat_tu.trang_thai','=', self::TRANG_THAI_SU_DUNG],
+    //         ['hoat_chat.trang_thai','=', self::TRANG_THAI_SU_DUNG],
+    //         ];
+    //     $column=[
+    //         'danh_muc_thuoc_vat_tu.*',
+    //         'hoat_chat.ten as hoat_chat',
+    //         'don_vi_tinh.ten as don_vi_tinh',
+    //         'gioi_han.kho_id'
+    //         ];
+    //     $result = $this->model
+    //                 ->leftJoin('don_vi_tinh','don_vi_tinh.id','=','danh_muc_thuoc_vat_tu.don_vi_tinh_id')
+    //                 ->leftJoin('hoat_chat','hoat_chat.id','=','danh_muc_thuoc_vat_tu.hoat_chat_id')
+    //                 ->leftJoin('gioi_han','gioi_han.danh_muc_thuoc_vat_tu_id','=','danh_muc_thuoc_vat_tu.id')
+    //                 ->where($where)
+    //                 ->limit(1)
+    //                 ->orderBy('id','ASC')
+    //                 ->get($column);
                     
-        return $result;
-    }
+    //     return $result;
+    // }
     
     // public function getThuocVatTu($lastId)
     // {
@@ -180,20 +180,22 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
     
     public function getThuocVatTu()
     {
+        $where=[
+            ['danh_muc_thuoc_vat_tu.trang_thai','=', self::TRANG_THAI_SU_DUNG],
+            // ['hoat_chat.trang_thai','=', self::TRANG_THAI_SU_DUNG],
+        ];
+        
         $column=[
             'danh_muc_thuoc_vat_tu.*',
             'hoat_chat.ten as hoat_chat',
             'don_vi_tinh.ten as don_vi_tinh',
-            'don_vi_tinh.he_so_le_1',
-            'don_vi_tinh.he_so_le_2',
-            'gioi_han.kho_id'
-            ];
-        $result = $this->model
-                    ->leftJoin('don_vi_tinh','don_vi_tinh.id','=','danh_muc_thuoc_vat_tu.don_vi_tinh_id')
-                    ->leftJoin('hoat_chat','hoat_chat.id','=','danh_muc_thuoc_vat_tu.hoat_chat_id')
-                    ->leftJoin('gioi_han','gioi_han.danh_muc_thuoc_vat_tu_id','=','danh_muc_thuoc_vat_tu.id')
-                    ->orderBy('id','ASC')
-                    ->get($column);
+        ];
+        
+        $result = $this->model->where($where)
+                        ->leftJoin('don_vi_tinh','don_vi_tinh.id','=','danh_muc_thuoc_vat_tu.don_vi_tinh_id')
+                        ->leftJoin('hoat_chat','hoat_chat.id','=','danh_muc_thuoc_vat_tu.hoat_chat_id')
+                        ->orderBy('danh_muc_thuoc_vat_tu.id','ASC')
+                        ->get($column);
                     
         return $result;
     }    
@@ -254,7 +256,8 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
             'don_vi_tinh.ten as don_vi_tinh',
             'don_vi_tinh.he_so_le_1',
             'don_vi_tinh.he_so_le_2',
-            'gioi_han.kho_id'
+            'gioi_han.kho_id',
+            'gioi_han.sl_kha_dung'
         ];
         $result = $this->model
                     ->leftJoin('don_vi_tinh','don_vi_tinh.id','=','danh_muc_thuoc_vat_tu.don_vi_tinh_id')

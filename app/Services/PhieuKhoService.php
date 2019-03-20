@@ -131,7 +131,7 @@ class PhieuKhoService {
     public function searchThuocVatTuByListId(array $listId)
     {
         $params = [
-            'index' => 'dmtvt_by_kho',
+            'index' => 'dmtvt',
             'type' => 'doc',
             'body' => [
                 'from' => 0,
@@ -188,7 +188,7 @@ class PhieuKhoService {
                                 'gia_bhyt'              => $item->gia_bhyt,
                                 'gia_nuoc_ngoai'        => $item->gia_nuoc_ngoai
                             ],
-                            'index' => 'dmtvt_by_kho',
+                            'index' => 'dmtvt',
                             'type' => 'doc',
                             'id' => $item->id
                         ];
