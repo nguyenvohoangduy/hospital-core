@@ -278,6 +278,12 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::post('updateNhaCungCap/{id}','NhaCungCap\NhaCungCapController@updateNhaCungCap');
      	Route::delete('deleteNhaCungCap/{id}','NhaCungCap\NhaCungCapController@deleteNhaCungCap');
  		Route::get('getNhaCungCapById/{id}','NhaCungCap\NhaCungCapController@getNhaCungCapById');
+    });
+    
+    Route::group(['prefix' => 'dieutri'], function () {
+		Route::get('getListByHsbaId/{hsbaId}','DieuTri\DieuTriController@getListByHsbaId');
+		Route::get('getDetailById/{id}','DieuTri\DieuTriController@getDetailById');
+		Route::post('createPhieuDieuTri','DieuTri\DieuTriController@createPhieuDieuTri');
     });    
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {

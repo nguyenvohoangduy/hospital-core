@@ -61,5 +61,29 @@ class DieuTriRepository extends BaseRepositoryV2
             return $result;
         else
             return null;
-    }    
+    }
+    
+    function getDetailById($id)
+    {
+        $data = $this->model->findOrFail($id);
+        return $data;
+    }
+    
+    function getListByHsbaId($hsbaId)
+    {
+        $column=[
+            'dieu_tri.*',
+            'khoa.ten_khoa',
+            'phong.ten_phong',
+            'auth_users.fullname as ten_nguoi_tao'
+            ];
+        $data = $this->model
+            ->leftJoin('khoa','khoa.id','=','dieu_tri.khoa_id')
+            ->leftJoin('phong','phong.id','=','dieu_tri.phong_id')
+            ->leftJoin('auth_users','auth_users.id','=','dieu_tri.auth_users_id')
+            ->where('dieu_tri.hsba_id',$hsbaId)
+            ->orderBy('dieu_tri.id','DESC')
+            ->get($column);
+        return $data;
+    }     
 }
