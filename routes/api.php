@@ -121,7 +121,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('searchThuocVatTuByTenVaHoatChat/{keyword}','PhongKham\PhongKhamController@searchThuocVatTuByTenVaHoatChat');
         Route::post('createMauHoiBenh','PhongKham\PhongKhamController@createMauHoiBenh');
         Route::get('getMauHoiBenhByChucNangAndUserId/{chucNang}/{userId}','PhongKham\PhongKhamController@getMauHoiBenhByChucNangAndUserId');
-        Route::get('getMauHoiBenhById/{id}','PhongKham\PhongKhamController@getMauHoiBenhById');
+        Route::get('getMauHoiBenhById/{id}/{chucNang}','PhongKham\PhongKhamController@getMauHoiBenhById');
         Route::get('searchThuocVatTuByKhoId/{khoId}/{keyword}','PhongKham\PhongKhamController@searchThuocVatTuByKhoId');
         Route::post('saveThuocVatTu','PhongKham\PhongKhamController@saveThuocVatTu');
     });
