@@ -19,13 +19,15 @@ class SttPhongKhamService
         SttPhongKhamRepository $sttPhongKhamRepository, 
         BenhVienRepository $benhVienRepository, 
         HsbaPhongKhamRepository $hsbaPhongKhamRepository,
-        HsbaKhoaPhongService $hsbaKhoaPhongService
+        HsbaKhoaPhongService $hsbaKhoaPhongService,
+        HsbaDonViService $hsbaDonViService
     )
     {
         $this->sttPhongKhamRepository = $sttPhongKhamRepository;
         $this->benhVienRepository = $benhVienRepository;
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
         $this->hsbaPhongKhamRepository = $hsbaPhongKhamRepository;
+        $this->hsbaDonViService = $hsbaDonViService;
     }
     
     public function getSttPhongKham(array $params)
@@ -42,7 +44,8 @@ class SttPhongKhamService
             $this->hsbaPhongKhamRepository->create($params);
             if($stt) {
                 $input = ['phong_hien_tai' => $params['phong_id']];
-                $this->hsbaKhoaPhongService->update($params['hsba_khoa_phong_id'], $input);
+                //$this->hsbaKhoaPhongService->update($params['hsba_khoa_phong_id'], $input);//error
+                $this->hsbaDonViService->update($params['hsba_don_vi_id'], $input);//error
             }
             
             $data = [
