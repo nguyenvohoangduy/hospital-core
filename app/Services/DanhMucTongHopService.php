@@ -10,6 +10,7 @@ use App\Repositories\Redis\DanhMuc\DmTongHopRedisRepository as dmTongHopRedisRep
 
 use Illuminate\Http\Request;
 use Validator;
+use Redis;
 
 class DanhMucTongHopService {
     public function __construct(DanhMucTongHopRepository $danhMucTongHopRepository ,   dmTongHopRedisRepository $dmTongHopRedisRepository )
@@ -85,11 +86,13 @@ class DanhMucTongHopService {
     {
         $id = $this->danhMucTongHopRepository->createDanhMucTongHop($input);
        
-     
-        //insert redis
-        $suffix = $input['khoa'].':'.$id;
-        $this->dmTongHopRedisRepository->hmset($suffix,$input);            
-        
+        $isNumericId = is_numeric($id);
+        if($isNumericId){
+            //insert redis
+            $suffix = $input['khoa'].':'.$id;
+            $this->dmTongHopRedisRepository->hmset($suffix,$input);  
+        }
+              
         return $id;
         
     }
@@ -97,11 +100,29 @@ class DanhMucTongHopService {
     public function updateDanhMucTongHop($dmthId, array $input)
     {
         $this->danhMucTongHopRepository->updateDanhMucTongHop($dmthId, $input);
+        
+        // Update : Redis không có update, nếu key tồn tại nó sẽ ghi đè
+        $isNumericId = is_numeric($dmthId);
+        if($isNumericId){
+            //update redis
+            $suffix = $input['khoa'].':'.$dmthId;
+            $this->dmTongHopRedisRepository->hmset($suffix,$input);  
+        }
     }
     
     public function deleteDanhMucTongHop($dmthId)
     {
+        // //delete redis
+        $data = $this->danhMucTongHopRepository->getDataDMTHById($dmthId);
+  
+        $redis = Redis::connection();
+        $suffix = 'danh_muc_tong_hop:'. $data['khoa'].':'.$dmthId;
+        $redis->del($suffix);
+        
+        //delete database
         $this->danhMucTongHopRepository->deleteDanhMucTongHop($dmthId);
+        
+      
     }
     
     public function getAllKhoa()

@@ -160,4 +160,11 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
         return $data;
     }
 
+    public function getDataDMTHById($dmthId)
+    {
+        $result = $this->model->findOrFail($dmthId); 
+        return $result;
+    }
+
+
 }

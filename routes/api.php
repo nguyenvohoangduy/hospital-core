@@ -159,6 +159,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::get('getListDanhMucTongHopRedis','Redis\DanhMuc\DanhMucTongHopController@getListDanhMucTongHop');
         Route::get('getDmthId/{Khoa}/{Id}','Redis\DanhMuc\DanhMucTongHopController@getDmthById');
         Route::post('createDMTH','Redis\DanhMuc\DanhMucTongHopController@createDanhMucTongHop');
+        Route::post('updateDMTH/{dmthId}','Redis\DanhMuc\DanhMucTongHopController@updateDanhMucTongHop');
+        Route::delete('deleteDMTH/{khoa}/{Id}','Redis\DanhMuc\DanhMucTongHopController@deleteDanhMucTongHop');
     	
     });
     

@@ -71,10 +71,31 @@ class DanhMucTongHopRedisService {
     
     public function createDanhMucTongHop(array $input)
     {
-        $suffix = $input['khoa'].':'.$input['id'];
-        $this->dmTongHopRedisRepository->hmset($suffix,$input);            
+
+        $isNumericId = is_numeric($input['id']);
+        if($isNumericId){
+            //insert redis
+            $suffix = $input['khoa'].':'.$input['id'];
+            $this->dmTongHopRedisRepository->hmset($suffix,$input);  
+        }
   
     }
     
+     public function updateDanhMucTongHop($dmthId, array $input)
+    {
+ 
+        // Update : Redis không có update, nếu key tồn tại nó sẽ ghi đè
+        $isNumericId = is_numeric($dmthId);
+        if($isNumericId){
+            //update redis
+            $suffix = $input['khoa'].':'.$dmthId;
+            $this->dmTongHopRedisRepository->hmset($suffix,$input);  
+        }
+    }
+    
+    public function deleteDanhMucTongHop($khoa,$Id)
+    {
+        $this->dmTongHopRedisRepository->deleteDanhMucTongHop($khoa,$Id);
+    }
     
 }

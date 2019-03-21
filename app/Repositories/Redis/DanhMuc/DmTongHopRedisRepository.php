@@ -49,4 +49,10 @@ class DmTongHopRedisRepository extends BaseRedisRepository
         
     // }
     
+    public function deleteDanhMucTongHop($khoa,$Id)
+    {
+        $redis = Redis::connection();
+        $suffix = 'danh_muc_tong_hop:'. $khoa.':'.$Id;
+        $redis->del($suffix);
+    }
 }
