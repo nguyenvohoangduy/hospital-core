@@ -67,6 +67,7 @@ class HanhChinhService {
     )
     {
         $this->hsbaKhoaPhongRepository = $hsbaKhoaPhongRepository;
+        $this->hsbaDonViRepository = $hsbaDonViRepository;
         $this->hsbaRepository = $hsbaRepository;
         $this->vienPhiRepository = $vienPhiRepository;
         $this->phongRepository = $phongRepository;
@@ -97,23 +98,23 @@ class HanhChinhService {
         //9. tạo y lệnh
         $result = DB::transaction(function () use ($request) {
             try {
-                $hsbaKp = $this->hsbaKhoaPhongRepository->getById($request['hsba_khoa_phong_id']);
+                $hsbaKp = $this->hsbaDonViRepository->getById($request['hsba_don_vi_id']);
                 //viện phí ?
                 $request['doi_tuong_benh_nhan'] = $hsbaKp['doi_tuong_benh_nhan'];
                 //0. update hsbakp cu
-                $this->updateOldHSBAKP($request);
+                $this->updateOldHSBADV($request);
                 
                 //1. Tao hsba
                 $request['hsba_id'] = $this->createHSBA($request);
                 
                 //2. Tao hsba_don_vi
-                $request['hsba_khoa_phong_id'] = $this->createHSBADV($request, $hsbaKp);
+                $request['hsba_don_vi'] = $this->createHSBADV($request, $hsbaKp);
                 
                 //3. tạo viện phí mới
                 $request['vien_phi_id'] = $this->createVienPhi($request, $hsbaKp);
                 
                 //4. Tao phieu dieu tri
-                $request['dieu_tri_id'] = $this->createDieuTri($request);
+                //$request['dieu_tri_id'] = $this->createDieuTri($request);
                 
                 //5. Update giuong benh
                 $dataGiuongBenh['benh_nhan_id'] = $request['benh_nhan_id'];
@@ -144,7 +145,7 @@ class HanhChinhService {
     
     private function createPhongGiuongDetail($request) {
         $phongGiuongDetailParams['benh_nhan_id'] = $request['benh_nhan_id'];
-        $phongGiuongDetailParams['hsbadv_id'] = $request['hsba_khoa_phong_id'];
+        $phongGiuongDetailParams['hsbadv_id'] = $request['hsba_don_vi_id'];
         $phongGiuongDetailParams['hsba_id'] = $request['hsba_id'];
         $phongGiuongDetailParams['phong_benh_id'] = $request['phong_benh_id'];
         $phongGiuongDetailParams['giuong_benh_id'] = $request['giuong_id'];
@@ -152,10 +153,10 @@ class HanhChinhService {
         $this->phongGiuongChiTietRepository->create($phongGiuongDetailParams);
     }
     
-    private function updateOldHSBAKP($request) {
+    private function updateOldHSBADV($request) {
         $hsbaKp['khoa_chuyen_den'] = NULL;
         $hsbaKp['phong_chuyen_den'] = NULL;
-        $this->hsbaKhoaPhongRepository->update($request['hsba_khoa_phong_id'], $hsbaKp);
+        $this->hsbaDonViRepository->update($request['hsba_don_vi_id'], $hsbaKp);
     }
 
     private function createPhieuYLenh(array $input) {
