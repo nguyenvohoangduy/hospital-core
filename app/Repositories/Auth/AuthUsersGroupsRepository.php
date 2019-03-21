@@ -48,7 +48,8 @@ class AuthUsersGroupsRepository extends BaseRepositoryV2
                 'phong.khoa_id',
                 'phong.ten_phong',
                 'phong.ma_nhom',
-                'khoa.ten_khoa'
+                'khoa.ten_khoa',
+                'phong.loai_phong'
                 ];
             $result = DB::table('phong')
                     ->whereIn('phong.id',$phongIdArray)
