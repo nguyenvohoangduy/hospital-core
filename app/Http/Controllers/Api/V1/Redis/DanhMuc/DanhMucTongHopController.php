@@ -61,20 +61,6 @@ class DanhMucTongHopController extends APIController
         return $this->respond([]);
     }
     
-    public function updateDanhMucTongHop($Id, Request $request)
-    {
-        try {
-            $isNumericId = is_numeric($Id);
-            $input = $request->all();
-            
-            if($isNumericId) {
-                $this->danhmucTongHopRedisService->updateDanhMucTongHop($input);
-            } else {
-                $this->setStatusCode(400);
-            }
-        } catch (\Exception $ex) {
-            return $ex;
-        }
-    }
+  
    
 }

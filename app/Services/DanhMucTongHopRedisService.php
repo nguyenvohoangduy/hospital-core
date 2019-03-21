@@ -76,12 +76,5 @@ class DanhMucTongHopRedisService {
   
     }
     
-    public function updateDanhMucTongHop(array $input)
-    {
-        $suffix = $input['khoa'].':'.$input['id'];
-     
-        
-        $this->dmTongHopRedisRepository->hmset($suffix,$input);         
-    }
     
 }
