@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\PhongKham;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\V1\APIController;
 use App\Services\HsbaKhoaPhongService;
+use App\Services\HsbaDonViService;
 use App\Services\HsbaPhongKhamService;
 use App\Services\SttPhongKhamService;
 use App\Services\DieuTriService;
@@ -13,15 +14,18 @@ use App\Services\PhacDoDieuTriService;
 use App\Services\PhieuYLenhService;
 use App\Services\DanhMucDichVuService;
 use App\Services\DanhMucThuocVatTuService;
+use App\Services\MauHoiBenhService;
 use App\Services\TheKhoService;
 use Validator;
 use App\Http\Requests\UploadFileFormRequest;
+use App\Http\Requests\MauHoiBenhFormRequest;
 
 class PhongKhamController extends APIController
 {
     public function __construct
     (
         HsbaKhoaPhongService $hsbaKhoaPhongService, 
+        HsbaDonViService $hsbaDonViService,
         HsbaPhongKhamService $hsbaPhongKhamService,
         SttPhongKhamService $sttPhongKhamService, 
         DieuTriService $dieuTriService, 
@@ -31,10 +35,12 @@ class PhongKhamController extends APIController
         PhieuYLenhService $phieuYLenhService,
         DanhMucDichVuService $dmdvService,
         DanhMucThuocVatTuService $dmTvtService,
+        MauHoiBenhService $mauHoiBenhService,
         TheKhoService $theKhoService
     )
     {
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
+        $this->hsbaDonViService = $hsbaDonViService;
         $this->hsbaPhongKhamService = $hsbaPhongKhamService;
         $this->sttPhongKhamService = $sttPhongKhamService;
         $this->dieuTriService = $dieuTriService;
@@ -44,18 +50,19 @@ class PhongKhamController extends APIController
         $this->phieuYLenhService = $phieuYLenhService;
         $this->dmdvService = $dmdvService;
         $this->dmTvtService = $dmTvtService;
+        $this->mauHoiBenhService = $mauHoiBenhService;
         $this->theKhoService = $theKhoService;
     }
     
-    public function update($hsbaKhoaPhongId, Request $request)
+    public function update($hsbaDonViId, Request $request)
     {
         try {
-            $isNumeric = is_numeric($hsbaKhoaPhongId);
+            $isNumeric = is_numeric($hsbaDonViId);
             
             if($isNumeric) {
                 $input = $request->all();
                 
-                $data = $this->hsbaKhoaPhongService->update($hsbaKhoaPhongId, $input);
+                $data = $this->hsbaDonViService->update($hsbaDonViId, $input);
                 if($data['status'] === 'error') {
                     $this->setStatusCode($data['statusCode']);
                 }
@@ -250,10 +257,10 @@ class PhongKhamController extends APIController
         return $this->respond($data);
     }
     
-    public function batDauKham($hsbaKhoaPhongId)
+    public function batDauKham($hsbaDonViId)
     {
-        if(is_numeric($hsbaKhoaPhongId)) {
-            $this->hsbaKhoaPhongService->batDauKham($hsbaKhoaPhongId);
+        if(is_numeric($hsbaDonViId)) {
+            $this->hsbaDonViService->batDauKham($hsbaDonViId);
             $this->setStatusCode(204);
         } else {
             $this->setStatusCode(400);
@@ -303,14 +310,14 @@ class PhongKhamController extends APIController
         return $this->respond($data);
     }    
     
-    public function updateHsbaPhongKham($hsbaKhoaPhongId, UploadFileFormRequest $request)
+    public function updateHsbaPhongKham($hsbaDonViId, UploadFileFormRequest $request)
     {
         try {
-            $isNumeric = is_numeric($hsbaKhoaPhongId);
+            $isNumeric = is_numeric($hsbaDonViId);
             
             if($isNumeric) {
                 $input = $request->all();
-                $data = $this->hsbaPhongKhamService->update($hsbaKhoaPhongId, $input);
+                $data = $this->hsbaPhongKhamService->update($hsbaDonViId, $input);
                 if($data['status'] === 'error') {
                     $this->setStatusCode($data['statusCode']);
                 }
@@ -441,6 +448,38 @@ class PhongKhamController extends APIController
         return $this->respond($data);
     } 
     
+    public function createMauHoiBenh(MauHoiBenhFormRequest $request) {
+        $input = $request->all();
+        $this->mauHoiBenhService->create($input);
+    }
+    
+    public function getMauHoiBenhByChucNangAndUserId($chucNang, $userId)
+    {
+        $isNumeric = is_numeric($userId);
+
+        if($isNumeric) {
+            $data = $this->mauHoiBenhService->getMauHoiBenhByChucNangAndUserId($chucNang, $userId);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
+    
+    public function getMauHoiBenhById($id)
+    {
+        $isNumeric = is_numeric($id);
+
+        if($isNumeric) {
+            $data = $this->mauHoiBenhService->getById($id);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+
+        return $this->respond($data);
+    }
     public function searchThuocVatTuByKhoId($khoId, $keyword)
     {
         if($keyword) {

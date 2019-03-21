@@ -16,7 +16,7 @@ class HsbaPhongKhamService {
         $this->hsbaPhongKhamRepository = $hsbaPhongKhamRepository;
     }
     
-    public function update($hsbaKhoaPhongId, array $params)
+    public function update($hsbaDonViId, array $params)
     {
         // Get Data Benh Vien Thiet Lap
         if(empty($params['benh_vien_id'])) $params['benh_vien_id'] = 1;
@@ -69,7 +69,7 @@ class HsbaPhongKhamService {
             $params['upload_file_hoi_benh'] = NULL;
         }
         
-        $this->hsbaPhongKhamRepository->update($hsbaKhoaPhongId, $params);
+        $this->hsbaPhongKhamRepository->update($hsbaDonViId, $params);
         $data = [
             'status'    => 'success'
         ];
