@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 use App\Services\HanhChinhService;
 use App\Services\DieuTriService;
 use App\Services\HsbaKhoaPhongService;
+use App\Services\HsbaDonViService;
 use App\Http\Controllers\Api\V1\APIController;
 use Carbon\Carbon;
 
@@ -12,12 +13,14 @@ class HanhChinhController extends APIController {
     public function __construct(
         HanhChinhService $hanhChinhService,
         DieuTriService $dieuTriService,
-        HsbaKhoaPhongService $hsbaKhoaPhongService
+        HsbaKhoaPhongService $hsbaKhoaPhongService,
+        HsbaDonViService $hsbaDonViService
     )
     {
         $this->hanhChinhService = $hanhChinhService;
         $this->dieuTriService = $dieuTriService;
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
+        $this->hsbaDonViService = $hsbaDonViService;
     }
     
     public function luuNhapKhoa(Request $request)
@@ -58,7 +61,7 @@ class HanhChinhController extends APIController {
         
         try 
         {
-            $listBenhNhan = $this->hsbaKhoaPhongService->getListPhongHanhChinh($benhVienId, $khoaId, $phongId, $limit, $page, $options);
+            $listBenhNhan = $this->hsbaDonViService->getListPhongHanhChinh($benhVienId, $khoaId, $phongId, $limit, $page, $options);
             $this->setStatusCode(200);
             return $this->respond($listBenhNhan);
         } catch (\Exception $ex) {
@@ -71,7 +74,7 @@ class HanhChinhController extends APIController {
     public function getPhongChoByHsbaId($hsbaId, $phongId)
     {
         if(is_numeric($hsbaId)) {
-            $data = $this->hsbaKhoaPhongService->getPhongChoByHsbaId($hsbaId, $phongId);
+            $data = $this->hsbaDonViService->getPhongChoByHsbaId($hsbaId, $phongId);
             return $this->respond($data);
         } else {
             $this->setStatusCode(400);
