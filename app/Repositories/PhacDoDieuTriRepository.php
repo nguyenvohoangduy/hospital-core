@@ -21,6 +21,7 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
     const Y_LENH_TEXT_VAT_TU = 'VẬT TƯ';
     
     const LOAI_CAN_LAM_SANG = 1;
+    const HOAT_CHAT = 'HC';
     
     public function getModel()
     {
@@ -32,8 +33,9 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
         $arrXetNghiem = [];
         $arrChanDoanHinhAnh = [];
         $arrChuyenKhoa = [];
-        $arrThuoc = [];
-        $arrVatTu = [];
+        // $arrThuoc = [];
+        // $arrVatTu = [];
+        $arrHoatChat = [];
         $dataPddt = [];
         $dataPddt['icd10id'] = $input['icd10id']; 
         $dataPddt['loai_nhom'] = $input['loai_nhom']; 
@@ -51,11 +53,14 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
             if($arrTemp[0] == self::Y_LENH_CODE_CHUYEN_KHOA) {
                 $arrChuyenKhoa[] = $arr[0];
             }
-            if($arrTemp[0] == self::Y_LENH_CODE_THUOC) {
-                $arrThuoc[] = $arr[0];
-            }
-            if($arrTemp[0] == self::Y_LENH_CODE_VAT_TU) {
-                $arrVatTu[] = $arr[0];
+            // if($arrTemp[0] == self::Y_LENH_CODE_THUOC) {
+            //     $arrThuoc[] = $arr[0];
+            // }
+            // if($arrTemp[0] == self::Y_LENH_CODE_VAT_TU) {
+            //     $arrVatTu[] = $arr[0];
+            // }
+            if($arrTemp[0] == self::HOAT_CHAT) {
+                $arrHoatChat[] = $arr[0];
             }
         }
         
@@ -65,10 +70,12 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
             $dataPddt['chan_doan_hinh_anh'] = implode(',', $arrChanDoanHinhAnh);
         if(count($arrChuyenKhoa) > 0)
             $dataPddt['chuyen_khoa'] = implode(',', $arrChuyenKhoa);
-        if(count($arrThuoc) > 0)
-            $dataPddt['thuoc'] = implode(',', $arrThuoc);
-        if(count($arrVatTu) > 0)
-            $dataPddt['vat_tu'] = implode(',', $arrVatTu);
+        // if(count($arrThuoc) > 0)
+        //     $dataPddt['thuoc'] = implode(',', $arrThuoc);
+        // if(count($arrVatTu) > 0)
+        //     $dataPddt['vat_tu'] = implode(',', $arrVatTu);
+        if(count($arrHoatChat) > 0)
+            $dataPddt['hoat_chat'] = implode(',', $arrHoatChat);
             
         $this->create($dataPddt);
     }
@@ -109,7 +116,7 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
             'phac_do_dieu_tri.xet_nghiem',
             'phac_do_dieu_tri.chan_doan_hinh_anh',
             'phac_do_dieu_tri.chuyen_khoa',
-            'phac_do_dieu_tri.thuoc',
+            'phac_do_dieu_tri.hoat_chat',
             'phac_do_dieu_tri.vat_tu',
             'phac_do_dieu_tri.loai_nhom',
             'icd10.icd10code',
@@ -125,9 +132,10 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
                 $arrChuyenKhoa = $obj->chuyen_khoa ? explode(',', $obj->chuyen_khoa) : [];
                 $listId = array_merge($listId, $arrXetNghiem, $arrChanDoanHinhAnh, $arrChuyenKhoa); 
             } else {
-                $arrThuoc = $obj->thuoc ? explode(',', $obj->thuoc) : []; 
-                $arrVatTu = $obj->vat_tu ? explode(',', $obj->vat_tu) : []; 
-                $listId = array_merge($listId, $arrThuoc, $arrVatTu); 
+                // $arrThuoc = $obj->thuoc ? explode(',', $obj->thuoc) : []; 
+                // $arrVatTu = $obj->vat_tu ? explode(',', $obj->vat_tu) : []; 
+                $arrHoatChat = $obj->hoat_chat ? explode(',', $obj->hoat_chat) : []; 
+                $listId = array_merge($listId, $arrHoatChat); 
             }
         }
         
@@ -143,8 +151,9 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
         $arrXetNghiem = [];
         $arrChanDoanHinhAnh = [];
         $arrChuyenKhoa = [];
-        $arrThuoc = [];
-        $arrVatTu = [];
+        // $arrThuoc = [];
+        // $arrVatTu = [];
+        $arrHoatChat = [];
         $dataPddt = [];
         
         foreach($input['data'] as $item) {
@@ -160,11 +169,14 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
             if($arrTemp[0] == self::Y_LENH_CODE_CHUYEN_KHOA) {
                 $arrChuyenKhoa[] = $arr[0];
             }
-            if($arrTemp[0] == self::Y_LENH_CODE_THUOC) {
-                $arrThuoc[] = $arr[0];
-            }
-            if($arrTemp[0] == self::Y_LENH_CODE_VAT_TU) {
-                $arrVatTu[] = $arr[0];
+            // if($arrTemp[0] == self::Y_LENH_CODE_THUOC) {
+            //     $arrThuoc[] = $arr[0];
+            // }
+            // if($arrTemp[0] == self::Y_LENH_CODE_VAT_TU) {
+            //     $arrVatTu[] = $arr[0];
+            // }
+            if($arrTemp[0] == self::HOAT_CHAT) {
+                $arrHoatChat[] = $arr[0];
             }
         }
         
@@ -174,10 +186,12 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
             $dataPddt['chan_doan_hinh_anh'] = implode(',', $arrChanDoanHinhAnh);
         if(count($arrChuyenKhoa) > 0)
             $dataPddt['chuyen_khoa'] = implode(',', $arrChuyenKhoa);
-        if(count($arrThuoc) > 0)
-            $dataPddt['thuoc'] = implode(',', $arrThuoc);
-        if(count($arrVatTu) > 0)
-            $dataPddt['vat_tu'] = implode(',', $arrVatTu);
+        // if(count($arrThuoc) > 0)
+        //     $dataPddt['thuoc'] = implode(',', $arrThuoc);
+        // if(count($arrVatTu) > 0)
+        //     $dataPddt['vat_tu'] = implode(',', $arrVatTu);
+        if(count($arrHoatChat) > 0)
+            $dataPddt['hoat_chat'] = implode(',', $arrHoatChat);
             
         $pddt->update($dataPddt);
     }
@@ -190,7 +204,7 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
             'phac_do_dieu_tri.xet_nghiem',
             'phac_do_dieu_tri.chan_doan_hinh_anh',
             'phac_do_dieu_tri.chuyen_khoa',
-            'phac_do_dieu_tri.thuoc',
+            'phac_do_dieu_tri.hoat_chat',
             'phac_do_dieu_tri.vat_tu',
             'phac_do_dieu_tri.loai_nhom',
             'icd10.icd10code',
@@ -204,7 +218,7 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
                                 ->get($column); 
           
         $listIdCls = [];
-        $listIdTvt = [];
+        $listIdHc = [];
         $data = [];
         if($result) {
             foreach($result as $obj) {
@@ -214,75 +228,20 @@ class PhacDoDieuTriRepository extends BaseRepositoryV2
                     $arrChuyenKhoa = $obj->chuyen_khoa ? explode(',', $obj->chuyen_khoa) : [];
                     $listIdCls = array_merge($listIdCls, $arrXetNghiem, $arrChanDoanHinhAnh, $arrChuyenKhoa);
                 } else {
-                    $arrThuoc = $obj->thuoc ? explode(',', $obj->thuoc) : []; 
-                    $arrVatTu = $obj->vat_tu ? explode(',', $obj->vat_tu) : [];
-                    $listIdTvt = array_merge($listIdTvt, $arrThuoc, $arrVatTu);
+                    // $arrThuoc = $obj->thuoc ? explode(',', $obj->thuoc) : []; 
+                    // $arrVatTu = $obj->vat_tu ? explode(',', $obj->vat_tu) : []; 
+                    $arrHoatChat = $obj->hoat_chat ? explode(',', $obj->hoat_chat) : []; 
+                    $listIdHc = array_merge($listIdHc, $arrHoatChat); 
                 }
             }
             
             $data['listIdCls'] = array_map('intval', $listIdCls);
-            $data['listIdTvt'] = array_map('intval', $listIdTvt);
+            $data['listIdHc'] = array_map('intval', $listIdHc);
             $data['list'] = $result;
         }
         
         return $data;
     }
-    
-//     public function getListPhacDoDieuTri($limit = 100, $page = 1, $keyword = '')
-//     {
-//         $offset = ($page - 1) * $limit;
-        
-//         $query = $this->model;
-        
-//         if($keyword != '') {
-//             $query = $query->where(function($queryAdv) use ($keyword) {
-//                 $upperCase = mb_convert_case($keyword, MB_CASE_UPPER, "UTF-8");
-//                 $lowerCase = mb_convert_case($keyword, MB_CASE_LOWER, "UTF-8");
-//                 $titleCase = mb_convert_case($keyword, MB_CASE_TITLE, "UTF-8");
-//                 $ucfirst = ucfirst($keyword);
-                
-//                 $queryAdv->where('icd10name', 'like', '%'.$upperCase.'%')
-//                         ->orWhere('icd10name', 'like', '%'.$lowerCase.'%')
-//                         ->orWhere('icd10name', 'like', '%'.$titleCase.'%')
-//                         ->orWhere('icd10name', 'like', '%'.$keyword.'%')
-//                         ->orWhere('icd10name', 'like', '%'.$ucfirst.'%')
-//                         ->orWhere('icd10code', 'like', '%'.$upperCase.'%')
-//                         ->orWhere('icd10code', 'like', '%'.$lowerCase.'%')
-//                         ->orWhere('icd10code', 'like', '%'.$titleCase.'%')
-//                         ->orWhere('icd10code', 'like', '%'.$keyword.'%');
-//             });
-//         }
-        
-//         $totalRecord = $query->count();
-//         if($totalRecord) {
-//             $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
-            
-//             $data = $query->orderBy('id', 'asc')
-//                         ->offset($offset)
-//                         ->limit($limit)
-//                         ->get();
-//         } else {
-//             $totalPage = 0;
-//             $data = [];
-//             $page = 0;
-//             $totalRecord = 0;
-//         }
-            
-//         $result = [
-//             'data'          => $data,
-//             'page'          => $page,
-//             'totalPage'     => $totalPage,
-//             'totalRecord'   => $totalRecord
-//         ];
-        
-//         return $result;
-//     }
-    
-//     public function getDataPddtByCode($icd10Code)
-//     {
-//         $result = $this->model->where('icd10code', $icd10Code)->first(); 
-//         return $result;
-//     }
     
     public function saveYLenhGiaiTrinh(array $input)
     {

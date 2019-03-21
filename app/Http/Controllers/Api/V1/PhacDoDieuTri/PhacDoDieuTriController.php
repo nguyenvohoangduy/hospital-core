@@ -79,28 +79,6 @@ class PhacDoDieuTriController extends APIController
         }
     }
     
-    // public function getListPhacDoDieuTri(Request $request)
-    // {
-    //     $limit = $request->query('limit', 100);
-    //     $page = $request->query('page', 1);
-    //     $keyword = $request->query('keyword', '');
-        
-    //     $data = $this->pddtService->getListPhacDoDieuTri($limit, $page, $keyword);
-    //     return $this->respond($data);
-    // }
-    
-    // public function getPddtByCode($icd10Code)
-    // {
-    //     if($icd10Code) {
-    //         $data = $this->pddtService->getPddtByCode($icd10Code);
-    //     } else {
-    //         $this->setStatusCode(400);
-    //         $data = [];
-    //     }
-        
-    //     return $this->respond($data);
-    // }
-    
     public function saveYLenhGiaiTrinh(Request $request)
     {
         try {
