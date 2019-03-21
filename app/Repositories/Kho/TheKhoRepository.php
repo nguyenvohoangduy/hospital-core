@@ -64,10 +64,11 @@ class TheKhoRepository extends BaseRepositoryV2
         if($find) {
             $newKhaDung = $find['sl_kha_dung']-$input['so_luong'];
             $this->model->where('id',$find['id'])->update(['sl_kha_dung' => $newKhaDung]);
-            return $find['id'];
+            $find['sl_kha_dung'] = $newKhaDung;
+            return $find;
         }
         else
-            return 0;
+            return null;
     }
     
     public function getTheKho($khoId,$arrDmtvt)
