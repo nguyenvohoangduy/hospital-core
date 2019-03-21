@@ -6,6 +6,7 @@ use App\Http\Requests\DangKyKhamBenhFormRequest;
 use App\Http\Requests\UpdateHsbaFormRequest;
 use App\Services\SttDonTiepService;
 use App\Services\HsbaKhoaPhongService;
+use App\Services\HsbaDonViService;
 use App\Services\HsbaService;
 use App\Services\BenhNhanServiceV2;
 use App\Services\BhytService;
@@ -19,6 +20,7 @@ class DonTiepController extends APIController
     public function __construct(
         SttDonTiepService $sttDonTiepService, 
         HsbaKhoaPhongService $hsbaKhoaPhongService, 
+        HsbaDonViService $hsbaDonViService,
         HsbaService $hsbaService, 
         BenhNhanServiceV2 $benhNhanService, 
         BhytService $bhytService,
@@ -28,6 +30,7 @@ class DonTiepController extends APIController
     {
         $this->sttDonTiepService = $sttDonTiepService;
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
+        $this->hsbaDonViService = $hsbaDonViService;
         $this->hsbaService = $hsbaService;
         $this->benhNhanService = $benhNhanService;
         $this->bhytService = $bhytService;
@@ -72,7 +75,7 @@ class DonTiepController extends APIController
     public function getByHsbaId($hsbaId, $phongId, $benhVienId) 
     {
         if(is_numeric($hsbaId)) {
-            $data = $this->hsbaKhoaPhongService->getByHsbaId($hsbaId, $phongId, $benhVienId);
+            $data = $this->hsbaDonViService->getByHsbaId($hsbaId, $phongId, $benhVienId);
             if($data['ms_bhyt']) {
                 $input['ms_bhyt'] = $data['ms_bhyt'];
                 $input['vien_phi_id'] = $data['vien_phi_id'];

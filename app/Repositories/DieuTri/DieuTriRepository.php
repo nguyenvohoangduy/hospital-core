@@ -19,10 +19,10 @@ class DieuTriRepository extends BaseRepositoryV2
         return $id;
     }
     
-    public function getDieuTriByHsba_Kp($hsba_khoa_phong_id, $khoa_id, $phong_id)
+    public function getDieuTriByHsbaDv($hsbaDonViId, $khoa_id, $phong_id)
     {
         $where = [
-                ['dieu_tri.hsba_khoa_phong_id', '=', $hsba_khoa_phong_id],
+                ['dieu_tri.hsba_don_vi_id', '=', $hsbaDonViId],
                 ['dieu_tri.khoa_id', '=', $khoa_id],
                 ['dieu_tri.phong_id', '=', $phong_id]
             ];
@@ -39,7 +39,7 @@ class DieuTriRepository extends BaseRepositoryV2
     public function getPhieuDieuTri(array $input)
     {
         $where = [
-            ['hsba_khoa_phong_id', '=', $input['hsba_khoa_phong_id']],    
+            ['hsba_don_vi_id', '=', $input['hsba_don_vi_id']],    
             ['hsba_id', '=', $input['hsba_id']],
             ['benh_nhan_id', '=', $input['benh_nhan_id']],
             ['khoa_id', '=', $input['khoa_id']],
