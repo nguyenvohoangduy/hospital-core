@@ -151,6 +151,13 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::get('getNhomDmById/{id}','DanhMuc\DanhMucController@getNhomDmById');
     	Route::post('createNhomDanhMuc','DanhMuc\DanhMucController@createNhomDanhMuc');
     	Route::post('updateNhomDanhMuc/{id}','DanhMuc\DanhMucController@updateNhomDanhMuc');
+    	
+    	//dmth reids
+    	Route::get('getListDanhMucTongHopRedis','Redis\DanhMuc\DanhMucTongHopController@getListDanhMucTongHop');
+        Route::get('getDmthId/{Khoa}/{Id}','Redis\DanhMuc\DanhMucTongHopController@getDmthById');
+        Route::post('createDMTH','Redis\DanhMuc\DanhMucTongHopController@createDanhMucTongHop');
+    	Route::post('updateDMTH/{Khoa}/{Id}','Redis\DanhMuc\DanhMucTongHopController@updateDanhMucTongHop');
+    	
     });
     
     Route::group(['prefix' => 'nguoidung'], function () {

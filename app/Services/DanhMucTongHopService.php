@@ -6,13 +6,18 @@ use App\Models\Department;
 use App\Http\Resources\DanhMucTongHopResource;
 use App\Http\Resources\HanhChinhResource;
 use App\Repositories\DanhMuc\DanhMucTongHopRepository;
+use App\Repositories\Redis\DanhMuc\DmTongHopRedisRepository as dmTongHopRedisRepository;
+
 use Illuminate\Http\Request;
 use Validator;
 
 class DanhMucTongHopService {
-    public function __construct(DanhMucTongHopRepository $danhMucTongHopRepository)
+    public function __construct(DanhMucTongHopRepository $danhMucTongHopRepository ,   dmTongHopRedisRepository $dmTongHopRedisRepository )
     {
         $this->danhMucTongHopRepository = $danhMucTongHopRepository;
+        
+        $this->dmTongHopRedisRepository = $dmTongHopRedisRepository;
+        $this->dmTongHopRedisRepository->_init();
     }
 
     public function getListNgheNghiep()
@@ -79,7 +84,14 @@ class DanhMucTongHopService {
     public function createDanhMucTongHop(array $input)
     {
         $id = $this->danhMucTongHopRepository->createDanhMucTongHop($input);
+       
+     
+        //insert redis
+        $suffix = $input['khoa'].':'.$id;
+        $this->dmTongHopRedisRepository->hmset($suffix,$input);            
+        
         return $id;
+        
     }
     
     public function updateDanhMucTongHop($dmthId, array $input)

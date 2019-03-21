@@ -140,4 +140,11 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
     {
         $this->model->destroy($dmthId);
     }
+    
+    
+    public function getAllDmTH()
+    {
+        $result = $this->model->orderBy('id','ASC')->get();
+        return $result;
+    }
 }

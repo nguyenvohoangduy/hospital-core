@@ -17,8 +17,8 @@ class HsbaKhoaPhongRepository extends BaseRedisRepository
         parent::init(HsbaKhoaPhongRedis::class, HsbaKhoaPhongRedis::HASH_TYPE, $prefix);
     }
     
-    public function getList($phongId, $benhVienId, $startDay, $endDay, $limit = 20, $page = 1, $keyword = '', $status = -1) {
-        $suffix = '*2018-11-18';
+    public function getList( $phongId, $benhVienId, $startDay, $endDay, $limit = 20, $page = 1, $keyword = '', $status = -1) {
+        $suffix = '*2019-01-14';
         return $this->find($suffix);
          
     }
