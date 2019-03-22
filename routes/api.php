@@ -228,7 +228,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::group(['prefix' => 'noitru'], function () {
         Route::post('luuNhapKhoa','NoiTru\NoiTruController@luuNhapKhoa');
         Route::get('list/{benhVienId}','NoiTru\NoiTruController@getListPhongNoiTru');
-        Route::get('getByHsbaId/{hsbaId}/{phongId}','NoiTru\NoiTruController@getByHsbaId');
+        Route::get('getByHsbaId/{hsbaId}/{phongId}/{benhVienId}','NoiTru\NoiTruController@getByHsbaId');
     });
     
     Route::group(['prefix' => 'hsbadv'], function () {

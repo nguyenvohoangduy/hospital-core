@@ -51,10 +51,10 @@ class NoiTruController extends APIController {
         return $this->respond($listBenhNhan);
     }
     
-    public function getByHsbaId($hsbaId, $phongId)
+    public function getByHsbaId($hsbaId, $phongId, $benhVienId)
     {
         if(is_numeric($hsbaId)) {
-            $data = $this->hsbaDonViService->getByHsbaId($hsbaId, $phongId);
+            $data = $this->hsbaDonViService->getByHsbaId($hsbaId, $phongId, $benhVienId);
             return $this->respond($data);
         } else {
             $this->setStatusCode(400);
