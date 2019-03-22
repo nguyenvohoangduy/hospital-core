@@ -13,11 +13,9 @@ use Validator;
 use Redis;
 
 class DanhMucTongHopService {
-    public function __construct(DanhMucTongHopRepository $danhMucTongHopRepository,DanhMucTongHopRedisRepository $dmTongHopRedisRepository  )
+    public function __construct(DanhMucTongHopRepository $danhMucTongHopRepository, DanhMucTongHopRedisRepository $dmTongHopRedisRepository)
     {
         $this->danhMucTongHopRepository = $danhMucTongHopRepository;
-     
-          
         $this->dmTongHopRedisRepository = $dmTongHopRedisRepository;
         $this->dmTongHopRedisRepository->_init();
     }
@@ -43,28 +41,10 @@ class DanhMucTongHopService {
         };
     }
     
-    
-    public function getListNgheNghiep()
-    {
-        return DanhMucTongHopResource::collection(
-           $this->danhMucTongHopRepository->getListNgheNghiep()
-        );
+    public function getAllByKhoa($khoa) {
+        return $this->danhMucTongHopRepository->getAllByKhoa($khoa);
     }
 
-    public function getListDanToc()
-    {
-        return DanhMucTongHopResource::collection(
-           $this->danhMucTongHopRepository->getListDanToc()
-        );
-    }
-    
-    public function getListQuocTich()
-    {
-        return DanhMucTongHopResource::collection(
-           $this->danhMucTongHopRepository->getListQuocTich()
-        );
-    }
-    
     public function getListTinh()
     {
         return HanhChinhResource::collection(
@@ -86,28 +66,22 @@ class DanhMucTongHopService {
         );
     }
     
-    public function getListDanhMucTongHop($limit, $page, $dienGiai, $khoa)
+    public function getPartial($limit, $page, $dienGiai, $khoa)
     {
-        $data = $this->danhMucTongHopRepository->getListDanhMucTongHop($limit, $page, $dienGiai, $khoa);
+        $data = $this->danhMucTongHopRepository->getPartial($limit, $page, $dienGiai, $khoa);
         return $data;
     }
     
-    public function getDmthById($dmthId)
+    public function find($id)
     {
-        $data = $this->danhMucTongHopRepository->getDataDanhMucTongHopById($dmthId);
+        $data = $this->danhMucTongHopRepository->find($id);
         
         return $data;
     }
     
-    public function getDanhMucTongHopTheoKhoa($khoa, $limit, $page) {
-        $data = $this->danhMucTongHopRepository->getDanhMucTongHopTheoKhoa($khoa, $limit, $page);
-        
-        return $data;
-    }
-    
-    public function createDanhMucTongHop(array $input)
+    public function create(array $input)
     {
-        $id = $this->danhMucTongHopRepository->createDanhMucTongHop($input);
+        $id = $this->danhMucTongHopRepository->create($input);
        
         $isNumericId = is_numeric($id);
         if($isNumericId){
@@ -115,43 +89,36 @@ class DanhMucTongHopService {
             $suffix = $input['khoa'].':'.$id;
             $this->dmTongHopRedisRepository->hmset($suffix,$input);  
         }
-              
         return $id;
     }
     
-    public function updateDanhMucTongHop($dmthId, array $input)
+    public function update($id, array $input)
     {
-        $this->danhMucTongHopRepository->updateDanhMucTongHop($dmthId, $input);
+        $this->danhMucTongHopRepository->update($id, $input);
         
         // Update : Redis không có update, nếu key tồn tại nó sẽ ghi đè
-        $isNumericId = is_numeric($dmthId);
+        $isNumericId = is_numeric($id);
         if($isNumericId){
             //update redis
-            $suffix = $input['khoa'].':'.$dmthId;
+            $suffix = $input['khoa'].':'.$id;
             $this->dmTongHopRedisRepository->hmset($suffix,$input);  
         }
     }
     
-    public function deleteDanhMucTongHop($dmthId)
+    public function delete($id)
     {
-       
-        //delete database
-        $this->danhMucTongHopRepository->deleteDanhMucTongHop($dmthId);
-        
+        $this->danhMucTongHopRepository->delete($id);
          // //delete redis
-        $data = $this->danhMucTongHopRepository->getById($dmthId);
+        $data = $this->danhMucTongHopRepository->getById($id);
   
         $redis = Redis::connection();
-        $suffix = 'danh_muc_tong_hop:'. $data['khoa'].':'.$dmthId;
+        $suffix = 'danh_muc_tong_hop:'. $data['khoa'].':'.$id;
         $redis->del($suffix);
-        
-        
-      
     }
     
-    public function getAllKhoa()
+    public function getAllColumnKhoa()
     {
-        $data = $this->danhMucTongHopRepository->getAllKhoa();
+        $data = $this->danhMucTongHopRepository->getAllColumnKhoa();
         return $data;
     }
 

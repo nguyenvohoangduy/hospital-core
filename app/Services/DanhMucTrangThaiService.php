@@ -14,99 +14,42 @@ class DanhMucTrangThaiService {
     {
         $this->danhMucTrangThaiRepository = $danhMucTrangThaiRepository;
     }
-
-    public function getListLoaiVienPhi()
-    {
-        return DanhMucTrangThaiResource::collection(
-           $this->danhMucTrangThaiRepository->getListLoaiVienPhi()
-        );
+    
+    public function getAllByKhoa($khoa) {
+        return $this->danhMucTrangThaiRepository->getAllByKhoa($khoa);
     }
 
-    public function getListDoiTuongBenhNhan()
+    public function getPartial($limit, $page, $dienGiai, $khoa)
     {
-        return DanhMucTrangThaiResource::collection(
-           $this->danhMucTrangThaiRepository->getListDoiTuongBenhNhan()
-        );
-    }
-    
-    public function getListKetQuaDieuTri()
-    {
-        return DanhMucTrangThaiResource::collection(
-           $this->danhMucTrangThaiRepository->getListKetQuaDieuTri()
-        );
-    }
-    
-    public function getListGiaiPhauBenh()
-    {
-        return DanhMucTrangThaiResource::collection(
-           $this->danhMucTrangThaiRepository->getListGiaiPhauBenh()
-        );
-    }
-    
-    public function getListXuTri()
-    {
-        return DanhMucTrangThaiResource::collection(
-           $this->danhMucTrangThaiRepository->getListXuTri()
-        );
-    }
-    
-    public function getListDanhMucTrangThai($limit, $page, $dienGiai, $khoa)
-    {
-        $data = $this->danhMucTrangThaiRepository->getListDanhMucTrangThai($limit, $page, $dienGiai, $khoa);
+        $data = $this->danhMucTrangThaiRepository->getPartial($limit, $page, $dienGiai, $khoa);
         return $data;
     }
     
-    public function getDanhMucTrangThaiTheoKhoa($khoa, $limit, $page) {
-        $data = $this->danhMucTrangThaiRepository->getDanhMucTrangThaiTheoKhoa($khoa, $limit, $page);
-        return $data;
+    public function find($id)
+    {
+        return $this->danhMucTrangThaiRepository->find($id);
     }
     
-    public function getDanhMucTrangThaiById($id)
+    public function create(array $input)
     {
-        return $this->danhMucTrangThaiRepository->getDanhMucTrangThaiById($id);
-    }
-    
-    public function createDanhMucTrangThai(array $input)
-    {
-        $id = $this->danhMucTrangThaiRepository->createDanhMucTrangThai($input);
+        $id = $this->danhMucTrangThaiRepository->create($input);
         return $id;
     }
     
-    public function updateDanhMucTrangThai($dmttId, array $input)
+    public function update($id, array $input)
     {
-        $result = $this->danhMucTrangThaiRepository->updateDanhMucTrangThai($dmttId, $input);
+        $result = $this->danhMucTrangThaiRepository->update($id, $input);
         return $result;
     }
     
-    public function deleteDanhMucTrangThai($dmttId)
+    public function delete($id)
     {
-        $this->danhMucTrangThaiRepository->deleteDanhMucTrangThai($dmttId);
+        $this->danhMucTrangThaiRepository->delete($id);
     }
     
-    public function getAllKhoa()
+    public function getAllColumnKhoa()
     {
-        $data = $this->danhMucTrangThaiRepository->getAllKhoa();
+        $data = $this->danhMucTrangThaiRepository->getAllColumnKhoa();
         return $data;
-    }
-    
-    public function getListHinhThucChuyen()
-    {
-        return DanhMucTrangThaiResource::collection(
-           $this->danhMucTrangThaiRepository->getListHinhThucChuyen()
-        );
-    }
-    
-    public function getListTuyen()
-    {
-        return DanhMucTrangThaiResource::collection(
-           $this->danhMucTrangThaiRepository->getListTuyen()
-        );
-    }
-    
-    public function getListLyDoChuyen()
-    {
-        return DanhMucTrangThaiResource::collection(
-           $this->danhMucTrangThaiRepository->getListLyDoChuyen()
-        );
     }
 }

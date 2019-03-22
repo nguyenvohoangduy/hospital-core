@@ -10,54 +10,23 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
     {
         return DanhMucTrangThai::class;
     }    
-
-    public function getListLoaiVienPhi()
-    {
-        $dataSet = $this->model
-                ->where('khoa','loai_vien_phi')
-                ->get();
-        return $dataSet;    
-    }
     
-    public function getListDoiTuongBenhNhan()
-    {
-        $dataSet = $this->model
-                ->where('khoa','doi_tuong_benh_nhan')
+    public function getAllByKhoa($khoa) {
+        $data   = $this->model
+                ->where('khoa', $khoa)
                 ->get();
-        return $dataSet;    
-    }
-    
-    public function getListKetQuaDieuTri()
-    {
-        $dataSet = $this->model
-                ->where('khoa','ket_qua_dieu_tri')
-                ->get();
-        return $dataSet;    
-    }
-    
-    public function getListGiaiPhauBenh()
-    {
-        $dataSet = $this->model
-                ->where('khoa','giai_phau_benh')
-                ->get();
-        return $dataSet;    
-    }
-    
-    public function getListXuTri()
-    {
-        $dataSet = $this->model
-                ->where('khoa','xu_tri')
-                ->get();
-        return $dataSet;    
+        return $data; 
     }
 
-    public function getListDanhMucTrangThai($limit = 100, $page = 1, $dienGiai = '', $khoa = '') {
+    public function getPartial($limit = 100, $page = 1, $dienGiai = NULL, $khoa = NULL) {
         $offset = ($page - 1) * $limit;
+        $query = $this->model->where('id', '>', 0);
         
-        $query = $this->model
-                ->where('dien_giai', 'like', '%' . $dienGiai . '%');
-                
-        if($khoa != "") {
+        if($dienGiai != NULL) {
+            $query->where('dien_giai', 'like', '%' . $dienGiai . '%');
+        }
+        
+        if($khoa != NULL) {
             $query->where('khoa', $khoa);
         }        
         
@@ -87,85 +56,36 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
         return $result;
     }
     
-    public function getDanhMucTrangThaiTheoKhoa($khoa, $limit = 100, $page = 1) {
-        $offset = ($page - 1) * $limit;
-        $query = $this->model->where('khoa', $khoa);
-        $totalRecord = $query->count();
-        
-        if($totalRecord) {
-            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
-            
-            $data = $query->orderBy('id', 'desc')
-                        ->offset($offset)
-                        ->limit($limit)
-                        ->get();
-        } else {
-            $totalPage = 0;
-            $data = [];
-            $page = 0;
-            $totalRecord = 0;
-        }
-        
-        $result = [
-            'data'          => $data,
-            'page'          => $page,
-            'totalPage'     => $totalPage,
-            'totalRecord'   => $totalRecord
-        ];
-        
-        return $result;
-    }
-    
-    public function createDanhMucTrangThai(array $input)
+    public function create(array $input)
     {
         $id = $this->model->create($input)->id;
         return $id;
     }
     
-    public function updateDanhMucTrangThai($dmttId, array $input)
+    public function update($id, array $input)
     {
-        $dmth = $this->model->findOrFail($dmttId);
-		$dmth->update($input);
+        $result = $this->find($id);
+        if ($result) {
+            $result->update($input);
+        }
     }
     
-    public function deleteDanhMucTrangThai($dmttId)
+    public function delete($id)
     {
-        $this->model->destroy($dmttId);
+        $result = $this->find($id);
+        if ($result) {
+            $result->destroy($id);
+        }
     }
     
-    public function getDanhMucTrangThaiById($id) {
+    public function find($id) {
         $result = $this->model->find($id); 
         return $result; 
     }
     
-    public function getAllKhoa()
+    public function getAllColumnKhoa()
     {
         $result = $this->model->select('khoa')->distinct()->get();
         return $result;
     }
-    
-    public function getListHinhThucChuyen()
-    {
-        $dataSet = $this->model
-                ->where('khoa', 'hinh_thuc_chuyen')
-                ->get();
-        return $dataSet;    
-    }
-    
-    public function getListTuyen()
-    {
-        $dataSet = $this->model
-                ->where('khoa','tuyen')
-                ->get();
-        return $dataSet;    
-    }
-    
-    public function getListLyDoChuyen()
-    {
-        $dataSet = $this->model
-                ->where('khoa','ly_do_chuyen')
-                ->get();
-        return $dataSet;    
-    }
-
 }
