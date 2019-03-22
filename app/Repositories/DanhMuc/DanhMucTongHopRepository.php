@@ -166,5 +166,11 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
         return $result;
     }
 
+    
+    public function getAllDmTH()
+    {
+        $result = $this->model->orderBy('id','ASC')->get();
+        return $result;
+    }
 
 }

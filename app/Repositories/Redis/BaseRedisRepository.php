@@ -24,7 +24,7 @@ abstract class BaseRedisRepository
         $this->model = app()->make(
            $model
         );
-        // var_dump($this->model);die;
+        var_dump($this->model);
     }
     
     /**

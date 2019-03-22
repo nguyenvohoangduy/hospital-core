@@ -6,18 +6,17 @@ use App\Models\Department;
 use App\Http\Resources\DanhMucTongHopResource;
 use App\Http\Resources\HanhChinhResource;
 use App\Repositories\DanhMuc\DanhMucTongHopRepository;
-use App\Repositories\Redis\DanhMuc\DmTongHopRedisRepository as dmTongHopRedisRepository;
-use App\Repositories\DanhMucTongHopRepository as dmTongHopRepository;
+use App\Repositories\Redis\DanhMuc\DanhMucTongHopRepository as DanhMucTongHopRedisRepository;
 
 use Illuminate\Http\Request;
 use Validator;
 use Redis;
 
 class DanhMucTongHopService {
-    public function __construct(DanhMucTongHopRepository $danhMucTongHopRepository ,   dmTongHopRedisRepository $dmTongHopRedisRepository , dmTongHopRepository $dmTongHopRepository )
+    public function __construct(DanhMucTongHopRepository $danhMucTongHopRepository ,   DanhMucTongHopRedisRepository $dmTongHopRedisRepository  )
     {
         $this->danhMucTongHopRepository = $danhMucTongHopRepository;
-        $this->dmTongHopRepository = $dmTongHopRepository;
+     
           
         $this->dmTongHopRedisRepository = $dmTongHopRedisRepository;
         $this->dmTongHopRedisRepository->_init();
@@ -26,7 +25,7 @@ class DanhMucTongHopService {
    //push data redis hash
     public function pushToRedis()
     {
-        $data = $this->dmTongHopRepository->getAllDmTH();
+        $data = $this->danhMucTongHopRepository->getAllDmTH();
         foreach($data as $item){
             $arrayItem=[
                 'id'                => (string)$item->id ?? '-',
