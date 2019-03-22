@@ -13,7 +13,7 @@ use Validator;
 use Redis;
 
 class DanhMucTongHopService {
-    public function __construct(DanhMucTongHopRepository $danhMucTongHopRepository ,   DanhMucTongHopRedisRepository $dmTongHopRedisRepository  )
+    public function __construct(DanhMucTongHopRepository $danhMucTongHopRepository ,DanhMucTongHopRedisRepository $dmTongHopRedisRepository  )
     {
         $this->danhMucTongHopRepository = $danhMucTongHopRepository;
      
@@ -25,7 +25,7 @@ class DanhMucTongHopService {
    //push data redis hash
     public function pushToRedis()
     {
-        $data = $this->danhMucTongHopRepository->getAllDmTH();
+        $data = $this->danhMucTongHopRepository->geyAll();
         foreach($data as $item){
             $arrayItem=[
                 'id'                => (string)$item->id ?? '-',
@@ -139,7 +139,7 @@ class DanhMucTongHopService {
         $this->danhMucTongHopRepository->deleteDanhMucTongHop($dmthId);
         
          // //delete redis
-        $data = $this->danhMucTongHopRepository->getDataDMTHById($dmthId);
+        $data = $this->danhMucTongHopRepository->getById($dmthId);
   
         $redis = Redis::connection();
         $suffix = 'danh_muc_tong_hop:'. $data['khoa'].':'.$dmthId;
