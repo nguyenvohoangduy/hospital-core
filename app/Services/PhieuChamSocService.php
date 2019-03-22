@@ -10,20 +10,20 @@ class PhieuChamSocService
         $this->phieuChamSocRepository = $phieuChamSocRepository;
     }
     
-    public function createPhieuChamSoc($input)
+    public function create($input)
     {
-        $this->phieuChamSocRepository->createPhieuChamSoc($input);
+        $this->phieuChamSocRepository->create($input);
     }
     
-    public function getPhieuChamSocById($id)
+    public function getById($id)
     {
-        $data = $this->phieuChamSocRepository->getPhieuChamSocById($id);
+        $data = $this->phieuChamSocRepository->getById($id);
         return $data;
     }
     
-    public function getListPhieuChamSocByHsbaId($hsbaId)
+    public function getAllByDieuTriId($dieuTriId)
     {
-        $data = $this->phieuChamSocRepository->getListPhieuChamSocByHsbaId($hsbaId);
+        $data = $this->phieuChamSocRepository->getAllByDieuTriId($dieuTriId);
         return $data;
     }     
     

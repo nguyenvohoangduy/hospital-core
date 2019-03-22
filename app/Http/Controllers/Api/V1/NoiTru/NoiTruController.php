@@ -11,14 +11,12 @@ use Carbon\Carbon;
 class NoiTruController extends APIController {
     public function __construct(
         HsbaDonViService $hsbaDonViService,
-        PhieuChamSocService $phieuChamSocService,
         VienPhiService $vienPhiService
     )
     {
         $this->hsbaDonViService = $hsbaDonViService;
-        $this->phieuChamSocService = $phieuChamSocService;
         $this->vienPhiService = $vienPhiService;
-    }
+    )
     
     public function getListPhongNoiTru($benhVienId, Request $request)
     {
@@ -76,23 +74,4 @@ class NoiTruController extends APIController {
             return $this->respond([]);
         }
     }
-    
-    public function createPhieuChamSoc(Request $request)
-    {
-        $input = $request->all();
-        $this->phieuChamSocService->createPhieuChamSoc($input);
-        return $this->respond([]);
-    }
-    
-    public function getPhieuChamSocById($id)
-    {
-        $data = $this->phieuChamSocService->getPhieuChamSocById($id);
-        return $this->respond($data);
-    } 
-    
-    public function getListPhieuChamSocByHsbaId($hsbaId)
-    {
-        $data = $this->phieuChamSocService->getListPhieuChamSocByHsbaId($hsbaId);
-        return $this->respond($data);
-    }     
 }
