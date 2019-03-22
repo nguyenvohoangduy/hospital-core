@@ -14,28 +14,11 @@ class DanhMucTongHopService {
     {
         $this->danhMucTongHopRepository = $danhMucTongHopRepository;
     }
-
-    public function getListNgheNghiep()
-    {
-        return DanhMucTongHopResource::collection(
-           $this->danhMucTongHopRepository->getListNgheNghiep()
-        );
+    
+    public function getAllByKhoa($khoa) {
+        return $this->danhMucTrangThaiRepository->getAllByKhoa($khoa);
     }
 
-    public function getListDanToc()
-    {
-        return DanhMucTongHopResource::collection(
-           $this->danhMucTongHopRepository->getListDanToc()
-        );
-    }
-    
-    public function getListQuocTich()
-    {
-        return DanhMucTongHopResource::collection(
-           $this->danhMucTongHopRepository->getListQuocTich()
-        );
-    }
-    
     public function getListTinh()
     {
         return HanhChinhResource::collection(
@@ -57,44 +40,38 @@ class DanhMucTongHopService {
         );
     }
     
-    public function getListDanhMucTongHop($limit, $page, $dienGiai, $khoa)
+    public function getPartial($limit, $page, $dienGiai, $khoa)
     {
-        $data = $this->danhMucTongHopRepository->getListDanhMucTongHop($limit, $page, $dienGiai, $khoa);
+        $data = $this->danhMucTongHopRepository->getPartial($limit, $page, $dienGiai, $khoa);
         return $data;
     }
     
-    public function getDmthById($dmthId)
+    public function find($id)
     {
-        $data = $this->danhMucTongHopRepository->getDataDanhMucTongHopById($dmthId);
+        $data = $this->danhMucTongHopRepository->find($id);
         
         return $data;
     }
     
-    public function getDanhMucTongHopTheoKhoa($khoa, $limit, $page) {
-        $data = $this->danhMucTongHopRepository->getDanhMucTongHopTheoKhoa($khoa, $limit, $page);
-        
-        return $data;
-    }
-    
-    public function createDanhMucTongHop(array $input)
+    public function create(array $input)
     {
-        $id = $this->danhMucTongHopRepository->createDanhMucTongHop($input);
+        $id = $this->danhMucTongHopRepository->create($input);
         return $id;
     }
     
-    public function updateDanhMucTongHop($dmthId, array $input)
+    public function update($id, array $input)
     {
-        $this->danhMucTongHopRepository->updateDanhMucTongHop($dmthId, $input);
+        $this->danhMucTongHopRepository->update($id, $input);
     }
     
-    public function deleteDanhMucTongHop($dmthId)
+    public function delete($id)
     {
-        $this->danhMucTongHopRepository->deleteDanhMucTongHop($dmthId);
+        $this->danhMucTongHopRepository->delete($id);
     }
     
-    public function getAllKhoa()
+    public function getAllColumnKhoa()
     {
-        $data = $this->danhMucTongHopRepository->getAllKhoa();
+        $data = $this->danhMucTongHopRepository->getAllColumnKhoa();
         return $data;
     }
 
