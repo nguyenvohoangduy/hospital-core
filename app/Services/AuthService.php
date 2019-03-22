@@ -50,4 +50,9 @@ class AuthService {
         $khoaPhong = $this->authUsersGroupsRepository->getKhoaPhongByUserId($id,$benhVienId);
         return $khoaPhong;
     }
+    
+    public function updateLoginDate($email)
+    {
+        $this->authUsersRepository->updateLoginDate($email);
+    }
 }
