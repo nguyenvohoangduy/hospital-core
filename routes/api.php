@@ -288,15 +288,15 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });
     
     Route::group(['prefix' => 'dieutri'], function () {
-		Route::get('getListByHsbaId/{hsbaId}','DieuTri\DieuTriController@getListByHsbaId');
-		Route::get('getDetailById/{id}','DieuTri\DieuTriController@getDetailById');
-		Route::post('createPhieuDieuTri','DieuTri\DieuTriController@createPhieuDieuTri');
+		Route::get('getListByHsbaId/{hsbaId}','DieuTri\DieuTriController@getAllByHsbaId');
+		Route::get('getDetailById/{id}','DieuTri\DieuTriController@getById');
+		Route::post('createPhieuDieuTri','DieuTri\DieuTriController@create');
     });
     
     Route::group(['prefix' => 'phieuchamsoc'], function () {
-        Route::post('createPhieuChamSoc','PhieuChamSoc\PhieuChamSocController@createPhieuChamSoc');
-        Route::get('getPhieuChamSocById/{id}','PhieuChamSoc\PhieuChamSocController@getPhieuChamSocById');
-        Route::get('getListPhieuChamSocByDieuTriId/{dieuTriId}','PhieuChamSoc\PhieuChamSocController@getListPhieuChamSocByDieuTriId');
+        Route::post('createPhieuChamSoc','PhieuChamSoc\PhieuChamSocController@create');
+        Route::get('getPhieuChamSocById/{id}','PhieuChamSoc\PhieuChamSocController@getById');
+        Route::get('getListPhieuChamSocByDieuTriId/{dieuTriId}','PhieuChamSoc\PhieuChamSocController@getAllByDieuTriId');
     });    
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {

@@ -13,20 +13,20 @@ class PhieuChamSocController extends APIController {
         $this->phieuChamSocService = $phieuChamSocService;
     }
 
-    public function createPhieuChamSoc(Request $request)
+    public function create(Request $request)
     {
         $input = $request->all();
         $this->phieuChamSocService->create($input);
         return $this->respond([]);
     }
     
-    public function getPhieuChamSocById($id)
+    public function getById($id)
     {
         $data = $this->phieuChamSocService->getById($id);
         return $this->respond($data);
     } 
     
-    public function getListPhieuChamSocByDieuTriId($dieuTriId)
+    public function getAllByDieuTriId($dieuTriId)
     {
         $data = $this->phieuChamSocService->getAllByDieuTriId($dieuTriId);
         return $this->respond($data);

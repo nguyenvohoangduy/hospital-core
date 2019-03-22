@@ -63,13 +63,13 @@ class DieuTriRepository extends BaseRepositoryV2
             return null;
     }
     
-    function getDetailById($id)
+    function getById($id)
     {
         $data = $this->model->findOrFail($id);
         return $data;
     }
     
-    function getListByHsbaId($hsbaId)
+    function getAllByHsbaId($hsbaId)
     {
         $column=[
             'dieu_tri.*',

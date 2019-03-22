@@ -452,15 +452,15 @@ class DieuTriService
         $this->dieuTriRepository->createDataDieuTri($input);
     }
     
-    public function getDetailById($id)
+    public function getById($id)
     {
-        $data = $this->dieuTriRepository->getDetailById($id);
+        $data = $this->dieuTriRepository->getById($id);
         return $data;
     }
     
-    public function getListByHsbaId($hsbaId)
+    public function getAllByHsbaId($hsbaId)
     {
-        $data = $this->dieuTriRepository->getListByHsbaId($hsbaId);
+        $data = $this->dieuTriRepository->getAllByHsbaId($hsbaId);
         return $data;
     }     
 }

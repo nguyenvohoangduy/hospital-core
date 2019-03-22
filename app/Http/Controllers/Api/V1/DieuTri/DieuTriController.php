@@ -13,22 +13,22 @@ class DieuTriController extends APIController {
         $this->dieuTriService = $dieuTriService;
     }
     
-    public function createPhieuDieuTri(Request $request)
+    public function create(Request $request)
     {
         $input = $request->all();
         $this->dieuTriService->create($input);
         return $this->respond([]);
     }
     
-    public function getDetailById($id)
+    public function getById($id)
     {
-        $data = $this->dieuTriService->getDetailById($id);
+        $data = $this->dieuTriService->getById($id);
         return $this->respond($data);
     } 
     
-    public function getListByHsbaId($hsbaId)
+    public function getAllByHsbaId($hsbaId)
     {
-        $data = $this->dieuTriService->getListByHsbaId($hsbaId);
+        $data = $this->dieuTriService->getAllByHsbaId($hsbaId);
         return $this->respond($data);
     }     
 }

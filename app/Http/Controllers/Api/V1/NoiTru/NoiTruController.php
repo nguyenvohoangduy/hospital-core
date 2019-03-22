@@ -16,7 +16,7 @@ class NoiTruController extends APIController {
     {
         $this->hsbaDonViService = $hsbaDonViService;
         $this->vienPhiService = $vienPhiService;
-    )
+    }
     
     public function getListPhongNoiTru($benhVienId, Request $request)
     {
