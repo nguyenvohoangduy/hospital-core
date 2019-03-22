@@ -82,8 +82,8 @@ class SamplePatientController extends APIController
             $messageObjects = $this->sqsRepo->pop(8);
              
             // foreach ($messageObjects as $k => $messageObject) {
-              
-              
+                
+                
             //     $messageBody = $messageObject->getBody();
             //     //echo "<hr/><br/>";
             //     //var_dump($messageObject->message['Body']);

@@ -13,7 +13,7 @@ use Validator;
 use Redis;
 
 class DanhMucTongHopService {
-    public function __construct(DanhMucTongHopRepository $danhMucTongHopRepository ,DanhMucTongHopRedisRepository $dmTongHopRedisRepository  )
+    public function __construct(DanhMucTongHopRepository $danhMucTongHopRepository,DanhMucTongHopRedisRepository $dmTongHopRedisRepository  )
     {
         $this->danhMucTongHopRepository = $danhMucTongHopRepository;
      
