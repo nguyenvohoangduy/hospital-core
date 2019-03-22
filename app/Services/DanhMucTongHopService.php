@@ -16,7 +16,7 @@ class DanhMucTongHopService {
     }
     
     public function getAllByKhoa($khoa) {
-        return $this->danhMucTrangThaiRepository->getAllByKhoa($khoa);
+        return $this->danhMucTongHopRepository->getAllByKhoa($khoa);
     }
 
     public function getListTinh()
