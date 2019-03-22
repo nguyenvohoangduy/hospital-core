@@ -3,18 +3,15 @@ namespace App\Http\Controllers\Api\V1\NoiTru;
 
 use Illuminate\Http\Request;
 use App\Services\HsbaDonViService;
-use App\Services\PhieuChamSocService;
 use App\Http\Controllers\Api\V1\APIController;
 use Carbon\Carbon;
 
 class NoiTruController extends APIController {
     public function __construct(
-        HsbaDonViService $hsbaDonViService,
-        PhieuChamSocService $phieuChamSocService
+        HsbaDonViService $hsbaDonViService
     )
     {
         $this->hsbaDonViService = $hsbaDonViService;
-        $this->phieuChamSocService = $phieuChamSocService;
     }
     
     public function getListPhongNoiTru($benhVienId, Request $request)
@@ -64,23 +61,4 @@ class NoiTruController extends APIController {
             return $this->respond([]);
         }
     }
-    
-    public function createPhieuChamSoc(Request $request)
-    {
-        $input = $request->all();
-        $this->phieuChamSocService->createPhieuChamSoc($input);
-        return $this->respond([]);
-    }
-    
-    public function getPhieuChamSocById($id)
-    {
-        $data = $this->phieuChamSocService->getPhieuChamSocById($id);
-        return $this->respond($data);
-    } 
-    
-    public function getListPhieuChamSocByHsbaId($hsbaId)
-    {
-        $data = $this->phieuChamSocService->getListPhieuChamSocByHsbaId($hsbaId);
-        return $this->respond($data);
-    }     
 }

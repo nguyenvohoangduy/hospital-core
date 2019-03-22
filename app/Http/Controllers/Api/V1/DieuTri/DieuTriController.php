@@ -16,7 +16,7 @@ class DieuTriController extends APIController {
     public function createPhieuDieuTri(Request $request)
     {
         $input = $request->all();
-        $this->dieuTriService->createPhieuDieuTri($input);
+        $this->dieuTriService->create($input);
         return $this->respond([]);
     }
     

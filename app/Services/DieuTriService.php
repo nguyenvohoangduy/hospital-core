@@ -447,7 +447,7 @@ class DieuTriService
         return $result;
     }
     
-    public function createPhieuDieuTri($input)
+    public function create($input)
     {
         $this->dieuTriRepository->createDataDieuTri($input);
     }
