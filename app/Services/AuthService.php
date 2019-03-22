@@ -51,8 +51,8 @@ class AuthService {
         return $khoaPhong;
     }
     
-    public function updateLoginDate($email)
+    public function updateLastVisit($email)
     {
-        $this->authUsersRepository->updateLoginDate($email);
+        $this->authUsersRepository->updateLastVisit($email);
     }
 }

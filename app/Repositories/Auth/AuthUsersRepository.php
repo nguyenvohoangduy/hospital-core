@@ -148,7 +148,7 @@ class AuthUsersRepository extends BaseRepositoryV2
         DB::table('auth_users')->where('id',$input['id'])->update(['password' => $password]);
     }  
     
-    public function updateLoginDate($email)
+    public function updateLastVisit($email)
     {
         $loginDate = date('m/d/Y h:i:s a', time());
         DB::table('auth_users')->where('email',$email)->update(['login_at' => $loginDate]);
