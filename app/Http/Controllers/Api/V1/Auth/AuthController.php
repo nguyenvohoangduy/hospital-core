@@ -55,6 +55,7 @@ class AuthController extends APIController
                 'msg' => 'Invalid Credentials.'
             ], 400);
         }
+        $this->authService->updateLoginDate($request->email);
         $data = $this->authService->getUserRolesByEmail($request->email);
         $userName = $this->authService->getUserNameByEmail($request->email);
         $extraPayload = array(
