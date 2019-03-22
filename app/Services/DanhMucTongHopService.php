@@ -6,15 +6,44 @@ use App\Models\Department;
 use App\Http\Resources\DanhMucTongHopResource;
 use App\Http\Resources\HanhChinhResource;
 use App\Repositories\DanhMuc\DanhMucTongHopRepository;
+use App\Repositories\Redis\DanhMuc\DanhMucTongHopRepository as DanhMucTongHopRedisRepository;
+
 use Illuminate\Http\Request;
 use Validator;
+use Redis;
 
 class DanhMucTongHopService {
-    public function __construct(DanhMucTongHopRepository $danhMucTongHopRepository)
+    public function __construct(DanhMucTongHopRepository $danhMucTongHopRepository,DanhMucTongHopRedisRepository $dmTongHopRedisRepository  )
     {
         $this->danhMucTongHopRepository = $danhMucTongHopRepository;
+     
+          
+        $this->dmTongHopRedisRepository = $dmTongHopRedisRepository;
+        $this->dmTongHopRedisRepository->_init();
     }
 
+   //push data redis hash
+    public function pushToRedis()
+    {
+        $data = $this->danhMucTongHopRepository->getAll();
+        foreach($data as $item){
+            $arrayItem=[
+                'id'                => (string)$item->id ?? '-',
+                'khoa'              => (string)$item->khoa ?? '-',
+                'gia_tri'           => (string)$item->gia_tri ?? '-', 
+                'dien_giai'         => $item->dien_giai ?? '-',
+                'parent_id'         => (string)$item->parent_id ?? '-',
+            ];   
+            
+            // $this->dmTongHopRedisRepository->_init();
+            //$suffix = $item['nhom_danh_muc_id'].':'.$item['id'].":".Util::convertViToEn(str_replace(" ","_",strtolower($item['ten'])));
+           
+            $suffix = $item['khoa'].':'.$item['id'];
+            $this->dmTongHopRedisRepository->hmset($suffix,$arrayItem);            
+        };
+    }
+    
+    
     public function getListNgheNghiep()
     {
         return DanhMucTongHopResource::collection(
@@ -79,17 +108,45 @@ class DanhMucTongHopService {
     public function createDanhMucTongHop(array $input)
     {
         $id = $this->danhMucTongHopRepository->createDanhMucTongHop($input);
+       
+        $isNumericId = is_numeric($id);
+        if($isNumericId){
+            //insert redis
+            $suffix = $input['khoa'].':'.$id;
+            $this->dmTongHopRedisRepository->hmset($suffix,$input);  
+        }
+              
         return $id;
     }
     
     public function updateDanhMucTongHop($dmthId, array $input)
     {
         $this->danhMucTongHopRepository->updateDanhMucTongHop($dmthId, $input);
+        
+        // Update : Redis không có update, nếu key tồn tại nó sẽ ghi đè
+        $isNumericId = is_numeric($dmthId);
+        if($isNumericId){
+            //update redis
+            $suffix = $input['khoa'].':'.$dmthId;
+            $this->dmTongHopRedisRepository->hmset($suffix,$input);  
+        }
     }
     
     public function deleteDanhMucTongHop($dmthId)
     {
+       
+        //delete database
         $this->danhMucTongHopRepository->deleteDanhMucTongHop($dmthId);
+        
+         // //delete redis
+        $data = $this->danhMucTongHopRepository->getById($dmthId);
+  
+        $redis = Redis::connection();
+        $suffix = 'danh_muc_tong_hop:'. $data['khoa'].':'.$dmthId;
+        $redis->del($suffix);
+        
+        
+      
     }
     
     public function getAllKhoa()
