@@ -25,7 +25,7 @@ class DanhMucTongHopService {
    //push data redis hash
     public function pushToRedis()
     {
-        $data = $this->danhMucTongHopRepository->geyAll();
+        $data = $this->danhMucTongHopRepository->getAll();
         foreach($data as $item){
             $arrayItem=[
                 'id'                => (string)$item->id ?? '-',

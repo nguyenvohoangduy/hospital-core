@@ -167,7 +167,7 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
     }
 
     
-    public function geyAll()
+    public function getAll()
     {
         $result = $this->model->orderBy('id','ASC')->get();
         return $result;
