@@ -7,20 +7,44 @@ use App\Http\Resources\DanhMucTongHopResource;
 use App\Http\Resources\HanhChinhResource;
 use App\Repositories\DanhMuc\DanhMucTongHopRepository;
 use App\Repositories\Redis\DanhMuc\DmTongHopRedisRepository as dmTongHopRedisRepository;
+use App\Repositories\DanhMucTongHopRepository as dmTongHopRepository;
 
 use Illuminate\Http\Request;
 use Validator;
 use Redis;
 
 class DanhMucTongHopService {
-    public function __construct(DanhMucTongHopRepository $danhMucTongHopRepository ,   dmTongHopRedisRepository $dmTongHopRedisRepository )
+    public function __construct(DanhMucTongHopRepository $danhMucTongHopRepository ,   dmTongHopRedisRepository $dmTongHopRedisRepository , dmTongHopRepository $dmTongHopRepository )
     {
         $this->danhMucTongHopRepository = $danhMucTongHopRepository;
-        
+        $this->dmTongHopRepository = $dmTongHopRepository;
+          
         $this->dmTongHopRedisRepository = $dmTongHopRedisRepository;
         $this->dmTongHopRedisRepository->_init();
     }
 
+   //push data redis hash
+    public function pushToRedis()
+    {
+        $data = $this->dmTongHopRepository->getAllDmTH();
+        foreach($data as $item){
+            $arrayItem=[
+                'id'                => (string)$item->id ?? '-',
+                'khoa'              => (string)$item->khoa ?? '-',
+                'gia_tri'           => (string)$item->gia_tri ?? '-', 
+                'dien_giai'         => $item->dien_giai ?? '-',
+                'parent_id'         => (string)$item->parent_id ?? '-',
+            ];   
+            
+            // $this->dmTongHopRedisRepository->_init();
+            //$suffix = $item['nhom_danh_muc_id'].':'.$item['id'].":".Util::convertViToEn(str_replace(" ","_",strtolower($item['ten'])));
+           
+            $suffix = $item['khoa'].':'.$item['id'];
+            $this->dmTongHopRedisRepository->hmset($suffix,$arrayItem);            
+        };
+    }
+    
+    
     public function getListNgheNghiep()
     {
         return DanhMucTongHopResource::collection(

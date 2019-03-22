@@ -30,25 +30,7 @@ class DmTongHopRedisRepository extends BaseRedisRepository
 
         return $this->find($suffix); 
     }
-    
-    // // insert 
-    // public function createDanhMucTongHop(array $input)
-    // {
-    //     // $id = $this->model->create($input)->id;
-    //     // return $id;
-        
-    //     //HASH
-    //     $redis = Redis::connection();
-    //     $test = array(
-    //         'name' => 'Iván',
-    //         'lastname' => 'Sánchez'
-    //     );
-    //     $redis->hmset('me', $test);
-    //     $me = $redis->hgetall('me');
-    //     var_dump($me);die;
-        
-    // }
-    
+  
     public function deleteDanhMucTongHop($khoa,$Id)
     {
         $redis = Redis::connection();
