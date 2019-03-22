@@ -3,16 +3,20 @@ namespace App\Http\Controllers\Api\V1\NoiTru;
 
 use Illuminate\Http\Request;
 use App\Services\HsbaDonViService;
+use App\Services\PhieuChamSocService;
+use App\Services\VienPhiService;
 use App\Http\Controllers\Api\V1\APIController;
 use Carbon\Carbon;
 
 class NoiTruController extends APIController {
     public function __construct(
-        HsbaDonViService $hsbaDonViService
+        HsbaDonViService $hsbaDonViService,
+        VienPhiService $vienPhiService
     )
     {
         $this->hsbaDonViService = $hsbaDonViService;
-    }
+        $this->vienPhiService = $vienPhiService;
+    )
     
     public function getListPhongNoiTru($benhVienId, Request $request)
     {
@@ -55,6 +59,15 @@ class NoiTruController extends APIController {
     {
         if(is_numeric($hsbaId)) {
             $data = $this->hsbaDonViService->getByHsbaId($hsbaId, $phongId, $benhVienId);
+            if($data['ms_bhyt']) {
+                $input['ms_bhyt'] = $data['ms_bhyt'];
+                $input['vien_phi_id'] = $data['vien_phi_id'];
+                $input['loai_vien_phi'] = $data['loai_vien_phi'];
+                //cần check thời hạn thẻ BHYT
+                $data['muc_huong'] = $this->vienPhiService->getMucHuong($input);
+            } else {
+                $data['muc_huong'] = 0;
+            }
             return $this->respond($data);
         } else {
             $this->setStatusCode(400);

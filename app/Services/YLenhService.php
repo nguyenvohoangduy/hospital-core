@@ -100,12 +100,12 @@ class YLenhService {
         $result = DB::transaction(function() use ($input) {
             try {
                 //get phieu_dieu_tri_id
-                $phieuDieuTri = $this->dieuTriService->getPhieuDieuTri($input);
-                if($phieuDieuTri) {
-                    $input['dieu_tri_id'] = $phieuDieuTri->id;   
-                } else {
-                    return false;
-                }
+                // $phieuDieuTri = $this->dieuTriService->getPhieuDieuTri($input);
+                // if($phieuDieuTri) {
+                //     $input['dieu_tri_id'] = $phieuDieuTri->id;   
+                // } else {
+                //     return false;
+                // }
                 
                 //insert table phieu_y_lenh
                 $phieuYLenhId = $this->createPhieuYLenh($input);
