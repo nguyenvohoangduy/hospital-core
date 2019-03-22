@@ -94,7 +94,6 @@ class DanhMucTongHopService {
         }
               
         return $id;
-        
     }
     
     public function updateDanhMucTongHop($dmthId, array $input)
