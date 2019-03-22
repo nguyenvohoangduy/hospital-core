@@ -100,7 +100,6 @@ class PhongBenhController extends APIController
     
     public function getLoaiPhongByKhoaId($khoaId) {
         $isNumericId = is_numeric($khoaId);
-        
         if($isNumericId) {
             $data = $this->phongBenhService->getLoaiPhongByKhoaId($khoaId);
         } else {

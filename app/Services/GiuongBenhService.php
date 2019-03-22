@@ -6,7 +6,7 @@ use App\Repositories\GiuongBenhRepository;
 use Illuminate\Http\Request;
 use Validator;
 
-class PhongBenhService {
+class GiuongBenhService {
   
     public function __construct(GiuongBenhRepository $giuongBenhRepository)
     {

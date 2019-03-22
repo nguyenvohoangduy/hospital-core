@@ -25,9 +25,9 @@ class MauHoiBenhService {
         return $data;
     }
     
-    public function getById($id)
+    public function getById($id, $chucNang)
     {
-        $data = $this->mauHoiBenhRepository->getById($id);
+        $data = $this->mauHoiBenhRepository->getById($id, $chucNang);
         return $data;
     }
 }

@@ -48,6 +48,9 @@ class HanhChinhService {
     const TRANG_THAI = 0;
     const PHONG_OC = 7;
     
+    // Loai Benh An
+    const LOAI_BENH_AN_NOI_TRU = 1;
+    
     public function __construct(
         HsbaKhoaPhongRepository $hsbaKhoaPhongRepository,
         HsbaRepository $hsbaRepository, 
@@ -67,6 +70,7 @@ class HanhChinhService {
     )
     {
         $this->hsbaKhoaPhongRepository = $hsbaKhoaPhongRepository;
+        $this->hsbaDonViRepository = $hsbaDonViRepository;
         $this->hsbaRepository = $hsbaRepository;
         $this->vienPhiRepository = $vienPhiRepository;
         $this->phongRepository = $phongRepository;
@@ -97,23 +101,23 @@ class HanhChinhService {
         //9. tạo y lệnh
         $result = DB::transaction(function () use ($request) {
             try {
-                $hsbaKp = $this->hsbaKhoaPhongRepository->getById($request['hsba_khoa_phong_id']);
+                $hsbaDv = $this->hsbaDonViRepository->getById($request['hsba_don_vi_id']);
                 //viện phí ?
                 $request['doi_tuong_benh_nhan'] = $hsbaKp['doi_tuong_benh_nhan'];
                 //0. update hsbakp cu
-                $this->updateOldHSBAKP($request);
+                $this->updateOldHSBADV($request);
                 
                 //1. Tao hsba
                 $request['hsba_id'] = $this->createHSBA($request);
                 
                 //2. Tao hsba_don_vi
-                $request['hsba_khoa_phong_id'] = $this->createHSBADV($request, $hsbaKp);
+                $request['hsba_don_vi'] = $this->createHSBADV($request, $hsbaDv);
                 
                 //3. tạo viện phí mới
-                $request['vien_phi_id'] = $this->createVienPhi($request, $hsbaKp);
+                //$request['vien_phi_id'] = $this->createVienPhi($request, $hsbaDv);
                 
                 //4. Tao phieu dieu tri
-                $request['dieu_tri_id'] = $this->createDieuTri($request);
+                //$request['dieu_tri_id'] = $this->createDieuTri($request);
                 
                 //5. Update giuong benh
                 $dataGiuongBenh['benh_nhan_id'] = $request['benh_nhan_id'];
@@ -144,7 +148,7 @@ class HanhChinhService {
     
     private function createPhongGiuongDetail($request) {
         $phongGiuongDetailParams['benh_nhan_id'] = $request['benh_nhan_id'];
-        $phongGiuongDetailParams['hsbadv_id'] = $request['hsba_khoa_phong_id'];
+        $phongGiuongDetailParams['hsbadv_id'] = $request['hsba_don_vi_id'];
         $phongGiuongDetailParams['hsba_id'] = $request['hsba_id'];
         $phongGiuongDetailParams['phong_benh_id'] = $request['phong_benh_id'];
         $phongGiuongDetailParams['giuong_benh_id'] = $request['giuong_id'];
@@ -152,10 +156,10 @@ class HanhChinhService {
         $this->phongGiuongChiTietRepository->create($phongGiuongDetailParams);
     }
     
-    private function updateOldHSBAKP($request) {
+    private function updateOldHSBADV($request) {
         $hsbaKp['khoa_chuyen_den'] = NULL;
         $hsbaKp['phong_chuyen_den'] = NULL;
-        $this->hsbaKhoaPhongRepository->update($request['hsba_khoa_phong_id'], $hsbaKp);
+        $this->hsbaDonViRepository->update($request['hsba_don_vi_id'], $hsbaKp);
     }
 
     private function createPhieuYLenh(array $input) {
@@ -196,23 +200,23 @@ class HanhChinhService {
         $this->yLenhRepository->saveYLenh($yLenhParams);
     }
     
-    private function createHSBADV(array $request, $hsbaKp) {
+    private function createHSBADV(array $request, $hsbaDv) {
         $hsbaDonViParams = null;
-        $hsbaDonViParams['doi_tuong_benh_nhan'] = $hsbaKp['doi_tuong_benh_nhan'];
-        $hsbaDonViParams['yeu_cau_kham_id'] = $hsbaKp['yeu_cau_kham_id'];
-        $hsbaDonViParams['benh_vien_id'] = $hsbaKp['benh_vien_id'];
+        $hsbaDonViParams['doi_tuong_benh_nhan'] = $hsbaDv['doi_tuong_benh_nhan'];
+        $hsbaDonViParams['yeu_cau_kham_id'] = $hsbaDv['yeu_cau_kham_id'];
+        $hsbaDonViParams['benh_vien_id'] = $hsbaDv['benh_vien_id'];
         $hsbaDonViParams['khoa_hien_tai'] = $request['khoa_id'];
         
         // //phòng hành chính của khoa chuyển đến
         $phong = $this->phongRepository->getPhongNoiTruByKhoaId($request['khoa_id']);
         $hsbaDonViParams['phong_hien_tai'] = $phong->id;
-        $hsbaDonViParams['loai_benh_an'] = $hsbaKp['loai_benh_an'];
+        $hsbaDonViParams['loai_benh_an'] = self::LOAI_BENH_AN_NOI_TRU;
         $hsbaDonViParams['trang_thai'] = self::TT_CHO_DIEU_TRI; //0: chờ điều trị
         $hsbaDonViParams['hsba_id'] = $request['hsba_id'];
-        $hsbaDonViParams['benh_nhan_id'] = $hsbaKp['benh_nhan_id'];
+        $hsbaDonViParams['benh_nhan_id'] = $hsbaDv['benh_nhan_id'];
         $hsbaDonViParams['hinh_thuc_vao_vien_id'] = self::NHAN_TU_KKB; //2: nhận từ khoa khám bệnh
-        $hsbaDonViParams['vien_phi_id'] = $hsbaKp['vien_phi_id'];
-        $hsbaDonViParams['bhyt_id'] = $hsbaKp['bhyt_id'];
+        $hsbaDonViParams['vien_phi_id'] = $hsbaDv['vien_phi_id'];
+        $hsbaDonViParams['bhyt_id'] = $hsbaDv['bhyt_id'];
         $hsbaDonViParams['giuong_hien_tai'] = $request['giuong_id'];
         $hsbaDonViParams['thoi_gian_vao_vien'] = Carbon::now()->toDateTimeString();
         // //kiểm tra phòng chuyển đến có phải là phòng điều trị -> nếu đúng -> lấy trạng thái = 2: đang điều trị ngược lại 0: đang chờ điều trị
