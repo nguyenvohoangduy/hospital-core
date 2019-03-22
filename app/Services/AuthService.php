@@ -50,4 +50,9 @@ class AuthService {
         $khoaPhong = $this->authUsersGroupsRepository->getKhoaPhongByUserId($id,$benhVienId);
         return $khoaPhong;
     }
+    
+    public function updateLastVisit($email)
+    {
+        $this->authUsersRepository->updateLastVisit($email);
+    }
 }
