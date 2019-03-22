@@ -153,10 +153,10 @@ class PhongKhamController extends APIController
     public function saveYLenh(Request $request)
     {
         $input = $request->all();
-        $phieuDieuTri = $this->dieuTriService->getPhieuDieuTri($input);
+        // $phieuDieuTri = $this->dieuTriService->getPhieuDieuTri($input);
         
-        if($phieuDieuTri) {
-            $input['dieu_tri_id'] = $phieuDieuTri->id;
+        if($input['data']) {
+            // $input['dieu_tri_id'] = $phieuDieuTri->id;
             $bool = $this->yLenhService->saveYLenh($input);
             
             if($bool) {
