@@ -135,15 +135,17 @@ class DanhMucTongHopService {
     
     public function deleteDanhMucTongHop($dmthId)
     {
-        // //delete redis
+       
+        //delete database
+        $this->danhMucTongHopRepository->deleteDanhMucTongHop($dmthId);
+        
+         // //delete redis
         $data = $this->danhMucTongHopRepository->getDataDMTHById($dmthId);
   
         $redis = Redis::connection();
         $suffix = 'danh_muc_tong_hop:'. $data['khoa'].':'.$dmthId;
         $redis->del($suffix);
         
-        //delete database
-        $this->danhMucTongHopRepository->deleteDanhMucTongHop($dmthId);
         
       
     }
