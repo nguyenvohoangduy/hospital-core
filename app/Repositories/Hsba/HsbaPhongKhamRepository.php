@@ -28,20 +28,20 @@ class HsbaPhongKhamRepository extends BaseRepositoryV2
         $this->model->create($attributes);
     }
     
-    public function update($hsbaKhoaPhongId, array $params)
+    public function update($hsbaDonViId, array $params)
     {
         $where = [
-            ['hsba_khoa_phong_id', '=', $hsbaKhoaPhongId],
+            ['hsba_don_vi_id', '=', $hsbaDonViId],
             ['phong_id', '=', $params['phong_id']]
         ];
         $model = $this->model->where($where);
 		$model->update($params);
     }
     
-    public function getByHsbaKpId($hsbaKhoaPhongId)
+    public function getByHsbaDvId($hsbaDonViId)
     {
         $where = [
-            ['hsba_khoa_phong_id', '=', $hsbaKhoaPhongId],
+            ['hsba_don_vi_id', '=', $hsbaDonViId],
         ];
         
         $result = $this->model->where($where)->get()->first();

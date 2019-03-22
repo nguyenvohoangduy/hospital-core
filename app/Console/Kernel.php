@@ -14,7 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\PushDmtvt::class,
-        Commands\PushTvtTheoKho::class
+        Commands\PushTvtTheoKho::class,
+        Commands\CacheDmth::class
     ];
 
     /**
