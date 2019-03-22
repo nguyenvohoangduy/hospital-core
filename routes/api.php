@@ -285,6 +285,18 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::post('updateNhaCungCap/{id}','NhaCungCap\NhaCungCapController@updateNhaCungCap');
      	Route::delete('deleteNhaCungCap/{id}','NhaCungCap\NhaCungCapController@deleteNhaCungCap');
  		Route::get('getNhaCungCapById/{id}','NhaCungCap\NhaCungCapController@getNhaCungCapById');
+    });
+    
+    Route::group(['prefix' => 'dieutri'], function () {
+		Route::get('getListByHsbaId/{hsbaId}','DieuTri\DieuTriController@getAllByHsbaId');
+		Route::get('getDetailById/{id}','DieuTri\DieuTriController@getById');
+		Route::post('createPhieuDieuTri','DieuTri\DieuTriController@create');
+    });
+    
+    Route::group(['prefix' => 'phieuchamsoc'], function () {
+        Route::post('createPhieuChamSoc','PhieuChamSoc\PhieuChamSocController@create');
+        Route::get('getPhieuChamSocById/{id}','PhieuChamSoc\PhieuChamSocController@getById');
+        Route::get('getListPhieuChamSocByDieuTriId/{dieuTriId}','PhieuChamSoc\PhieuChamSocController@getAllByDieuTriId');
     });    
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {

@@ -295,7 +295,7 @@ class DanhMucThuocVatTuService
                 'index' => [
                     '_index' => 'dmtvt_kho_' . $khoId,
                     '_type' => 'doc',
-                    '_id' => $i
+                    '_id' => $data[$i-1]->id
                 ]
             ];
         
