@@ -56,9 +56,9 @@ class KhoaService {
         $this->khoaRepository->delete($id);
     }
     
-    public function searchPhongByKeywords($keyWords)
+    public function searchByKeywords($keyWords)
     {
-        $data = $this->khoaRepository->searchPhongByKeywords($keyWords);
+        $data = $this->khoaRepository->searchByKeywords($keyWords);
         return $data;
     }  
     

@@ -148,7 +148,7 @@ class KhoaRepository extends BaseRepositoryV2
         }
     }
     
-    public function searchPhongByKeywords($keyWords)
+    public function searchByKeywords($keyWords)
     {
         $data = $this->model
                         ->whereRaw('LOWER(ten_khoa) LIKE ? ',['%'.strtolower($keyWords).'%'])

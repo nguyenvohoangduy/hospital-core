@@ -75,9 +75,9 @@ class KhoaController extends APIController
         return $this->respond([]);        
     }
     
-    public function searchPhongByKeywords($keyWords)
+    public function searchByKeywords($keyWords)
     {
-        $data = $this->khoaService->searchPhongByKeywords($keyWords);
+        $data = $this->khoaService->searchByKeywords($keyWords);
         return $this->respond($data);
     }
     
