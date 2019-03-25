@@ -307,8 +307,8 @@ class PhieuKhoService {
                             } else {
                                 $arrSoLuong = explode('.', $chenhLech);
                                 $soLuongTonKhoChan = $arrSoLuong[0];
-                                $soLuongTonKhoLe1 = 0;
-                                $soLuongTonKhoLe2 = 0;
+                                $soLuongTonKhoLe1 = $itemDataTheKho['sl_ton_kho_le_1'];
+                                $soLuongTonKhoLe2 = $itemDataTheKho['sl_ton_kho_le_2'];
                                 
                                 if(isset($arrSoLuong[1])) {
                                     switch($arrSoLuong[1]) {
