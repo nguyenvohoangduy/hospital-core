@@ -511,10 +511,10 @@ class YLenhRepository extends BaseRepositoryV2
 		return $data;
     }
     
-    public function getByArrayId(array $yLenhId)
+    public function getByArrayId(array $arrayYLenhId)
     {
         $data = $this->model
-            ->whereIn('id',$yLenhId)
+            ->whereIn('id',$arrayYLenhId)
             ->get();
 		return $data;
     }    

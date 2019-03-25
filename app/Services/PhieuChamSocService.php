@@ -27,8 +27,8 @@ class PhieuChamSocService
     {
         $data = $this->phieuChamSocRepository->getAllByDieuTriId($dieuTriId);
         foreach($data as $item){
-            $yLenhThucHien = $item['y_lenh_thuc_hien']?json_decode($item['y_lenh_thuc_hien']):[];
-            $yLenh = $this->yLenhRepository->getByArrayId($yLenhThucHien);
+            $arrayYLenhThucHien = $item['y_lenh_thuc_hien']?json_decode($item['y_lenh_thuc_hien']):[];
+            $yLenh = $this->yLenhRepository->getByArrayId($arrayYLenhThucHien);
             $item['y_lenh']=$yLenh;
         }
         return $data;
