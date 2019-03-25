@@ -148,7 +148,7 @@ class KhoaRepository extends BaseRepositoryV2
         }
     }
     
-    public function searchKhoaByKeywords($keyWords)
+    public function searchPhongByKeywords($keyWords)
     {
         $data = $this->model
                         ->whereRaw('LOWER(ten_khoa) LIKE ? ',['%'.strtolower($keyWords).'%'])
@@ -156,7 +156,7 @@ class KhoaRepository extends BaseRepositoryV2
         return $data;
     } 
     
-    public function getAllKhoaByBenhVienId($benhVienId)
+    public function getAllByBenhVienId($benhVienId)
     {
         $data = $this->model
                     ->where('benh_vien_id', $benhVienId)

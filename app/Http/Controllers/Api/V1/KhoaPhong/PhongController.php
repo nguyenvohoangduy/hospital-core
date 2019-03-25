@@ -75,15 +75,15 @@ class PhongController extends APIController
         return $this->respond([]);        
     }
     
-    public function searchPhongByKeywords($keyWords)
+    public function searchByKeywords($keyWords)
     {
-        $data = $this->phongService->searchPhongByKeywords($keyWords);
+        $data = $this->phongService->searchByKeywords($keyWords);
         return $this->respond($data);
     }
     
-    public function getAllPhongByKhoaId($khoaId)
+    public function getAllByKhoaId($khoaId)
     {
-        $data = $this->phongService->getAllPhongByKhoaId($khoaId);
+        $data = $this->phongService->getAllByKhoaId($khoaId);
         return $this->respond($data);
     }
    

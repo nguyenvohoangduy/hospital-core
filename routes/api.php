@@ -304,8 +304,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::post('create','KhoaPhong\KhoaController@create');
      	Route::post('update/{id}','KhoaPhong\KhoaController@update');
      	Route::delete('delete/{id}','KhoaPhong\KhoaController@delete');
-     	Route::get('getAllKhoaByBenhVienId/{benhVienId}','KhoaPhong\KhoaController@getAllKhoaByBenhVienId');
- 		Route::get('searchKhoaByKeywords/{keyWords}','KhoaPhong\KhoaController@searchKhoaByKeywords');
+     	Route::get('getAllByBenhVienId/{benhVienId}','KhoaPhong\KhoaController@getAllByBenhVienId');
+ 		Route::get('searchByKeywords/{keyWords}','KhoaPhong\KhoaController@searchByKeywords');
     });
     
     Route::group(['prefix' => 'phong'], function () {
@@ -313,8 +313,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::post('create','KhoaPhong\PhongController@create');
      	Route::post('update/{id}','KhoaPhong\PhongController@update');
      	Route::delete('delete/{id}','KhoaPhong\PhongController@delete');
-     	Route::get('getAllPhongByKhoaId/{khoaId}','KhoaPhong\PhongController@getAllPhongByKhoaId');
- 		Route::get('searchPhongByKeywords/{keyWords}','KhoaPhong\PhongController@searchPhongByKeywords');
+     	Route::get('getAllByKhoaId/{khoaId}','KhoaPhong\PhongController@getAllByKhoaId');
+ 		Route::get('searchByKeywords/{keyWords}','KhoaPhong\PhongController@searchByKeywords');
     });
     
     

@@ -75,15 +75,15 @@ class KhoaController extends APIController
         return $this->respond([]);        
     }
     
-    public function searchKhoaByKeywords($keyWords)
+    public function searchPhongByKeywords($keyWords)
     {
-        $data = $this->khoaService->searchKhoaByKeywords($keyWords);
+        $data = $this->khoaService->searchPhongByKeywords($keyWords);
         return $this->respond($data);
     }
     
-    public function getAllKhoaByBenhVienId($benhVienid)
+    public function getAllByBenhVienId($benhVienid)
     {
-        $data = $this->khoaService->getAllKhoaByBenhVienId($benhVienid);
+        $data = $this->khoaService->getAllByBenhVienId($benhVienid);
         return $this->respond($data);
     }
    

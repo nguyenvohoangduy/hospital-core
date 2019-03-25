@@ -51,15 +51,15 @@ class PhongService {
         $this->phongRepository->delete($id);
     }
     
-    public function searchPhongByKeywords($keyWords)
+    public function searchByKeywords($keyWords)
     {
-        $data = $this->phongRepository->searchPhongByKeywords($keyWords);
+        $data = $this->phongRepository->searchByKeywords($keyWords);
         return $data;
     }  
     
-    public function getAllPhongByKhoaId($khoaId)
+    public function getAllByKhoaId($khoaId)
     {
-        $data = $this->phongRepository->getAllPhongByKhoaId($khoaId);
+        $data = $this->phongRepository->getAllByKhoaId($khoaId);
         return $data;
     }  
 }

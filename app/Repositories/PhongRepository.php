@@ -131,7 +131,7 @@ class PhongRepository extends BaseRepositoryV2
         }
     }
     
-    public function searchPhongByKeywords($keyWords)
+    public function searchByKeywords($keyWords)
     {
         $data = $this->model
                         ->whereRaw('LOWER(ten_phong) LIKE ? ',['%'.strtolower($keyWords).'%'])
@@ -139,7 +139,7 @@ class PhongRepository extends BaseRepositoryV2
         return $data;
     } 
     
-    public function getAllPhongByKhoaId($khoaId)
+    public function getAllByKhoaId($khoaId)
     {
         $data = $this->model
                     ->where('khoa_id', $khoaId)

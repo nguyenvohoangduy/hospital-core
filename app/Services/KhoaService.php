@@ -56,15 +56,15 @@ class KhoaService {
         $this->khoaRepository->delete($id);
     }
     
-    public function searchKhoaByKeywords($keyWords)
+    public function searchPhongByKeywords($keyWords)
     {
-        $data = $this->khoaRepository->searchKhoaByKeywords($keyWords);
+        $data = $this->khoaRepository->searchPhongByKeywords($keyWords);
         return $data;
     }  
     
-    public function getAllKhoaByBenhVienId($benhVienId)
+    public function getAllByBenhVienId($benhVienId)
     {
-        $data = $this->khoaRepository->getAllKhoaByBenhVienId($benhVienId);
+        $data = $this->khoaRepository->getAllByBenhVienId($benhVienId);
         return $data;
     }  
     
