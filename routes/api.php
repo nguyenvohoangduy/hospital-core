@@ -299,6 +299,15 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('getListPhieuChamSocByDieuTriId/{dieuTriId}','PhieuChamSoc\PhieuChamSocController@getAllByDieuTriId');
     });    
     
+    Route::group(['prefix' => 'khoa'], function () {
+		Route::get('getPartial','KhoaPhong\KhoaController@getPartial');
+		Route::post('create','KhoaPhong\KhoaController@create');
+     	Route::post('update/{id}','KhoaPhong\KhoaController@update');
+     	Route::delete('delete/{id}','KhoaPhong\KhoaController@delete');
+     	Route::get('getAllKhoaByBenhVienId/{benhVienId}','KhoaPhong\KhoaController@getAllKhoaByBenhVienId');
+ 		Route::get('searchKhoaByKeywords/{keyWords}','KhoaPhong\KhoaController@searchKhoaByKeywords');
+    });
+    
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {
         Route::get('user', 'AuthController@user');
         Route::post('logout', 'AuthController@logout');

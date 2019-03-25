@@ -32,4 +32,40 @@ class KhoaService {
         $data = $this->khoaRepository->getTreeListKhoaPhong($limit, $page, $benhVienId);
         return $data;
     }    
+    
+    public function getPartial($limit, $page, $keyWords, $benhVienId)
+    {
+        $data = $this->khoaRepository->getPartial($limit, $page, $keyWords, $benhVienId);
+
+        return $data;
+    }
+    
+    public function create(array $input)
+    {
+        $id = $this->khoaRepository->create($input);
+        return $id;
+    } 
+    
+    public function update($id, array $input)
+    {
+        $this->khoaRepository->update($id, $input);
+    }
+    
+    public function delete($id)
+    {
+        $this->khoaRepository->delete($id);
+    }
+    
+    public function searchKhoaByKeywords($keyWords)
+    {
+        $data = $this->khoaRepository->searchKhoaByKeywords($keyWords);
+        return $data;
+    }  
+    
+    public function getAllKhoaByBenhVienId($benhVienId)
+    {
+        $data = $this->khoaRepository->getAllKhoaByBenhVienId($benhVienId);
+        return $data;
+    }  
+    
 }

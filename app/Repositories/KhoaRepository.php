@@ -91,4 +91,77 @@ class KhoaRepository extends BaseRepositoryV2
         return $result;
     }    
     
+    public function getPartial($limit = 100, $page = 1, $keyWords ='', $benhVienId)
+    {
+        $offset = ($page - 1) * $limit;
+
+        $model = $this->model->where('benh_vien_id','=',$benhVienId);
+      
+        if($keyWords!=""){
+            $model->whereRaw('LOWER(ten_khoa) LIKE ? ',['%'.strtolower($keyWords).'%']);
+        }
+          
+        $totalRecord = $model->count();
+        if($totalRecord) {
+            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
+          
+            $data = $model->orderBy('id', 'desc')
+                        ->offset($offset)
+                        ->limit($limit)
+                        ->get();
+        } else {
+            $totalPage = 0;
+            $data = [];
+            $page = 0;
+            $totalRecord = 0;
+        }
+          
+        $result = [
+            'data'          => $data,
+            'page'          => $page,
+            'totalPage'     => $totalPage,
+            'totalRecord'   => $totalRecord
+        ];
+      
+        return $result;
+    }
+    
+    public function create(array $input)
+    {
+        $id = $this->model->create($input)->id;
+        return $id;
+    }
+    
+    public function update($id, array $input)
+    {
+        $result = $this->find($id);
+        if ($result) {
+            $result->update($input);
+        }
+    }
+    
+    public function delete($id)
+    {
+        $result = $this->find($id);
+        if ($result) {
+            $result->destroy($id);
+        }
+    }
+    
+    public function searchKhoaByKeywords($keyWords)
+    {
+        $data = $this->model
+                        ->whereRaw('LOWER(ten_khoa) LIKE ? ',['%'.strtolower($keyWords).'%'])
+                        ->get();
+        return $data;
+    } 
+    
+    public function getAllKhoaByBenhVienId($benhVienId)
+    {
+        $data = $this->model
+                    ->where('benh_vien_id', $benhVienId)
+                    ->get();
+        return $data;
+    } 
+    
 }
