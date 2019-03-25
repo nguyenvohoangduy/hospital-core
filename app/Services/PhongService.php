@@ -27,4 +27,39 @@ class PhongService {
            $this->phongRepository->getNhomPhong($loaiPhong,$khoaId)
         );
     }
+    
+    public function getPartial($limit, $page, $keyWords, $khoaId)
+    {
+        $data = $this->phongRepository->getPartial($limit, $page, $keyWords, $khoaId);
+
+        return $data;
+    }
+    
+    public function create(array $input)
+    {
+        $id = $this->phongRepository->create($input);
+        return $id;
+    } 
+    
+    public function update($id, array $input)
+    {
+        $this->phongRepository->update($id, $input);
+    }
+    
+    public function delete($id)
+    {
+        $this->phongRepository->delete($id);
+    }
+    
+    public function searchPhongByKeywords($keyWords)
+    {
+        $data = $this->phongRepository->searchPhongByKeywords($keyWords);
+        return $data;
+    }  
+    
+    public function getAllPhongByKhoaId($khoaId)
+    {
+        $data = $this->phongRepository->getAllPhongByKhoaId($khoaId);
+        return $data;
+    }  
 }

@@ -308,6 +308,16 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
  		Route::get('searchKhoaByKeywords/{keyWords}','KhoaPhong\KhoaController@searchKhoaByKeywords');
     });
     
+    Route::group(['prefix' => 'phong'], function () {
+		Route::get('getPartial','KhoaPhong\PhongController@getPartial');
+		Route::post('create','KhoaPhong\PhongController@create');
+     	Route::post('update/{id}','KhoaPhong\PhongController@update');
+     	Route::delete('delete/{id}','KhoaPhong\PhongController@delete');
+     	Route::get('getAllPhongByKhoaId/{khoaId}','KhoaPhong\PhongController@getAllPhongByKhoaId');
+ 		Route::get('searchPhongByKeywords/{keyWords}','KhoaPhong\PhongController@searchPhongByKeywords');
+    });
+    
+    
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {
         Route::get('user', 'AuthController@user');
         Route::post('logout', 'AuthController@logout');
