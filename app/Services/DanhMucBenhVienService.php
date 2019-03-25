@@ -14,9 +14,11 @@ class DanhMucBenhVienService{
     
     public function getDanhMucBenhVien()
     {
-        return DanhMucBenhVienResource::collection(
-           $this->danhMucBenhVienRepository->getDanhMucBenhVien()
-        );
+        // return DanhMucBenhVienResource::collection(
+        //   $this->danhMucBenhVienRepository->getDanhMucBenhVien()
+        // );
+        $data = $this->danhMucBenhVienRepository->getDanhMucBenhVien();
+        return $data;
     }
 
 }
