@@ -83,6 +83,7 @@ class PhieuKhoService {
                 $theKhoParams['danh_muc_thuoc_vat_tu_id']=$item['id'];
                 $theKhoParams['sl_dau_ky']=$item['so_luong'];
                 $theKhoParams['sl_kha_dung']=$item['so_luong'];
+                $theKhoParams['sl_ton_kho']=floor($item['so_luong']);
                 $theKhoParams['sl_ton_kho_chan']=floor($item['so_luong']);
                 //$theKhoParams['sl_ton_kho_le']=$item['so_luong']-floor($item['so_luong']);
                 $theKhoParams['gia_nhap']=$item['don_gia_nhap'];  
@@ -281,26 +282,60 @@ class PhieuKhoService {
             $dataTheKho = $this->theKhoRepository->getTheKho($data['kho_id_xu_ly'],$arrDmtvt);
             $arrIdTheKho = [];
             $arrTheKho = [];
+            
             foreach($chiTietPhieuKhoData as $item) {
                 $id = $item['danh_muc_thuoc_vat_tu_id'];
                 $soLuongYeuCau = $item['so_luong_yeu_cau'];
                 
                 foreach($dataTheKho as $itemDataTheKho) {
-                    if($itemDataTheKho['danh_muc_thuoc_vat_tu_id']==$id && $soLuongYeuCau > 0 && $itemDataTheKho['sl_ton_kho_chan'] > 0){
-                        $chenhLech = $itemDataTheKho['sl_ton_kho_chan'] - $soLuongYeuCau;
+                    if($itemDataTheKho['danh_muc_thuoc_vat_tu_id']==$id && $soLuongYeuCau > 0 && $itemDataTheKho['sl_ton_kho'] > 0){
+                        $chenhLech = $itemDataTheKho['sl_ton_kho'] - $soLuongYeuCau;
                         if($chenhLech < 0) {
-                            $soLuongTon = 0;
+                            $soLuongTonKho = 0;
+                            $soLuongTonKhoChan = 0;
+                            $soLuongTonKhoLe1 = 0;
+                            $soLuongTonKhoLe2 = 0;
                             $soLuongYeuCau = $chenhLech;
                         } else {
-                            $soLuongTon = $chenhLech;
+                            $soLuongTonKho = $chenhLech;
                             $soLuongYeuCau = 0;
+                            
+                            if($chenhLech == 0) {
+                                $soLuongTonKhoChan = 0;
+                                $soLuongTonKhoLe1 = 0;
+                                $soLuongTonKhoLe2 = 0;
+                            } else {
+                                $arrSoLuong = explode('.', $chenhLech);
+                                $soLuongTonKhoChan = $arrSoLuong[0];
+                                $soLuongTonKhoLe1 = $itemDataTheKho['sl_ton_kho_le_1'];
+                                $soLuongTonKhoLe2 = $itemDataTheKho['sl_ton_kho_le_2'];
+                                
+                                if(isset($arrSoLuong[1])) {
+                                    switch($arrSoLuong[1]) {
+                                        case 5:
+                                            $soLuongTonKhoLe1 = 1;
+                                            $soLuongTonKhoLe2 = 0;
+                                            break;
+                                        case 25:
+                                            $soLuongTonKhoLe1 = 0;
+                                            $soLuongTonKhoLe2 = 1;
+                                            break;
+                                        case 75:
+                                            $soLuongTonKhoLe1 = 1;
+                                            $soLuongTonKhoLe2 = 1;
+                                            break;
+                                    }
+                                }
+                            }
                         }
                         
-                        //$arrIdTheKho[] = $itemDataTheKho['id'];
                         
                         $arrTheKho[] = [
-                            'id'                    => $itemDataTheKho['id'],
-                            'sl_ton_kho_chan'     => $soLuongTon
+                            'id'                => $itemDataTheKho['id'],
+                            'sl_ton_kho'        => $soLuongTonKho,
+                            'sl_ton_kho_chan'   => $soLuongTonKhoChan,
+                            'sl_ton_kho_le_1'   => $soLuongTonKhoLe1,
+                            'sl_ton_kho_le_2'   => $soLuongTonKhoLe2
                         ];
                     }
                 }
