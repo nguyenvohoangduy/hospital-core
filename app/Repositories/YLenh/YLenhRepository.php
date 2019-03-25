@@ -501,4 +501,21 @@ class YLenhRepository extends BaseRepositoryV2
         $data = $this->model->findOrFail($id);
 		$data->update($input);
     }
+    
+    public function getByPhieuYLenhId(array $phieuYLenhId)
+    {
+        $data = $this->model
+            ->whereIn('phieu_y_lenh_id',$phieuYLenhId)
+            ->whereIn('loai_y_lenh',self::Y_LENH_CODE_THUOC_VAT_TU)
+            ->get();
+		return $data;
+    }
+    
+    public function getByArrayId(array $yLenhId)
+    {
+        $data = $this->model
+            ->whereIn('id',$yLenhId)
+            ->get();
+		return $data;
+    }    
 }
