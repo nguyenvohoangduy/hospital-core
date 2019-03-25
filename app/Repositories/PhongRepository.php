@@ -35,7 +35,7 @@ class PhongRepository extends BaseRepositoryV2
         $phong = $this->model->where([
                                 'loai_phong'=>$loaiPhong,
                                 'khoa_id'=>$khoaId,
-                                'loai_benh_an'=>self::BENH_AN_KHAM_BENH,
+                                //'loai_benh_an'=>self::BENH_AN_KHAM_BENH,
                                 'trang_thai'=>self::TRANG_THAI_HOAT_DONG
                             ])
                             ->orderBy('ten_nhom')
