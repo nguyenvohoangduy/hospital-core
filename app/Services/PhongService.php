@@ -16,9 +16,8 @@ class PhongService {
 
     public function getListPhong($loaiPhong,$khoaId)
     {
-        return PhongResource::collection(
-           $this->phongRepository->getListPhong($loaiPhong,$khoaId)
-        );
+        $data = $this->phongRepository->getListPhong($loaiPhong,$khoaId);
+        return $data;
     }
     
     public function getNhomPhong($loaiPhong,$khoaId)
