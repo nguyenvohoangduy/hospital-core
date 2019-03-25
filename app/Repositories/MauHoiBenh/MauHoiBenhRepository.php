@@ -11,7 +11,7 @@ class MauHoiBenhRepository extends BaseRepositoryV2
         return MauHoiBenh::class;
     }
     
-    public function create($input) {
+    public function create(array $input) {
         $id = $this->model->create($input)->id;
         return $id;
     }
