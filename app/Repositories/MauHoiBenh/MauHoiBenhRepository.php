@@ -26,9 +26,10 @@ class MauHoiBenhRepository extends BaseRepositoryV2
         return $data;
     }
     
-    public function getById($id) {
+    public function getById($id, $chucNang) {
         $where = [
-            ['mau_hoi_benh.id', '=', $id]
+            ['mau_hoi_benh.id', '=', $id],
+            ['mau_hoi_benh.chuc_nang', '=', $chucNang]
         ];
         
         $data = $this->model->where($where)->first();

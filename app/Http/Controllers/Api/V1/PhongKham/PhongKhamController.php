@@ -448,7 +448,7 @@ class PhongKhamController extends APIController
         return $this->respond($data);
     } 
     
-    public function createMauHoiBenh(MauHoiBenhFormRequest $request) {
+    public function createMauHoiBenh(Request $request) {
         $input = $request->all();
         $this->mauHoiBenhService->create($input);
     }
@@ -467,12 +467,12 @@ class PhongKhamController extends APIController
         return $this->respond($data);
     }
     
-    public function getMauHoiBenhById($id)
+    public function getMauHoiBenhById($id, $chucNang)
     {
         $isNumeric = is_numeric($id);
 
         if($isNumeric) {
-            $data = $this->mauHoiBenhService->getById($id);
+            $data = $this->mauHoiBenhService->getById($id, $chucNang);
         } else {
             $this->setStatusCode(400);
             $data = [];

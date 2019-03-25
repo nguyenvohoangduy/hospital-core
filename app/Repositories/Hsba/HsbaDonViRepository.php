@@ -404,14 +404,14 @@ class HsbaDonViRepository extends BaseRepositoryV2
         ];
         
         $query = $this->model
-            ->leftJoin('hsba', 'hsba.id', '=', 'hsba_khoa_phong.hsba_id')
-            ->leftJoin('vien_phi', 'vien_phi.id', '=', 'hsba_khoa_phong.vien_phi_id')
+            ->leftJoin('hsba', 'hsba.id', '=', 'hsba_don_vi.hsba_id')
+            ->leftJoin('vien_phi', 'vien_phi.id', '=', 'hsba_don_vi.vien_phi_id')
             ->leftJoin('red_trangthai as tt1', function($join) {
-                $join->on('tt1.giatri', '=', 'hsba_khoa_phong.trang_thai_cls')
+                $join->on('tt1.giatri', '=', 'hsba_don_vi.trang_thai_cls')
                     ->where('tt1.tablename', '=', 'canlamsang');
             })
             ->leftJoin('red_trangthai as tt2', function($join) {
-                $join->on('tt2.giatri', '=', 'hsba_khoa_phong.trang_thai')
+                $join->on('tt2.giatri', '=', 'hsba_don_vi.trang_thai')
                     ->where('tt2.tablename', '=', 'patientstatus');
             });
         $query = $query->where($where);

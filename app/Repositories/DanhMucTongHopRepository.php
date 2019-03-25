@@ -140,4 +140,5 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
     {
         $this->model->destroy($dmthId);
     }
+
 }

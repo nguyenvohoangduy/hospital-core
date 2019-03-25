@@ -121,7 +121,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('searchThuocVatTuByTenVaHoatChat/{keyword}','PhongKham\PhongKhamController@searchThuocVatTuByTenVaHoatChat');
         Route::post('createMauHoiBenh','PhongKham\PhongKhamController@createMauHoiBenh');
         Route::get('getMauHoiBenhByChucNangAndUserId/{chucNang}/{userId}','PhongKham\PhongKhamController@getMauHoiBenhByChucNangAndUserId');
-        Route::get('getMauHoiBenhById/{id}','PhongKham\PhongKhamController@getMauHoiBenhById');
+        Route::get('getMauHoiBenhById/{id}/{chucNang}','PhongKham\PhongKhamController@getMauHoiBenhById');
         Route::get('searchThuocVatTuByKhoId/{khoId}/{keyword}','PhongKham\PhongKhamController@searchThuocVatTuByKhoId');
         Route::post('saveThuocVatTu','PhongKham\PhongKhamController@saveThuocVatTu');
     });
@@ -134,15 +134,15 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::delete('deleteDanhMucDichVu/{dmdvId}','DanhMuc\DanhMucController@deleteDanhMucDichVu');
     	Route::get('getYLenhByLoaiNhom/{loaiNhom}','DanhMuc\DanhMucController@getYLenhByLoaiNhom');
     	Route::get('getDanhMucDichVuPhongOc','DanhMuc\DanhMucController@getDanhMucDichVuPhongOc');
-    	Route::get('getListDanhMucTongHop','DanhMuc\DanhMucController@getListDanhMucTongHop');
-    	Route::get('getAllKhoaDanhMucTongHop','DanhMuc\DanhMucController@getAllKhoaDanhMucTongHop');
+    	Route::get('getPartialDanhMucTongHop','DanhMuc\DanhMucController@getPartialDanhMucTongHop');
+    	Route::get('getAllColumnKhoaDanhMucTongHop','DanhMuc\DanhMucController@getAllColumnKhoaDanhMucTongHop');
 		Route::get('getDmthById/{dmthId}','DanhMuc\DanhMucController@getDmthById');
     	Route::get('getDanhMucTongHopTheoKhoa/{khoa}','DanhMuc\DanhMucController@getDanhMucTongHopTheoKhoa');
     	Route::post('createDanhMucTongHop','DanhMuc\DanhMucController@createDanhMucTongHop');
     	Route::post('updateDanhMucTongHop/{dmthId}','DanhMuc\DanhMucController@updateDanhMucTongHop');
     	Route::delete('deleteDanhMucTongHop/{dmthId}','DanhMuc\DanhMucController@deleteDanhMucTongHop');
-    	Route::get('getListDanhMucTrangThai','DanhMuc\DanhMucController@getListDanhMucTrangThai');
-    	Route::get('getAllKhoaDanhMucTrangThai','DanhMuc\DanhMucController@getAllKhoaDanhMucTrangThai');
+    	Route::get('getPartialDanhMucTrangThai','DanhMuc\DanhMucController@getPartialDanhMucTrangThai');
+    	Route::get('getAllColumnKhoaDanhMucTrangThai','DanhMuc\DanhMucController@getAllColumnKhoaDanhMucTrangThai');
     	Route::get('getDanhMucTrangThaiTheoKhoa/{khoa}','DanhMuc\DanhMucController@getDanhMucTrangThaiTheoKhoa');
     	Route::get('getDmttById/{dmttId}','DanhMuc\DanhMucController@getDmttById');
     	Route::post('createDanhMucTrangThai','DanhMuc\DanhMucController@createDanhMucTrangThai');

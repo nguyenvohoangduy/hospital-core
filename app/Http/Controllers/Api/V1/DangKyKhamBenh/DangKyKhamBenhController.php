@@ -18,6 +18,17 @@ use App\Http\Controllers\API\V1\APIController;
 
 class DangKyKhamBenhController extends APIController
 {
+    const NGHE_NGHIEP = 'nghe_nghiep';
+    const DAN_TOC = 'dan_toc';
+    const QUOC_TICH = 'quoc_tich';
+    const LOAI_VIEN_PHI = 'loai_vien_phi';
+    const DOI_TUONG_BENH_NHAN = 'doi_tuong_benh_nhan';
+    const KET_QUA_DIEU_TRI = 'ket_qua_dieu_tri';
+    const GIAU_PHAU_BENH = 'giau_phau_benh';
+    const XU_TRI = 'xu_tri';
+    const HINH_THUC_CHUYEN = 'hinh_thuc_chuyen';
+    const TUYEN = 'tuyen';
+    const LY_DO_CHUYEN = 'ly_do_chuyen';
     /**
      * __construct.
      *
@@ -72,7 +83,7 @@ class DangKyKhamBenhController extends APIController
     
     public function getListNgheNghiep()
     {
-        $data = $this->danhMucTongHopService->getListNgheNghiep();
+        $data = $this->danhMucTongHopService->getAllByKhoa(self::NGHE_NGHIEP);
         return $data;
     }
     
@@ -84,13 +95,13 @@ class DangKyKhamBenhController extends APIController
     
     public function getListDanToc()
     {
-        $data = $this->danhMucTongHopService->getListDanToc();
+        $data = $this->danhMucTongHopService->getAllByKhoa(self::DAN_TOC);
         return $data;
     }
     
     public function getListQuocTich()
     {
-        $data = $this->danhMucTongHopService->getListQuocTich();
+        $data = $this->danhMucTongHopService->getAllByKhoa(self::QUOC_TICH);
         return $data;
     }
     
@@ -120,31 +131,31 @@ class DangKyKhamBenhController extends APIController
     
     public function getListLoaiVienPhi()
     {
-        $data = $this->danhMucTrangThaiService->getListLoaiVienPhi();
+        $data = $this->danhMucTrangThaiService->getAllByKhoa(self::LOAI_VIEN_PHI);
         return $data;
     }
     
     public function getListDoiTuongBenhNhan()
     {
-        $data = $this->danhMucTrangThaiService->getListDoiTuongBenhNhan();
+        $data = $this->danhMucTrangThaiService->getAllByKhoa(self::DOI_TUONG_BENH_NHAN);
         return $data;
     }
     
     public function getListKetQuaDieuTri()
     {
-        $data = $this->danhMucTrangThaiService->getListKetQuaDieuTri();
+        $data = $this->danhMucTrangThaiService->getAllByKhoa(self::KET_QUA_DIEU_TRI);
         return $data;
     }
     
     public function getListGiaiPhauBenh()
     {
-        $data = $this->danhMucTrangThaiService->getListGiaiPhauBenh();
+        $data = $this->danhMucTrangThaiService->getAllByKhoa(self::GIAU_PHAU_BENH);
         return $data;
     }
     
     public function getListXuTri()
     {
-        $data = $this->danhMucTrangThaiService->getListXuTri();
+        $data = $this->danhMucTrangThaiService->getAllByKhoa(self::XU_TRI);
         return $data;
     }
     
@@ -186,19 +197,19 @@ class DangKyKhamBenhController extends APIController
     
     public function getListHinhThucChuyen()
     {
-        $data = $this->danhMucTrangThaiService->getListHinhThucChuyen();
+        $data = $this->danhMucTrangThaiService->getAllByKhoa(self::HINH_THUC_CHUYEN);
         return $data;
     }
     
     public function getListTuyen()
     {
-        $data = $this->danhMucTrangThaiService->getListTuyen();
+        $data = $this->danhMucTrangThaiService->getAllByKhoa(self::TUYEN);
         return $data;
     }
     
     public function getListLyDoChuyen()
     {
-        $data = $this->danhMucTrangThaiService->getListLyDoChuyen();
+        $data = $this->danhMucTrangThaiService->getAllByKhoa(self::LY_DO_CHUYEN);
         return $data;
     }
 }
