@@ -458,9 +458,9 @@ class DieuTriService
         return $data;
     }
     
-    public function getAllByHsbaId($hsbaId)
+    public function getAllByHsbaId($hsbaId,$phongId)
     {
-        $data = $this->dieuTriRepository->getAllByHsbaId($hsbaId);
+        $data = $this->dieuTriRepository->getAllByHsbaId($hsbaId,$phongId);
         return $data;
     }     
 }

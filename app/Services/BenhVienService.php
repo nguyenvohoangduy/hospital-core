@@ -14,9 +14,11 @@ class BenhVienService{
     
     public function listBenhVien()
     {
-        return BenhVienResource::collection(
-           $this->benhVienRepository->listBenhVien()
-        );
+        // return BenhVienResource::collection(
+        //   $this->benhVienRepository->listBenhVien()
+        // );
+        $data = $this->benhVienRepository->listBenhVien();
+        return $data;
     }
 
 }

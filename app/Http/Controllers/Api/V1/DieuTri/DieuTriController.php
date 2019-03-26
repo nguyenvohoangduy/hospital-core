@@ -26,9 +26,9 @@ class DieuTriController extends APIController {
         return $this->respond($data);
     } 
     
-    public function getAllByHsbaId($hsbaId)
+    public function getAllByHsbaId($hsbaId,$phongId)
     {
-        $data = $this->dieuTriService->getAllByHsbaId($hsbaId);
+        $data = $this->dieuTriService->getAllByHsbaId($hsbaId,$phongId);
         return $this->respond($data);
     }     
 }

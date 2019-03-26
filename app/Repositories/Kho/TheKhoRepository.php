@@ -35,7 +35,7 @@ class TheKhoRepository extends BaseRepositoryV2
         $data = $this->model
             ->where('danh_muc_thuoc_vat_tu_id',$id)
             ->where('kho_id',$khoId)
-            ->select(DB::raw('(sl_ton_kho_chan+sl_ton_kho_le_1+sl_ton_kho_le_2) AS sl_ton_kho'),'sl_kha_dung')
+            // ->select(DB::raw('(sl_ton_kho_chan+sl_ton_kho_le_1+sl_ton_kho_le_2) AS sl_ton_kho'),'sl_kha_dung')
             ->get();
         $slKhaDung = 0;
         $slTonKho = 0;
@@ -87,7 +87,13 @@ class TheKhoRepository extends BaseRepositoryV2
     
     public function updateSoLuongTon($input)
     {
-        $this->model->where('id',$input['id'])->update(['sl_ton_kho_chan'=>$input['sl_ton_kho_chan']]);
+        $this->model->where('id',$input['id'])
+                    ->update([
+                        'sl_ton_kho_chan'   =>  $input['sl_ton_kho_chan'],
+                        'sl_ton_kho_le_1'   =>  $input['sl_ton_kho_le_1'],
+                        'sl_ton_kho_le_2'   =>  $input['sl_ton_kho_le_2'],
+                        'sl_ton_kho'        =>  $input['sl_ton_kho'],
+                    ]);
     }
     
 }

@@ -69,7 +69,7 @@ class DieuTriRepository extends BaseRepositoryV2
         return $data;
     }
     
-    function getAllByHsbaId($hsbaId)
+    function getAllByHsbaId($hsbaId,$phongId)
     {
         $column=[
             'dieu_tri.*',
@@ -77,11 +77,15 @@ class DieuTriRepository extends BaseRepositoryV2
             'phong.ten_phong',
             'auth_users.fullname as ten_nguoi_tao'
             ];
+        $where = [
+            ['dieu_tri.hsba_id','=',$hsbaId],
+            ['dieu_tri.phong_id','=',$phongId]
+            ];
         $data = $this->model
             ->leftJoin('khoa','khoa.id','=','dieu_tri.khoa_id')
             ->leftJoin('phong','phong.id','=','dieu_tri.phong_id')
             ->leftJoin('auth_users','auth_users.id','=','dieu_tri.auth_users_id')
-            ->where('dieu_tri.hsba_id',$hsbaId)
+            ->where($where)
             ->orderBy('dieu_tri.id','DESC')
             ->get($column);
         return $data;
