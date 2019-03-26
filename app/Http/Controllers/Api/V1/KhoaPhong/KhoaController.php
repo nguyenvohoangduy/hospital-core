@@ -25,7 +25,7 @@ class KhoaController extends APIController
         $limit = $request->query('limit', 100);
         $page = $request->query('page', 1);
         $keyWords = $request->query('keyWords', '');
-        $benhVienId = $request->query('benhVienId', 2);
+        $benhVienId = $request->query('benhVienId', '');
         
         $data = $this->khoaService->getPartial($limit,$page,$keyWords,$benhVienId);
         return $this->respond($data);
@@ -86,5 +86,11 @@ class KhoaController extends APIController
         $data = $this->khoaService->getAllByBenhVienId($benhVienid);
         return $this->respond($data);
     }
-   
+    
+    public function getAllByLoaiKhoa($khoa)
+    {
+        $data = $this->khoaService->getAllByLoaiKhoa($khoa);
+        return $this->respond($data);
+    }
+    
 }

@@ -307,6 +307,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::delete('delete/{id}','KhoaPhong\KhoaController@delete');
      	Route::get('getAllByBenhVienId/{benhVienId}','KhoaPhong\KhoaController@getAllByBenhVienId');
  		Route::get('searchByKeywords/{keyWords}','KhoaPhong\KhoaController@searchByKeywords');
+ 		Route::get('getAllByLoaiKhoa/{khoa}','KhoaPhong\KhoaController@getAllByLoaiKhoa');
     });
     
     Route::group(['prefix' => 'phong'], function () {

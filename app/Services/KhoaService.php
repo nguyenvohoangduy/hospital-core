@@ -5,13 +5,17 @@ namespace App\Services;
 use App\Models\Khoa;
 use App\Http\Resources\KhoaResource;
 use App\Repositories\KhoaRepository;
+
+use App\Repositories\DanhMuc\DanhMucTongHopRepository;
+
 use Illuminate\Http\Request;
 use Validator;
 
 class KhoaService {
-    public function __construct(KhoaRepository $khoaRepository)
+    public function __construct(KhoaRepository $khoaRepository,DanhMucTongHopRepository $danhmucTongHopRepository)
     {
         $this->khoaRepository = $khoaRepository;
+        $this->danhmucTongHopRepository = $danhmucTongHopRepository;
     }
 
     public function getListKhoa($loaiKhoa, $benhVienId)
@@ -68,4 +72,9 @@ class KhoaService {
         return $data;
     }  
     
+    public function getAllByLoaiKhoa($khoa)
+    {
+        $data = $this->danhmucTongHopRepository->getAllByKhoa($khoa);
+        return $data;
+    }  
 }
