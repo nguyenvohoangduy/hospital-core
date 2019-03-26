@@ -77,4 +77,11 @@ class KhoaService {
         $data = $this->danhmucTongHopRepository->getAllByKhoa($khoa);
         return $data;
     }  
+    
+    public function getKhoaById($id)
+    {
+        $data = $this->khoaRepository->getKhoaById($id);
+        return $data;
+    }
+    
 }

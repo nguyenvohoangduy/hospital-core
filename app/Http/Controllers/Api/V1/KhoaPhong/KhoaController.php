@@ -93,4 +93,18 @@ class KhoaController extends APIController
         return $this->respond($data);
     }
     
+    public function getKhoaById($id)
+    {
+        $isNumericId = is_numeric($id);
+        
+        if($isNumericId) {
+            $data = $this->khoaService->getKhoaById($id);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
+    
 }

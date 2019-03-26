@@ -308,6 +308,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::get('getAllByBenhVienId/{benhVienId}','KhoaPhong\KhoaController@getAllByBenhVienId');
  		Route::get('searchByKeywords/{keyWords}','KhoaPhong\KhoaController@searchByKeywords');
  		Route::get('getAllByLoaiKhoa/{khoa}','KhoaPhong\KhoaController@getAllByLoaiKhoa');
+ 	    Route::get('getKhoaById/{id}','KhoaPhong\KhoaController@getKhoaById');
     });
     
     Route::group(['prefix' => 'phong'], function () {
@@ -317,6 +318,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::delete('delete/{id}','KhoaPhong\PhongController@delete');
      	Route::get('getAllByKhoaId/{khoaId}','KhoaPhong\PhongController@getAllByKhoaId');
  		Route::get('searchByKeywords/{keyWords}','KhoaPhong\PhongController@searchByKeywords');
+ 		Route::get('getPhongById/{id}','KhoaPhong\PhongController@getPhongById');
     });
     
     

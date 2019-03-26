@@ -87,4 +87,17 @@ class PhongController extends APIController
         return $this->respond($data);
     }
    
+    public function getPhongById($id)
+    {
+        $isNumericId = is_numeric($id);
+        
+        if($isNumericId) {
+            $data = $this->phongService->getPhongById($id);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
 }

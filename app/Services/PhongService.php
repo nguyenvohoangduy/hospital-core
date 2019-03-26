@@ -60,4 +60,11 @@ class PhongService {
         $data = $this->phongRepository->getAllByKhoaId($khoaId);
         return $data;
     }  
+    
+    public function getPhongById($id)
+    {
+        $data = $this->phongRepository->getPhongById($id);
+        return $data;
+    }
+    
 }

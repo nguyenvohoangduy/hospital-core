@@ -147,4 +147,12 @@ class PhongRepository extends BaseRepositoryV2
         return $data;
     } 
     
+    public function getPhongById($id)
+    {
+        $data = $this->model
+                    ->where('id', $id)
+                    ->first();
+        return $data;
+    }
+    
 }

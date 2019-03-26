@@ -164,4 +164,12 @@ class KhoaRepository extends BaseRepositoryV2
         return $data;
     } 
     
+    public function getKhoaById($id)
+    {
+        $data = $this->model
+                    ->where('id', $id)
+                    ->first();
+        return $data;
+    }
+    
 }
