@@ -73,4 +73,25 @@ class PhongRepository extends BaseRepositoryV2
                             ->first();
         return $phong;
     }
+    
+    public function getListKhoaPhongByBenhVienId($benhVienId) {
+        $column = [
+            'phong.id',
+            'phong.khoa_id',
+            'phong.ten_phong',
+            'phong.ma_nhom',
+            'khoa.ten_khoa',
+            'phong.loai_phong',
+            'khoa.benh_vien_id'
+        ];
+        
+        $data = $this->model
+                        ->join('khoa', function($join) use ($benhVienId) {
+                            $join->on('khoa.id', '=', 'phong.khoa_id')
+                                ->where('khoa.benh_vien_id', '=', $benhVienId);
+                        })
+                        ->orderBy('khoa.ten_khoa')
+                        ->get($column);
+        return $data;
+    }
 }

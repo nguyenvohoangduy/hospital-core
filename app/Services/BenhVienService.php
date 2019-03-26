@@ -4,12 +4,14 @@ namespace App\Services;
 
 use App\Http\Resources\BenhVienResource;
 use App\Repositories\BenhVienRepository;
+use App\Repositories\PhongRepository;
 use Illuminate\Http\Request;
 
 class BenhVienService{
-    public function __construct(BenhVienRepository $repository)
+    public function __construct(BenhVienRepository $repository, PhongRepository $phongRepository)
     {
         $this->benhVienRepository = $repository;        
+        $this->phongRepository = $phongRepository;
     }
     
     public function listBenhVien()
@@ -47,5 +49,11 @@ class BenhVienService{
     public function delete($id)
     {
         $this->benhVienRepository->delete($id);
+    }
+    
+    public function getListKhoaPhongByBenhVienId($id)
+    {
+        $data = $this->phongRepository->getListKhoaPhongByBenhVienId($id);
+        return $data;
     }
 }

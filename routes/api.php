@@ -299,6 +299,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('getPartial','BenhVien\BenhVienController@getPartial');
         Route::put('update/{id}','BenhVien\BenhVienController@update');
         Route::delete('delete/{id}','BenhVien\BenhVienController@delete');
+        Route::get('getListKhoaPhongByBenhVienId/{id}','BenhVien\BenhVienController@getListKhoaPhongByBenhVienId');
     });
     
     Route::group(['prefix' => 'phieuchamsoc'], function () {

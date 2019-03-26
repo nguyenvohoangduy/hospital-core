@@ -82,4 +82,18 @@ class BenhVienController extends APIController {
         
         return $this->respond([]);        
     }
+    
+    public function getListKhoaPhongByBenhVienId($id)
+    {
+        $isNumericId = is_numeric($id);
+        
+        if($isNumericId) {
+            $data = $this->benhVienService->getListKhoaPhongByBenhVienId($id);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);      
+    }
 }
