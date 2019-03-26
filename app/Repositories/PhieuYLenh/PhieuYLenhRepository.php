@@ -28,5 +28,11 @@ class PhieuYLenhRepository extends BaseRepositoryV2
             return $result;
         else
             return null;
+    }
+    
+    public function getAllByDieuTriId($dieuTriId)
+    {
+        $data = $this->model->where('dieu_tri_id',$dieuTriId)->get();
+        return $data;
     }    
 }

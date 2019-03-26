@@ -258,4 +258,16 @@ class YLenhService {
         $phieuYLenhId = $this->phieuYLenhRepository->getPhieuYLenhId($phieuYLenhParams);
         return $phieuYLenhId;
     }
+    
+    public function getByDieuTriId($dieuTriId)
+    {
+        $phieuYLenh = $this->phieuYLenhRepository->getAllByDieuTriId($dieuTriId);
+        
+        $phieuYLenhId=[];
+        foreach($phieuYLenh as $item){
+            $phieuYLenhId[]=$item['id'];
+        }
+        $yLenh = $this->yLenhRepository->getByPhieuYLenhId($phieuYLenhId);
+        return $yLenh;
+    }    
 }

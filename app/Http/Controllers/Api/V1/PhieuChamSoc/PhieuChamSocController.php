@@ -3,14 +3,17 @@ namespace App\Http\Controllers\Api\V1\PhieuChamSoc;
 
 use Illuminate\Http\Request;
 use App\Services\PhieuChamSocService;
+use App\Services\YLenhService;
 use App\Http\Controllers\Api\V1\APIController;
 
 class PhieuChamSocController extends APIController {
     public function __construct(
-        PhieuChamSocService $phieuChamSocService
+        PhieuChamSocService $phieuChamSocService,
+        YLenhService $yLenhService
     )
     {
         $this->phieuChamSocService = $phieuChamSocService;
+        $this->yLenhService = $yLenhService;
     }
 
     public function create(Request $request)
@@ -31,4 +34,10 @@ class PhieuChamSocController extends APIController {
         $data = $this->phieuChamSocService->getAllByDieuTriId($dieuTriId);
         return $this->respond($data);
     }
+    
+    public function getYLenhByDieuTriId($dieuTriId)
+    {
+        $data = $this->yLenhService->getByDieuTriId($dieuTriId);
+        return $this->respond($data);
+    }     
 }
