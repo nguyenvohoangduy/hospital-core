@@ -100,15 +100,22 @@ class KhoaRepository extends BaseRepositoryV2
         if($keyWords!=""){
             $model->whereRaw('LOWER(ten_khoa) LIKE ? ',['%'.strtolower($keyWords).'%']);
         }
+        
+        $column = [
+            'khoa.*',
+            'danh_muc_tong_hop.dien_giai as ten_loai_khoa'
+            ];
           
         $totalRecord = $model->count();
         if($totalRecord) {
             $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
           
-            $data = $model->orderBy('id', 'desc')
+            $data = $model
+                        ->leftJoin('danh_muc_tong_hop','danh_muc_tong_hop.id','=','khoa.loai_khoa')
+                        ->orderBy('khoa.id', 'desc')
                         ->offset($offset)
                         ->limit($limit)
-                        ->get();
+                        ->get($column);
         } else {
             $totalPage = 0;
             $data = [];
