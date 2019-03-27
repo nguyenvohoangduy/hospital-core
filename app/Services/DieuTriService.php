@@ -446,4 +446,21 @@ class DieuTriService
         $result = $this->dieuTriRepository->getPhieuDieuTri($input);
         return $result;
     }
+    
+    public function create($input)
+    {
+        $this->dieuTriRepository->createDataDieuTri($input);
+    }
+    
+    public function getById($id)
+    {
+        $data = $this->dieuTriRepository->getById($id);
+        return $data;
+    }
+    
+    public function getAllByHsbaId($hsbaId,$phongId)
+    {
+        $data = $this->dieuTriRepository->getAllByHsbaId($hsbaId,$phongId);
+        return $data;
+    }     
 }

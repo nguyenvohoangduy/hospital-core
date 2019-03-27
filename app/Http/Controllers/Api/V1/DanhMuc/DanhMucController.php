@@ -117,14 +117,14 @@ class DanhMucController extends APIController
         return $this->respond($data);
     }
     
-    public function getListDanhMucTongHop(Request $request)
+    public function getPartialDanhMucTongHop(Request $request)
     {
         $limit = $request->query('limit', 100);
         $page = $request->query('page', 1);
         $dienGiai = $request->query('dien_giai', '');
         $khoa = $request->query('khoa', '');
         
-        $data = $this->dmthService->getListDanhMucTongHop($limit, $page, $dienGiai, $khoa);
+        $data = $this->dmthService->getPartial($limit, $page, $dienGiai, $khoa);
         return $this->respond($data);
     }
     
@@ -133,7 +133,7 @@ class DanhMucController extends APIController
         $isNumericId = is_numeric($dmthId);
         
         if($isNumericId) {
-            $data = $this->dmthService->getDmthById($dmthId);
+            $data = $this->dmthService->find($dmthId);
         } else {
             $this->setStatusCode(400);
             $data = [];
@@ -150,7 +150,7 @@ class DanhMucController extends APIController
             $this->setStatusCode(400);
             return $this->respond([]);
         }
-        $data = $this->dmthService->getDanhMucTongHopTheoKhoa($khoa, $limit, $page);
+        $data = $this->dmthService->getPartial($limit, $page, null, $khoa);
         
         if(empty($data)) {
             $this->setStatusCode(400);
@@ -162,7 +162,7 @@ class DanhMucController extends APIController
     public function createDanhMucTongHop(DanhMucTongHopFormRequest $request) {
         $input = $request->all();
         
-        $id = $this->dmthService->createDanhMucTongHop($input);
+        $id = $this->dmthService->create($input);
         if($id) {
             $this->setStatusCode(201);
         } else {
@@ -179,7 +179,7 @@ class DanhMucController extends APIController
             $input = $request->all();
             
             if($isNumericId) {
-                $this->dmthService->updateDanhMucTongHop($dmthId, $input);
+                $this->dmthService->update($dmthId, $input);
             } else {
                 $this->setStatusCode(400);
             }
@@ -193,7 +193,7 @@ class DanhMucController extends APIController
         $isNumericId = is_numeric($dmthId);
         
         if($isNumericId) {
-            $this->dmthService->deleteDanhMucTongHop($dmthId);
+            $this->dmthService->delete($dmthId);
             $this->setStatusCode(204);
         } else {
             $this->setStatusCode(400);
@@ -202,20 +202,20 @@ class DanhMucController extends APIController
         return $this->respond([]);        
     }
     
-    public function getAllKhoaDanhMucTongHop()
+    public function getAllColumnKhoaDanhMucTongHop()
     {
-        $data = $this->dmthService->getAllKhoa();
+        $data = $this->dmthService->getAllColumnKhoa();
         return $this->respond($data);  
     }
     
-    public function getListDanhMucTrangThai(Request $request)
+    public function getPartialDanhMucTrangThai(Request $request)
     {
         $limit = $request->query('limit', 100);
         $page = $request->query('page', 1);
         $dienGiai = $request->query('dien_giai', '');
         $khoa = $request->query('khoa', '');
         
-        $data = $this->dmttService->getListDanhMucTrangThai($limit, $page, $dienGiai, $khoa);
+        $data = $this->dmttService->getPartial($limit, $page, $dienGiai, $khoa);
         return $this->respond($data);
     }
     
@@ -227,7 +227,7 @@ class DanhMucController extends APIController
             $this->setStatusCode(400);
             return $this->respond([]);
         }
-        $data = $this->dmttService->getDanhMucTrangThaiTheoKhoa($khoa, $limit, $page);
+        $data = $this->dmttService->getPartial($limit, $page, null, $khoa);
         
         if(empty($data)) {
             $this->setStatusCode(400);
@@ -241,7 +241,7 @@ class DanhMucController extends APIController
         $isNumericId = is_numeric($dmdvId);
         
         if($isNumericId) {
-            $data = $this->dmttService->getDanhMucTrangThaiById($dmdvId);
+            $data = $this->dmttService->find($dmdvId);
         } else {
             $this->setStatusCode(400);
             $data = [];
@@ -253,7 +253,7 @@ class DanhMucController extends APIController
     public function createDanhMucTrangThai(DanhMucTrangThaiFormRequest $request) {
         $input = $request->all();
         
-        $id = $this->dmttService->createDanhMucTrangThai($input);
+        $id = $this->dmttService->create($input);
         if($id) {
             $this->setStatusCode(201);
         } else {
@@ -270,7 +270,7 @@ class DanhMucController extends APIController
             $input = $request->all();
             
             if($isNumericId) {
-                $this->dmttService->updateDanhMucTrangThai($dmttId, $input);
+                $this->dmttService->update($dmttId, $input);
             } else {
                 $this->setStatusCode(400);
             }
@@ -284,7 +284,7 @@ class DanhMucController extends APIController
         $isNumericId = is_numeric($dmttId);
         
         if($isNumericId) {
-            $this->dmttService->deleteDanhMucTrangThai($dmttId);
+            $this->dmttService->delete($dmttId);
             $this->setStatusCode(204);
         } else {
             $this->setStatusCode(400);
@@ -293,9 +293,9 @@ class DanhMucController extends APIController
         return $this->respond([]);        
     }
     
-    public function getAllKhoaDanhMucTrangThai()
+    public function getAllColumnKhoaDanhMucTrangThai()
     {
-        $data = $this->dmttService->getAllKhoa();
+        $data = $this->dmttService->getAllColumnKhoa();
         return $this->respond($data);  
     }
     

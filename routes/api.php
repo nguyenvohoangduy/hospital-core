@@ -134,15 +134,15 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::delete('deleteDanhMucDichVu/{dmdvId}','DanhMuc\DanhMucController@deleteDanhMucDichVu');
     	Route::get('getYLenhByLoaiNhom/{loaiNhom}','DanhMuc\DanhMucController@getYLenhByLoaiNhom');
     	Route::get('getDanhMucDichVuPhongOc','DanhMuc\DanhMucController@getDanhMucDichVuPhongOc');
-    	Route::get('getListDanhMucTongHop','DanhMuc\DanhMucController@getListDanhMucTongHop');
-    	Route::get('getAllKhoaDanhMucTongHop','DanhMuc\DanhMucController@getAllKhoaDanhMucTongHop');
+    	Route::get('getPartialDanhMucTongHop','DanhMuc\DanhMucController@getPartialDanhMucTongHop');
+    	Route::get('getAllColumnKhoaDanhMucTongHop','DanhMuc\DanhMucController@getAllColumnKhoaDanhMucTongHop');
 		Route::get('getDmthById/{dmthId}','DanhMuc\DanhMucController@getDmthById');
     	Route::get('getDanhMucTongHopTheoKhoa/{khoa}','DanhMuc\DanhMucController@getDanhMucTongHopTheoKhoa');
     	Route::post('createDanhMucTongHop','DanhMuc\DanhMucController@createDanhMucTongHop');
     	Route::post('updateDanhMucTongHop/{dmthId}','DanhMuc\DanhMucController@updateDanhMucTongHop');
     	Route::delete('deleteDanhMucTongHop/{dmthId}','DanhMuc\DanhMucController@deleteDanhMucTongHop');
-    	Route::get('getListDanhMucTrangThai','DanhMuc\DanhMucController@getListDanhMucTrangThai');
-    	Route::get('getAllKhoaDanhMucTrangThai','DanhMuc\DanhMucController@getAllKhoaDanhMucTrangThai');
+    	Route::get('getPartialDanhMucTrangThai','DanhMuc\DanhMucController@getPartialDanhMucTrangThai');
+    	Route::get('getAllColumnKhoaDanhMucTrangThai','DanhMuc\DanhMucController@getAllColumnKhoaDanhMucTrangThai');
     	Route::get('getDanhMucTrangThaiTheoKhoa/{khoa}','DanhMuc\DanhMucController@getDanhMucTrangThaiTheoKhoa');
     	Route::get('getDmttById/{dmttId}','DanhMuc\DanhMucController@getDmttById');
     	Route::post('createDanhMucTrangThai','DanhMuc\DanhMucController@createDanhMucTrangThai');
@@ -285,6 +285,19 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::post('updateNhaCungCap/{id}','NhaCungCap\NhaCungCapController@updateNhaCungCap');
      	Route::delete('deleteNhaCungCap/{id}','NhaCungCap\NhaCungCapController@deleteNhaCungCap');
  		Route::get('getNhaCungCapById/{id}','NhaCungCap\NhaCungCapController@getNhaCungCapById');
+    });
+    
+    Route::group(['prefix' => 'dieutri'], function () {
+		Route::get('getListByHsbaId/{hsbaId}/{phongId}','DieuTri\DieuTriController@getAllByHsbaId');
+		Route::get('getDetailById/{id}','DieuTri\DieuTriController@getById');
+		Route::post('createPhieuDieuTri','DieuTri\DieuTriController@create');
+    });
+    
+    Route::group(['prefix' => 'phieuchamsoc'], function () {
+        Route::post('createPhieuChamSoc','PhieuChamSoc\PhieuChamSocController@create');
+        Route::get('getPhieuChamSocById/{id}','PhieuChamSoc\PhieuChamSocController@getById');
+        Route::get('getListPhieuChamSocByDieuTriId/{dieuTriId}','PhieuChamSoc\PhieuChamSocController@getAllByDieuTriId');
+        Route::get('getYLenhByDieuTriId/{dieuTriId}','PhieuChamSoc\PhieuChamSocController@getYLenhByDieuTriId');
     });    
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {

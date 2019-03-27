@@ -100,12 +100,12 @@ class YLenhService {
         $result = DB::transaction(function() use ($input) {
             try {
                 //get phieu_dieu_tri_id
-                $phieuDieuTri = $this->dieuTriService->getPhieuDieuTri($input);
-                if($phieuDieuTri) {
-                    $input['dieu_tri_id'] = $phieuDieuTri->id;   
-                } else {
-                    return false;
-                }
+                // $phieuDieuTri = $this->dieuTriService->getPhieuDieuTri($input);
+                // if($phieuDieuTri) {
+                //     $input['dieu_tri_id'] = $phieuDieuTri->id;   
+                // } else {
+                //     return false;
+                // }
                 
                 //insert table phieu_y_lenh
                 $phieuYLenhId = $this->createPhieuYLenh($input);
@@ -258,4 +258,16 @@ class YLenhService {
         $phieuYLenhId = $this->phieuYLenhRepository->getPhieuYLenhId($phieuYLenhParams);
         return $phieuYLenhId;
     }
+    
+    public function getByDieuTriId($dieuTriId)
+    {
+        $phieuYLenh = $this->phieuYLenhRepository->getAllByDieuTriId($dieuTriId);
+        
+        $phieuYLenhId=[];
+        foreach($phieuYLenh as $item){
+            $phieuYLenhId[]=$item['id'];
+        }
+        $yLenh = $this->yLenhRepository->getByPhieuYLenhId($phieuYLenhId);
+        return $yLenh;
+    }    
 }

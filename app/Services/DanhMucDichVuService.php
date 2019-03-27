@@ -15,9 +15,11 @@ class DanhMucDichVuService
     
     public function getListYeuCauKham(Request $request)
     {
-        return DanhMucDichVuResource::collection(
-           $this->repository->getDataYeuCauKham($request)
-        );
+        // return DanhMucDichVuResource::collection(
+        //   $this->repository->getDataYeuCauKham($request)
+        // );
+        $data = $this->repository->getDataYeuCauKham($request);
+        return $data;
     }
     
     public function getListDanhMucDichVu($limit, $page, $loaiNhom)
