@@ -103,7 +103,8 @@ class KhoaRepository extends BaseRepositoryV2
         
         $column = [
             'khoa.*',
-            'danh_muc_tong_hop.dien_giai as ten_loai_khoa'
+            'danh_muc_tong_hop.dien_giai as ten_loai_khoa',
+            'benh_vien.ten as ten_benh_vien'
             ];
           
         $totalRecord = $model->count();
@@ -112,6 +113,7 @@ class KhoaRepository extends BaseRepositoryV2
           
             $data = $model
                         ->leftJoin('danh_muc_tong_hop','danh_muc_tong_hop.id','=','khoa.loai_khoa')
+                        ->leftJoin('benh_vien','benh_vien.id','=','khoa.benh_vien_id')
                         ->orderBy('khoa.id', 'desc')
                         ->offset($offset)
                         ->limit($limit)
