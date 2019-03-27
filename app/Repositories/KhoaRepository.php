@@ -99,6 +99,21 @@ class KhoaRepository extends BaseRepositoryV2
       
         if($keyWords!=""){
             $model->whereRaw('LOWER(ten_khoa) LIKE ? ',['%'.strtolower($keyWords).'%']);
+
+            // $upperCase = mb_convert_case($keyWords, MB_CASE_UPPER, "UTF-8");
+            // $lowerCase = mb_convert_case($keyWords, MB_CASE_LOWER, "UTF-8");
+            // $titleCase = mb_convert_case($keyWords, MB_CASE_TITLE, "UTF-8");
+            // $ucfirst = ucfirst($keyWords);
+            
+            // $model->orWhere('ten_khoa', 'like', '%'.$upperCase.'%')
+            //         ->orWhere('ten_khoa', 'like', '%'.$lowerCase.'%')
+            //         ->orWhere('ten_khoa', 'like', '%'.$titleCase.'%')
+            //         ->orWhere('ten_khoa', 'like', '%'.$keyWords.'%')
+            //         ->orWhere('ten_khoa', 'like', '%'.$ucfirst.'%');
+                    // ->orWhere('icd10code', 'like', '%'.$upperCase.'%')
+                    // ->orWhere('icd10code', 'like', '%'.$lowerCase.'%')
+                    // ->orWhere('icd10code', 'like', '%'.$titleCase.'%')
+                    // ->orWhere('icd10code', 'like', '%'.$keyWords.'%');
         }
         
         $column = [
@@ -115,7 +130,7 @@ class KhoaRepository extends BaseRepositoryV2
                         ->leftJoin('danh_muc_tong_hop', function($join) {
                                 $join->on(DB::raw('cast(danh_muc_tong_hop.gia_tri as integer)'), '=', 'khoa.loai_khoa')
                                     ->where('danh_muc_tong_hop.khoa', '=', 'loai_khoa');
-                            })
+                        })
                         ->leftJoin('benh_vien','benh_vien.id','=','khoa.benh_vien_id')
                         ->orderBy('khoa.id', 'desc')
                         ->offset($offset)
