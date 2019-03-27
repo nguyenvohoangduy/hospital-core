@@ -112,7 +112,10 @@ class KhoaRepository extends BaseRepositoryV2
             $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
           
             $data = $model
-                        ->leftJoin('danh_muc_tong_hop','danh_muc_tong_hop.id','=','khoa.loai_khoa')
+                        ->leftJoin('danh_muc_tong_hop', function($join) {
+                                $join->on(DB::raw('cast(danh_muc_tong_hop.gia_tri as integer)'), '=', 'khoa.loai_khoa')
+                                    ->where('danh_muc_tong_hop.khoa', '=', 'loai_khoa');
+                            })
                         ->leftJoin('benh_vien','benh_vien.id','=','khoa.benh_vien_id')
                         ->orderBy('khoa.id', 'desc')
                         ->offset($offset)
