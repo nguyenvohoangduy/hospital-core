@@ -305,10 +305,10 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::post('create','KhoaPhong\KhoaController@create');
      	Route::post('update/{id}','KhoaPhong\KhoaController@update');
      	Route::delete('delete/{id}','KhoaPhong\KhoaController@delete');
-     	Route::get('getAllByBenhVienId/{benhVienId}','KhoaPhong\KhoaController@getAllByBenhVienId');
- 		Route::get('searchByKeywords/{keyWords}','KhoaPhong\KhoaController@searchByKeywords');
  		Route::get('getAllByLoaiKhoa/{khoa}','KhoaPhong\KhoaController@getAllByLoaiKhoa');
  	    Route::get('getKhoaById/{id}','KhoaPhong\KhoaController@getKhoaById');
+ 	    Route::get('getAllByBenhVienId/{benhVienId}','KhoaPhong\KhoaController@getAllByBenhVienId');
+ 		Route::get('searchByKeywords/{keyWords}','KhoaPhong\KhoaController@searchByKeywords');
     });
     
     Route::group(['prefix' => 'phong'], function () {
@@ -316,11 +316,12 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::post('create','KhoaPhong\PhongController@create');
      	Route::post('update/{id}','KhoaPhong\PhongController@update');
      	Route::delete('delete/{id}','KhoaPhong\PhongController@delete');
-     	Route::get('getAllByKhoaId/{khoaId}','KhoaPhong\PhongController@getAllByKhoaId');
+     	Route::get('getPhongById/{id}','KhoaPhong\PhongController@getPhongById');
  		Route::get('searchByKeywords/{keyWords}','KhoaPhong\PhongController@searchByKeywords');
- 		Route::get('getPhongById/{id}','KhoaPhong\PhongController@getPhongById');
+ 		Route::get('getAllByKhoaId/{khoaId}','KhoaPhong\PhongController@getAllByKhoaId');
+ 		Route::get('getAllByLoaiPhong/{khoa}','KhoaPhong\PhongController@getAllByLoaiPhong');
+ 		Route::get('getAllKhoa','KhoaPhong\PhongController@getAllKhoa');
     });
-    
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {
         Route::get('user', 'AuthController@user');

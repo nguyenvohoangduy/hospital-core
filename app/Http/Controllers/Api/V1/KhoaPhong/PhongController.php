@@ -25,9 +25,9 @@ class PhongController extends APIController
         $limit = $request->query('limit', 100);
         $page = $request->query('page', 1);
         $keyWords = $request->query('keyWords', '');
-        $khoaId = $request->query('khoa_id', 20);
+        // $khoaId = $request->query('khoa_id', '');
         
-        $data = $this->phongService->getPartial($limit,$page,$keyWords,$khoaId);
+        $data = $this->phongService->getPartial($limit,$page,$keyWords);
         return $this->respond($data);
     }
     
@@ -100,4 +100,17 @@ class PhongController extends APIController
         
         return $this->respond($data);
     }
+    
+    public function getAllByLoaiPhong($khoa)
+    {
+        $data = $this->phongService->getAllByLoaiPhong($khoa);
+        return $this->respond($data);
+    }
+    
+    public function getAllKhoa()
+    {
+        $data = $this->phongService->getAllKhoa();
+        return $this->respond($data);
+    }
+    
 }

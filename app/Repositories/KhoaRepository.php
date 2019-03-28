@@ -199,4 +199,12 @@ class KhoaRepository extends BaseRepositoryV2
         return $data;
     }
     
+    public function getAll()
+    {
+        $data = $this->model
+                ->orderBy('id')
+                ->get();
+        return $data;    
+    }
+    
 }

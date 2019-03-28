@@ -5,13 +5,18 @@ namespace App\Services;
 use App\Models\Phong;
 use App\Http\Resources\PhongResource;
 use App\Repositories\PhongRepository;
+use App\Repositories\DanhMuc\DanhMucTongHopRepository;
+use App\Repositories\KhoaRepository;
+
 use Illuminate\Http\Request;
 use Validator;
 
 class PhongService {
-    public function __construct(PhongRepository $phongRepository)
+    public function __construct(PhongRepository $phongRepository,DanhMucTongHopRepository $danhmucTongHopRepository,KhoaRepository $khoaRepository)
     {
         $this->phongRepository = $phongRepository;
+        $this->danhmucTongHopRepository = $danhmucTongHopRepository;
+        $this->khoaRepository = $khoaRepository;
     }
 
     public function getListPhong($loaiPhong,$khoaId)
@@ -26,9 +31,9 @@ class PhongService {
         return $data;
     }
     
-    public function getPartial($limit, $page, $keyWords, $khoaId)
+    public function getPartial($limit, $page, $keyWords)
     {
-        $data = $this->phongRepository->getPartial($limit, $page, $keyWords, $khoaId);
+        $data = $this->phongRepository->getPartial($limit, $page, $keyWords);
 
         return $data;
     }
@@ -66,5 +71,17 @@ class PhongService {
         $data = $this->phongRepository->getPhongById($id);
         return $data;
     }
+    
+    public function getAllByLoaiPhong($khoa)
+    {
+        $data = $this->danhmucTongHopRepository->getAllByKhoa($khoa);
+        return $data;
+    }  
+    
+    public function getAllKhoa()
+    {
+        $data = $this->khoaRepository->getAll();
+        return $data;
+    }  
     
 }
