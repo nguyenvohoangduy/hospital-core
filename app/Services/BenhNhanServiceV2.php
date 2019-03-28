@@ -22,6 +22,7 @@ use App\Repositories\PhongRepository;
 use App\Repositories\HanhChinhRepository;
 use App\Repositories\ChuyenVienRepository;
 use App\Repositories\BenhVienRepository;
+use App\Repositories\DanhMuc\NoiGioiThieuRepository;
 
 // Service
 use App\Services\SttPhongKhamService;
@@ -79,7 +80,7 @@ class BenhNhanServiceV2 {
         , 'so_nha', 'duong_thon', 'noi_lam_viec'
         , 'url_hinh_anh', 'dien_thoai_benh_nhan', 'email_benh_nhan', 'dia_chi_lien_he'
         , 'ms_bhyt', 'benh_vien_id'
-        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id'
+        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id', 'noi_gioi_thieu_id', 'noi_gioi_thieu_khac', 'loai_gioi_thieu'
     ];
     
     private $hsbaKpKeys = [
@@ -130,7 +131,8 @@ class BenhNhanServiceV2 {
         HanhChinhRepository $hanhChinhRepository,
         ChuyenVienRepository $chuyenVienRepository,
         BenhVienRepository $benhVienRepository,
-        InputLogSqsRepository $sqsRepo
+        InputLogSqsRepository $sqsRepo,
+        noiGioiThieuRepository $noiGioiThieuRepository
     )
     {
         // Services
@@ -155,6 +157,7 @@ class BenhNhanServiceV2 {
         $this->chuyenVienRepository = $chuyenVienRepository;
         $this->benhVienRepository = $benhVienRepository;
         $this->sqsRepo = $sqsRepo;
+        $this->noiGioiThieuRepository = $noiGioiThieuRepository;
     }
     
     public function registerBenhNhan(Request $request)
@@ -295,8 +298,19 @@ class BenhNhanServiceV2 {
         $dataHsba['nam_sinh'] =  $this->dataBenhNhan['nam_sinh'];
         $dataHsba['nguoi_than'] = $this->dataNhomNguoiThan->toJsonEncoded();
         $dataHsba['ngay_tao'] = Carbon::now()->toDateTimeString();
+        $dataHsba['ghi_chu'] = $dataHsba['noi_gioi_thieu_khac'];
+        unset($dataHsba['noi_gioi_thieu_khac']);
+        if($dataHsba['loai_gioi_thieu'] == "khac")
+        {
+            $datanoiGioiThieu = [];
+            $datanoiGioiThieu["ten"] = $dataHsba['ghi_chu'];
+            $datanoiGioiThieu["loai"] = 0;
+            $dataHsba['noi_gioi_thieu_id'] = $this->noiGioiThieuRepository->createNoiGioiThieu($datanoiGioiThieu);
+        }
+        unset($dataHsba['loai_gioi_thieu']);
         //$dataHsba['thong_tin_chuyen_tuyen'] = !empty($dataHsba['thong_tin_chuyen_tuyen']) ? json_encode($dataHsba['thong_tin_chuyen_tuyen']) : null;
         //var_dump($dataHsba);
+        // print_r($dataHsba);die();
         $dataHsba['id'] = $this->hsbaRepository->createDataHsba($dataHsba);
         $this->dataHsba = $dataHsba;
         return $this;
