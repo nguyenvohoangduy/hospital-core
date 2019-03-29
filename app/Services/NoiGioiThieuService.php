@@ -11,28 +11,34 @@ class NoiGioiThieuService {
     {
         $this->noiGioiThieuRepository = $noiGioiThieuRepository;
     }
-
-    public function getListNoiGioiThieu($limit, $page, $ten, $loai)
+    
+    public function getAll()
     {
-        $data = $this->noiGioiThieuRepository->getListNoiGioiThieu($limit, $page, $ten, $loai);
+        $data = $this->noiGioiThieuRepository->getAll();
+        return $data;
+    }
+
+    public function getPartial($limit, $page, $ten)
+    {
+        $data = $this->noiGioiThieuRepository->getPartial($limit, $page, $ten);
         return $data;
     }
     
-    public function createNoiGioiThieu(array $input)
+    public function create(array $input)
     {
-        $id = $this->noiGioiThieuRepository->createNoiGioiThieu($input);
+        $id = $this->noiGioiThieuRepository->create($input);
         return $id;
     }
     
-    public function updateNoiGioiThieu($id, array $input)
+    public function update($id, array $input)
     {
-        $result = $this->noiGioiThieuRepository->updateNoiGioiThieu($id, $input);
+        $result = $this->noiGioiThieuRepository->update($id, $input);
         return $result;
     }
     
-    public function deleteNoiGioiThieu($id)
+    public function delete($id)
     {
-        $result = $this->noiGioiThieuRepository->deleteNoiGioiThieu($id);
+        $result = $this->noiGioiThieuRepository->delete($id);
         return $result;
     }
 }

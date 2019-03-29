@@ -154,7 +154,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::get('getNhomDmById/{id}','DanhMuc\DanhMucController@getNhomDmById');
     	Route::post('createNhomDanhMuc','DanhMuc\DanhMucController@createNhomDanhMuc');
     	Route::post('updateNhomDanhMuc/{id}','DanhMuc\DanhMucController@updateNhomDanhMuc');
-    	Route::get('getListNoiGioiThieu','DanhMuc\DanhMucController@getListNoiGioiThieu');
+    	Route::get('getAllNoiGioiThieu','DanhMuc\DanhMucController@getAllNoiGioiThieu');
+    	Route::get('getPartialNoiGioiThieu','DanhMuc\DanhMucController@getPartialNoiGioiThieu');
     	Route::post('createNoiGioiThieu','DanhMuc\DanhMucController@createNoiGioiThieu');
     	Route::post('updateNoiGioiThieu/{id}','DanhMuc\DanhMucController@updateNoiGioiThieu');
     	Route::delete('deleteNoiGioiThieu/{id}','DanhMuc\DanhMucController@deleteNoiGioiThieu');

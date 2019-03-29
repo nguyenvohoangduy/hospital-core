@@ -6,21 +6,37 @@ use App\Models\NoiGioiThieu;
 
 class NoiGioiThieuRepository extends BaseRepositoryV2
 {
+    const LOAI_NOI_GIOI_THIEU = 1;
+    
     public function getModel()
     {
         return NoiGioiThieu::class;
-    }    
+    }  
+    
+    public function getAll() {
+        $data = $this->model
+                ->where('loai', '=', (self::LOAI_NOI_GIOI_THIEU))
+                ->orderBy('id', 'desc')
+                ->get();
+                
+        $totalRecord = $data->count();
+        
+        $result = [
+            'data'          => $data,
+            'totalRecord'   => $totalRecord
+        ];
+        
+        return $result;
+    }
 
-    public function getListNoiGioiThieu($limit = 100, $page = 1, $ten = '', $loai = '') {
+    public function getPartial($limit = 100, $page = 1, $ten = '') {
         $offset = ($page - 1) * $limit;
         
-        $query = $this->model
+        $query = $this->model;
+        if($ten)
+            $query = $query
                 ->where('ten', 'like', '%' . $ten . '%');
                 
-        if($loai != '')
-            $query = $query
-                ->where('loai', '=', $loai);
-          
         $totalRecord = $query->count();
         
         if($totalRecord) {
@@ -47,7 +63,7 @@ class NoiGioiThieuRepository extends BaseRepositoryV2
         return $result;
     }
     
-    public function createNoiGioiThieu(array $input)
+    public function create(array $input)
     {
         $noiGioiThieu = $this->model->where([
                                 'ten'=>$input["ten"],
@@ -63,13 +79,13 @@ class NoiGioiThieuRepository extends BaseRepositoryV2
         return $id;
     }
     
-    public function updateNoiGioiThieu($id, array $input)
+    public function update($id, array $input)
     {
         $dmngt = $this->model->findOrFail($id);
 		$dmngt->update($input);
     }
     
-    public function deleteNoiGioiThieu($id)
+    public function delete($id)
     {
 		$this->model->destroy($id);
     }

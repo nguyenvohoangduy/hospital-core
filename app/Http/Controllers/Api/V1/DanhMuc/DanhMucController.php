@@ -378,21 +378,26 @@ class DanhMucController extends APIController
         }
     }
     
-    public function getListNoiGioiThieu(Request $request)
+    public function getAllNoiGioiThieu()
+    {
+        $data = $this->noiGioiThieuService->getAll();
+        return $this->respond($data);
+    }
+    
+    public function getPartialNoiGioiThieu(Request $request)
     {
         $limit = $request->query('limit', 100);
         $page = $request->query('page', 1);
         $ten = $request->query('ten', '');
-        $loai = $request->query('loai', '');
         
-        $data = $this->noiGioiThieuService->getListNoiGioiThieu($limit, $page, $ten, $loai);
+        $data = $this->noiGioiThieuService->getPartial($limit, $page, $ten);
         return $this->respond($data);
     }
     
     public function createNoiGioiThieu(NoiGioiThieuFormRequest $request) {
         $input = $request->all();
         
-        $id = $this->noiGioiThieuService->createNoiGioiThieu($input);
+        $id = $this->noiGioiThieuService->create($input);
         if($id) {
             $this->setStatusCode(201);
         } else {
@@ -408,7 +413,7 @@ class DanhMucController extends APIController
             $isNumericId = is_numeric($id);
             $input = $request->all();
             if($isNumericId) {
-                $this->noiGioiThieuService->updateNoiGioiThieu($id, $input);
+                $this->noiGioiThieuService->update($id, $input);
             } else {
                 $this->setStatusCode(400);
             }
@@ -422,7 +427,7 @@ class DanhMucController extends APIController
         $isNumericId = is_numeric($id);
         
         if($isNumericId) {
-            $this->noiGioiThieuService->deleteNoiGioiThieu($id);
+            $this->noiGioiThieuService->delete($id);
             $this->setStatusCode(204);
         } else {
             $this->setStatusCode(400);
