@@ -55,7 +55,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('index','PhongKham\SttPhongKhamController@goiSttPhongKham')->name('index');
         Route::get('goiSttPhongKham','PhongKham\SttPhongKhamController@goiSttPhongKham')->name('goi-stt');
         Route::get('batDauKham/{hsbaDonViId}','PhongKham\PhongKhamController@batDauKham')->name('bat-dau-kham');
-		Route::post('updateHsbaDonVi/{hsbaDonViId}','PhongKham\PhongKhamController@update'->name('update-hsba-don-vi'));
+		Route::post('updateHsbaDonVi/{hsbaDonViId}','PhongKham\PhongKhamController@update')->name('update-hsba-don-vi');
 		Route::post('updateInfoDieuTri','PhongKham\PhongKhamController@updateInfoDieuTri')->name('update-dieu-tri');
 		Route::post('xuTriBenhNhan','PhongKham\PhongKhamController@xuTriBenhNhan')->name('xu-tri-benh-nhan');
 		Route::post('saveYLenh','PhongKham\PhongKhamController@saveYLenh')->name('save-y-lenh');
