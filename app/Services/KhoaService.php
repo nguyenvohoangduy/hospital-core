@@ -20,9 +20,8 @@ class KhoaService {
 
     public function getListKhoa($loaiKhoa, $benhVienId)
     {
-        return KhoaResource::collection(
-           $this->khoaRepository->getListKhoa($loaiKhoa, $benhVienId)
-        );
+        $data = $this->khoaRepository->getListKhoa($loaiKhoa, $benhVienId);
+        return $data;
     }
     
     public function listKhoaByBenhVienId($benhVienId)

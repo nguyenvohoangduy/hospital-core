@@ -57,7 +57,7 @@ class PhongRepository extends BaseRepositoryV2
         $phong = $this->model->where([
                                 ['khoa_id', '=', $khoaId],
                                 ['loai_phong', '=', self::PHONG_HANH_CHINH],
-                                ['loai_benh_an', '!=', self::BENH_AN_KHAM_BENH]
+                                //['loai_benh_an', '!=', self::BENH_AN_KHAM_BENH]
                             ])
                             ->get()
                             ->first();
