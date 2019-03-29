@@ -36,22 +36,32 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::post('patient', 'SamplePatientController@store');
     Route::post('patient/{id}', 'SamplePatientController@update');
     Route::delete('patient/{id}', 'SamplePatientController@delete');
+    
+    // don-tiep-service
+    Route::group(['prefix' => 'don-tiep-service','as' => 'don-tiep.' ], function () {
+        Route::get('index','DonTiep\DonTiepController@register')->name('index');
+        Route::get('getListPatientByKhoaPhong/{phongId}/{benhVienId}','DonTiep\DonTiepController@getListPatientByKhoaPhong')->name('danh_sach_benh_nhan');
+        Route::post('register','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.create');
+        Route::get('register','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.index');
+    });
         
     Route::group(['prefix' => 'dontiep'], function () {
         Route::post('makeSttDonTiepWhenScanCard','DonTiep\SttDonTiepController@makeSttDonTiepWhenScanCard');
         Route::post('scanCard','DonTiep\SttDonTiepController@scanCard');
         Route::get('getSttDonTiep','DonTiep\SttDonTiepController@getSttDonTiep');
-        Route::get('goiSttDonTiep','DonTiep\SttDonTiepController@goiSttDonTiep');
+        Route::get('goiSttDonTiep','DonTiep\SttDonTiepController@goiSttDonTiep')->name('goi_stt');
         Route::get('loadSttDonTiep','DonTiep\SttDonTiepController@loadSttDonTiep');
         Route::get('finishSttDonTiep/{sttId}','DonTiep\SttDonTiepController@finishSttDonTiep');
         Route::get('countSttDonTiep','DonTiep\SttDonTiepController@countSttDonTiep');
         
-        Route::get('getListPatientByKhoaPhong/{phongId}/{benhVienId}','DonTiep\DonTiepController@getListPatientByKhoaPhong');
-        Route::get('getHsbaByHsbaId/{hsbaId}/{phongId}/{benhVienId}','DonTiep\DonTiepController@getByHsbaId');
-        Route::post('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient');
+        Route::get('index','DonTiep\DonTiepController@register')->name('don_tiep.index');
+        Route::get('getListPatientByKhoaPhong/{phongId}/{benhVienId}','DonTiep\DonTiepController@getListPatientByKhoaPhong')->name('danh_sach_benh_nhan');
+        Route::get('getHsbaByHsbaId/{hsbaId}/{phongId}/{benhVienId}','DonTiep\DonTiepController@getByHsbaId')->name('chi_tiet_hsba');
+        Route::post('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient')->name('update_hsba');
         
         Route::post('scanqrcode', 'DonTiep\ScanQRCodeController@getInfoFromCard');
-        Route::post('register','DonTiep\DonTiepController@register');
+        Route::post('register','DonTiep\DonTiepController@register')->name('dang_ky_kham_benh.create');
+        Route::get('register','DonTiep\DonTiepController@register')->name('dang_ky_kham_benh.index');
         
         // store to cache from queue
         Route::post('hsbaKp/cache/fromQueue','DonTiep\DonTiepController@pushToRedisFromQueue');
@@ -101,7 +111,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getHsbaKhoaPhongById/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@getById');
 		Route::post('updateInfoDieuTri','PhongKham\PhongKhamController@updateInfoDieuTri');
 		Route::get('getListPhongKham/{hsbaId}','PhongKham\PhongKhamController@getListPhongKham');
-		Route::post('xuTriBenhNhan','PhongKham\PhongKhamController@xuTriBenhNhan');
+		Route::post('xuTriBenhNhan','PhongKham\PhongKhamController@xuTriBenhNhan')->name('xu_tri_phong_kham');
 		Route::get('getIcd10ByCode/{icd10Code}','PhongKham\PhongKhamController@getIcd10ByCode');
 		Route::post('saveYLenh','PhongKham\PhongKhamController@saveYLenh');
 		Route::get('getLichSuYLenh','PhongKham\PhongKhamController@getLichSuYLenh');
@@ -306,6 +316,17 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('getPhieuChamSocById/{id}','PhieuChamSoc\PhieuChamSocController@getById');
         Route::get('getListPhieuChamSocByDieuTriId/{dieuTriId}','PhieuChamSoc\PhieuChamSocController@getAllByDieuTriId');
         Route::get('getYLenhByDieuTriId/{dieuTriId}','PhieuChamSoc\PhieuChamSocController@getYLenhByDieuTriId');
+    });
+    
+    Route::group(['prefix' => 'policy'], function () {
+		Route::get('getPartial','Policy\PolicyController@getPartial');
+		Route::get('getById/{id}','Policy\PolicyController@getById');
+		Route::post('create','Policy\PolicyController@create');
+     	Route::post('update/{id}','Policy\PolicyController@update');
+     	Route::delete('delete/{id}','Policy\PolicyController@delete');
+     	Route::get('getAllService','Policy\PolicyController@getAllService');
+     	Route::get('getRoute/{serviceName}','Policy\PolicyController@getRoute');
+     	Route::get('checkKey/{key}','Policy\PolicyController@checkKey');
     });    
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {
