@@ -252,6 +252,14 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
  		Route::get('searchThuocVatTuByKeywords/{keyWords}','Kho\KhoController@searchThuocVatTuByKeywords');
     });
     
+    Route::group(['prefix' => 'donvitinh'], function () {
+		Route::get('getPartial','DonViTinh\DonViTinhController@getPartial');
+		Route::get('getDonViCoBan','DonViTinh\DonViTinhController@getDonViCoBan');
+		Route::post('create','DonViTinh\DonViTinhController@create');
+		Route::post('update/{id}','DonViTinh\DonViTinhController@update');
+		Route::get('getById/{id}','DonViTinh\DonViTinhController@getById');
+    }); 
+    
     Route::group(['prefix' => 'phieunhapkho'], function () {
 		Route::post('createPhieuNhapKho','PhieuNhapKho\PhieuNhapKhoController@createPhieuNhapKho');
     });    
