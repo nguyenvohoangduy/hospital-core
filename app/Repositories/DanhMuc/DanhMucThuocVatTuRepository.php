@@ -127,57 +127,6 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
         return $result;
     }
     
-    // public function getAllThuocVatTu()
-    // {
-    //     $where=[
-    //         ['danh_muc_thuoc_vat_tu.trang_thai','=', self::TRANG_THAI_SU_DUNG],
-    //         ['hoat_chat.trang_thai','=', self::TRANG_THAI_SU_DUNG],
-    //         ];
-    //     $column=[
-    //         'danh_muc_thuoc_vat_tu.*',
-    //         'hoat_chat.ten as hoat_chat',
-    //         'don_vi_tinh.ten as don_vi_tinh',
-    //         'gioi_han.kho_id'
-    //         ];
-    //     $result = $this->model
-    //                 ->leftJoin('don_vi_tinh','don_vi_tinh.id','=','danh_muc_thuoc_vat_tu.don_vi_tinh_id')
-    //                 ->leftJoin('hoat_chat','hoat_chat.id','=','danh_muc_thuoc_vat_tu.hoat_chat_id')
-    //                 ->leftJoin('gioi_han','gioi_han.danh_muc_thuoc_vat_tu_id','=','danh_muc_thuoc_vat_tu.id')
-    //                 ->where($where)
-    //                 ->limit(1)
-    //                 ->orderBy('id','ASC')
-    //                 ->get($column);
-                    
-    //     return $result;
-    // }
-    
-    // public function getThuocVatTu($lastId)
-    // {
-    //     $where=[
-    //         //['danh_muc_thuoc_vat_tu.trang_thai','=',1],
-    //         ['danh_muc_thuoc_vat_tu.id','>',$lastId],
-    //         //['hoat_chat.trang_thai','=',1]
-    //         ];
-    //     $column=[
-    //         'danh_muc_thuoc_vat_tu.*',
-    //         'hoat_chat.ten as hoat_chat',
-    //         'don_vi_tinh.ten as don_vi_tinh',
-    //         'don_vi_tinh.he_so_le_1',
-    //         'don_vi_tinh.he_so_le_2',
-    //         //'gioi_han.kho_id'
-    //         ];
-    //     $result = $this->model
-    //                 ->leftJoin('don_vi_tinh','don_vi_tinh.id','=','danh_muc_thuoc_vat_tu.don_vi_tinh_id')
-    //                 ->leftJoin('hoat_chat','hoat_chat.id','=','danh_muc_thuoc_vat_tu.hoat_chat_id')
-    //                 //->leftJoin('gioi_han','gioi_han.danh_muc_thuoc_vat_tu_id','=','danh_muc_thuoc_vat_tu.id')
-    //                 ->where($where)
-    //                 ->orderBy('id','ASC')
-    //                 ->limit(5000)
-    //                 ->get($column);
-                    
-    //     return $result;
-    // } 
-    
     public function getThuocVatTu()
     {
         $where=[
@@ -200,48 +149,29 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
         return $result;
     }    
     
-    public function getByListId(array $listId)
-    {
-        $where=[
-            //['danh_muc_thuoc_vat_tu.trang_thai','=',1],
-            //['hoat_chat.trang_thai','=',1]
-            ];
-        $column=[
-            'danh_muc_thuoc_vat_tu.*',
-            'hoat_chat.ten as hoat_chat',
-            'don_vi_tinh.ten as don_vi_tinh',
-            'don_vi_tinh.he_so_le_1',
-            'don_vi_tinh.he_so_le_2',
-            //'gioi_han.kho_id'
-            ];
-        $result = $this->model
-                    ->leftJoin('don_vi_tinh','don_vi_tinh.id','=','danh_muc_thuoc_vat_tu.don_vi_tinh_id')
-                    ->leftJoin('hoat_chat','hoat_chat.id','=','danh_muc_thuoc_vat_tu.hoat_chat_id')
-                    //->leftJoin('gioi_han','gioi_han.danh_muc_thuoc_vat_tu_id','=','danh_muc_thuoc_vat_tu.id')
-                    // ->where($where)
-                    ->whereIn('danh_muc_thuoc_vat_tu.id',$listId)
-                    ->get($column);
-        return $result;
-      
-    } 
-    
-    // public function getSoLuongKhaDung($lastId)
+    // public function getByListId(array $listId)
     // {
     //     $where=[
-    //         ['danh_muc_thuoc_vat_tu.trang_thai','=', self::TRANG_THAI_SU_DUNG],
-    //         ['danh_muc_thuoc_vat_tu.id','>',$lastId],
-    //     ];
+    //         //['danh_muc_thuoc_vat_tu.trang_thai','=',1],
+    //         //['hoat_chat.trang_thai','=',1]
+    //         ];
     //     $column=[
-    //         'danh_muc_thuoc_vat_tu.id',
-    //         'danh_muc_thuoc_vat_tu.sl_kha_dung'
-    //     ];
+    //         'danh_muc_thuoc_vat_tu.*',
+    //         'hoat_chat.ten as hoat_chat',
+    //         'don_vi_tinh.ten as don_vi_tinh',
+    //         'don_vi_tinh.he_so_le_1',
+    //         'don_vi_tinh.he_so_le_2',
+    //         //'gioi_han.kho_id'
+    //         ];
     //     $result = $this->model
-    //                 ->where($where)
-    //                 ->orderBy('id','ASC')
-    //                 ->limit(5000)
+    //                 ->leftJoin('don_vi_tinh','don_vi_tinh.id','=','danh_muc_thuoc_vat_tu.don_vi_tinh_id')
+    //                 ->leftJoin('hoat_chat','hoat_chat.id','=','danh_muc_thuoc_vat_tu.hoat_chat_id')
+    //                 //->leftJoin('gioi_han','gioi_han.danh_muc_thuoc_vat_tu_id','=','danh_muc_thuoc_vat_tu.id')
+    //                 // ->where($where)
+    //                 ->whereIn('danh_muc_thuoc_vat_tu.id',$listId)
     //                 ->get($column);
-                    
     //     return $result;
+      
     // } 
     
     public function getThuocVatTuByKhoId($khoId)
@@ -254,8 +184,7 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
             'danh_muc_thuoc_vat_tu.*',
             'hoat_chat.ten as hoat_chat',
             'don_vi_tinh.ten as don_vi_tinh',
-            'don_vi_tinh.he_so_le_1',
-            'don_vi_tinh.he_so_le_2',
+            'don_vi_tinh.don_vi_quy_doi',
             'gioi_han.kho_id',
             'gioi_han.sl_kha_dung'
         ];
