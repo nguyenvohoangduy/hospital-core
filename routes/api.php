@@ -40,28 +40,51 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     // don-tiep-service
     Route::group(['prefix' => 'don-tiep-service','as' => 'don-tiep.' ], function () {
         Route::get('index','DonTiep\DonTiepController@register')->name('index');
-        Route::get('getListPatientByKhoaPhong/{phongId}/{benhVienId}','DonTiep\DonTiepController@getListPatientByKhoaPhong')->name('danh_sach_benh_nhan');
+        Route::get('getListPatientByKhoaPhong/{phongId}/{benhVienId}','DonTiep\DonTiepController@getListPatientByKhoaPhong')->name('danh-sach-benh-nhan');
         Route::post('register','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.create');
         Route::get('register','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.index');
+        
+        Route::get('goiSttDonTiep','DonTiep\SttDonTiepController@goiSttDonTiep')->name('goi-so-thu-tu.create');
+        Route::post('makeSttDonTiepWhenScanCard','DonTiep\SttDonTiepController@makeSttDonTiepWhenScanCard')->name('make-stt-when-scan-card.create');
+        Route::get('getHsbaByHsbaId/{hsbaId}/{phongId}/{benhVienId}','DonTiep\DonTiepController@getByHsbaId')->name('chi_tiet_hsba');
+        Route::post('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient')->name('update_hsba.create');
     });
+    
+    // phong-kham-service
+    Route::group(['prefix' => 'phong-kham-service','as' => 'phong-kham.' ], function () {
+        Route::get('index','PhongKham\SttPhongKhamController@goiSttPhongKham')->name('index');
+        Route::get('goiSttPhongKham','PhongKham\SttPhongKhamController@goiSttPhongKham')->name('goi-stt');
+        Route::get('batDauKham/{hsbaDonViId}','PhongKham\PhongKhamController@batDauKham')->name('bat-dau-kham');
+		Route::post('updateHsbaDonVi/{hsbaDonViId}','PhongKham\PhongKhamController@update'->name('update-hsba-don-vi'));
+		Route::post('updateInfoDieuTri','PhongKham\PhongKhamController@updateInfoDieuTri')->name('update-dieu-tri');
+		Route::post('xuTriBenhNhan','PhongKham\PhongKhamController@xuTriBenhNhan')->name('xu-tri-benh-nhan');
+		Route::post('saveYLenh','PhongKham\PhongKhamController@saveYLenh')->name('save-y-lenh');
+		Route::post('updateHsbaPhongKham/{hsbaDonViId}','PhongKham\PhongKhamController@updateHsbaPhongKham')->name('update-hsba');
+        Route::post('createMauHoiBenh','PhongKham\PhongKhamController@createMauHoiBenh')->name('create-mau-hoi-benh');
+                
+    }); 
+    
+    //noi-tru-service
+    Route::group(['prefix' => 'noi-tru-service','as' => 'noi-tru.' ], function () {
+        Route::get('getByHsbaId/{hsbaId}/{phongId}/{benhVienId}','NoiTru\NoiTruController@getByHsbaId')->name('danh-sach-benh-nhan.index');
+        Route::post('luuNhapKhoa','NoiTru\NoiTruController@luuNhapKhoa')->name('luu-nhap-khoa.create');
+    });     
         
     Route::group(['prefix' => 'dontiep'], function () {
         Route::post('makeSttDonTiepWhenScanCard','DonTiep\SttDonTiepController@makeSttDonTiepWhenScanCard');
         Route::post('scanCard','DonTiep\SttDonTiepController@scanCard');
         Route::get('getSttDonTiep','DonTiep\SttDonTiepController@getSttDonTiep');
-        Route::get('goiSttDonTiep','DonTiep\SttDonTiepController@goiSttDonTiep')->name('goi_stt');
+        Route::get('goiSttDonTiep','DonTiep\SttDonTiepController@goiSttDonTiep');
         Route::get('loadSttDonTiep','DonTiep\SttDonTiepController@loadSttDonTiep');
         Route::get('finishSttDonTiep/{sttId}','DonTiep\SttDonTiepController@finishSttDonTiep');
         Route::get('countSttDonTiep','DonTiep\SttDonTiepController@countSttDonTiep');
         
-        Route::get('index','DonTiep\DonTiepController@register')->name('don_tiep.index');
-        Route::get('getListPatientByKhoaPhong/{phongId}/{benhVienId}','DonTiep\DonTiepController@getListPatientByKhoaPhong')->name('danh_sach_benh_nhan');
-        Route::get('getHsbaByHsbaId/{hsbaId}/{phongId}/{benhVienId}','DonTiep\DonTiepController@getByHsbaId')->name('chi_tiet_hsba');
-        Route::post('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient')->name('update_hsba');
+        Route::get('getListPatientByKhoaPhong/{phongId}/{benhVienId}','DonTiep\DonTiepController@getListPatientByKhoaPhong');
+        Route::get('getHsbaByHsbaId/{hsbaId}/{phongId}/{benhVienId}','DonTiep\DonTiepController@getByHsbaId');
+        Route::post('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient');
         
         Route::post('scanqrcode', 'DonTiep\ScanQRCodeController@getInfoFromCard');
-        Route::post('register','DonTiep\DonTiepController@register')->name('dang_ky_kham_benh.create');
-        Route::get('register','DonTiep\DonTiepController@register')->name('dang_ky_kham_benh.index');
+        Route::post('register','DonTiep\DonTiepController@register');
         
         // store to cache from queue
         Route::post('hsbaKp/cache/fromQueue','DonTiep\DonTiepController@pushToRedisFromQueue');
@@ -326,6 +349,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::delete('delete/{id}','Policy\PolicyController@delete');
      	Route::get('getAllService','Policy\PolicyController@getAllService');
      	Route::get('getRoute/{serviceName}','Policy\PolicyController@getRoute');
+     	Route::get('getAllRoute','Policy\PolicyController@getAllRoute');
      	Route::get('checkKey/{key}','Policy\PolicyController@checkKey');
     });    
     

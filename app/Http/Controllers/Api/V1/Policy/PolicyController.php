@@ -110,6 +110,23 @@ class PolicyController extends APIController
         return $routesWithName;
     }
     
+    public function getAllRoute()
+    {
+        $routeCollection = Route::getRoutes();
+        $routesWithName  =[];
+        foreach ($routeCollection as $route) {
+            if($route->getName() != 'v1.' && $route->getName()!= NULL) {
+                $arrRoute = explode('.',$route->getName());
+                $routesWithName[]= [
+                    'service_name'  => $arrRoute[1],
+                    'route_name'    => $route->getName(),
+                    'method'        => $route->methods[0]
+                ];
+            } 
+        }
+        return $routesWithName;
+    }    
+    
     public function checkKey($key)
     {
         $data = $this->policyService->checkKey($key);   
