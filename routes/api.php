@@ -342,15 +342,15 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });
     
     Route::group(['prefix' => 'policy'], function () {
-		Route::get('getPartial','Policy\PolicyController@getPartial');
-		Route::get('getById/{id}','Policy\PolicyController@getById');
-		Route::post('create','Policy\PolicyController@create');
-     	Route::post('update/{id}','Policy\PolicyController@update');
-     	Route::delete('delete/{id}','Policy\PolicyController@delete');
-     	Route::get('getAllService','Policy\PolicyController@getAllService');
-     	Route::get('getRoute/{serviceName}','Policy\PolicyController@getRoute');
-     	Route::get('getAllRoute','Policy\PolicyController@getAllRoute');
-     	Route::get('checkKey/{key}','Policy\PolicyController@checkKey');
+		Route::get('getPartial','Auth\PolicyController@getPartial');
+		Route::get('getById/{id}','Auth\PolicyController@getById');
+		Route::post('create','Auth\PolicyController@create');
+     	Route::post('update/{id}','Auth\PolicyController@update');
+     	Route::delete('delete/{id}','Auth\PolicyController@delete');
+     	Route::get('getAllService','Auth\PolicyController@getAllService');
+     	Route::get('getRoute/{serviceName}','Auth\PolicyController@getRoute');
+     	Route::get('getAllRoute','Auth\PolicyController@getAllRoute');
+     	Route::get('checkKey/{key}','Auth\PolicyController@checkKey');
     });    
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {

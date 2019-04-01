@@ -6,6 +6,7 @@ use App\Http\Resources\BenhVienResource;
 use App\Repositories\Auth\AuthUsersRepository;
 use App\Repositories\Auth\AuthUsersGroupsRepository;
 use App\Repositories\Auth\AuthGroupsHasRolesRepository;
+use App\Repositories\Auth\AuthServiceRepository;
 use App\Http\Resources\AuthResource;
 use Illuminate\Http\Request;
 use Validator;
@@ -14,11 +15,13 @@ class AuthService {
     public function __construct(
         AuthUsersRepository $authUsersRepository, 
         AuthUsersGroupsRepository $authUsersGroupsRepository,
-        AuthGroupsHasRolesRepository $authGroupsHasRolesRepository )
+        AuthGroupsHasRolesRepository $authGroupsHasRolesRepository,
+        AuthServiceRepository $authServiceRepository)
     {
         $this->authUsersRepository = $authUsersRepository;
         $this->authUsersGroupsRepository = $authUsersGroupsRepository;
         $this->authGroupsHasRolesRepository = $authGroupsHasRolesRepository;
+        $this->authServiceRepository = $authServiceRepository;
     }
 
     public function getUserRolesByEmail($email)
@@ -55,4 +58,10 @@ class AuthService {
     {
         $this->authUsersRepository->updateLastVisit($email);
     }
+    
+    public function getAll()
+    {
+        $data = $this->authServiceRepository->getAll();
+        return $data;
+    }    
 }
