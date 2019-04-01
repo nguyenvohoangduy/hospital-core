@@ -68,4 +68,8 @@ class HsbaService
         $data = $repo->getList();                
         return $data;
     }
+    
+    public function listBenhNhanTrung($ho_va_ten, $ngay_sinh, $gioi_tinh_id) {
+        return $this->hsbaRepository->listBenhNhanTrung($ho_va_ten, $ngay_sinh, $gioi_tinh_id);
+    }
 }

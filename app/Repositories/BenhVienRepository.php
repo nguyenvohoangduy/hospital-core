@@ -21,15 +21,70 @@ class BenhVienRepository extends BaseRepositoryV2
         return $dataSet;    
     }
     
-    public function getById($id)
-    {
-        $data = $this->model->findOrFail($id);
-        return $data;    
-    }    
+    public function getPartial($limit = 100, $page = 1, $name = NULL) {
+        $offset = ($page - 1) * $limit;
+        $query = $this->model->where('id', '>', 0);
+        
+        if($name != NULL) {
+            $query->where('ten', 'like', '%' . $dienGiai . '%');
+        }
+        
+        $totalRecord = $query->count();
+        
+        if($totalRecord) {
+            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
+            
+            $data = $query->orderBy('id', 'desc')
+                        ->offset($offset)
+                        ->limit($limit)
+                        ->get();
+        } else {
+            $totalPage = 0;
+            $data = [];
+            $page = 0;
+            $totalRecord = 0;
+        }
+        
+        $result = [
+            'data'          => $data,
+            'page'          => $page,
+            'totalPage'     => $totalPage,
+            'totalRecord'   => $totalRecord
+        ];
+        
+        return $result;
+    }
     
-    public function getBenhVienThietLap($benhVienId) {
+    public function create(array $input)
+    {
+        $id = $this->model->create($input)->id;
+        return $id;
+    }
+    
+    public function update($id, array $input)
+    {
+        $result = $this->find($id);
+        if ($result) {
+            $result->update($input);
+        }
+    }
+    
+    public function delete($id)
+    {
+        $result = $this->find($id);
+        if ($result) {
+            $result->destroy($id);
+        }
+    }
+    
+    public function find($id) {
+        $result = $this->model->find($id); 
+        return $result; 
+    }
+    
+    public function getBenhVienThietLap($id) {
         $data = [];
-        $hospital = $this->model->find($benhVienId);
+        $hospital = $this->model->find($id);
         $settingHospital = json_decode($hospital->thiet_lap);
         if(empty($hospital->thiet_lap)) {
             throw new Exception(Config::get('constants.error_get_thiet_lap_benh_vien'));

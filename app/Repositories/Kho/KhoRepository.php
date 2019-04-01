@@ -6,6 +6,8 @@ use App\Models\Kho;
 use Carbon\Carbon;
 class KhoRepository extends BaseRepositoryV2
 {
+    const NHAP_TU_NHA_CUNG_CAP = 1;
+    
     public function getModel()
     {
         return Kho::class;
@@ -19,7 +21,10 @@ class KhoRepository extends BaseRepositoryV2
     {
         $offset = ($page - 1) * $limit;
 
-        $model = $this->model->where('benh_vien_id','=',$benhVienId);
+        $model = $this->model->where([
+            ['benh_vien_id','=',$benhVienId],
+            ['nhap_tu_ncc', '=', self::NHAP_TU_NHA_CUNG_CAP]
+        ]);
       
         if($keyWords!=""){
             $model->whereRaw('LOWER(ten_kho) LIKE ? ',['%'.strtolower($keyWords).'%'])
