@@ -66,8 +66,11 @@ class BenhNhanServiceV2 {
     private $dataChuyenVien = [];
     
     private $dataLog = [];
-    const LOAI_NOI_GIOI_THIEU = 0;
-    const LOAI_GIOI_THIEU = 'khac';
+    const LOAI_NOI_GIOI_THIEU_KHONG_HUE_HONG = 0;
+    const LOAI_NOI_GIOI_THIEU_CO_HUE_HONG = 1;
+    const LOAI_GIOI_THIEU_TRONG_DANH_SACH = "0";
+    const LOAI_GIOI_THIEU_TU_DEN = "1";
+    const LOAI_GIOI_THIEU_KHAC = "2";
     
     private $benhNhanKeys = [
         'benh_nhan_id', 'ho_va_ten', 'ngay_sinh', 'gioi_tinh_id'
@@ -302,17 +305,17 @@ class BenhNhanServiceV2 {
         $dataHsba['ngay_tao'] = Carbon::now()->toDateTimeString();
         $dataHsba['ghi_chu'] = $dataHsba['noi_gioi_thieu_khac'];
         unset($dataHsba['noi_gioi_thieu_khac']);
-        if($dataHsba['loai_gioi_thieu'] == self::LOAI_GIOI_THIEU)
+        if($dataHsba['loai_gioi_thieu'] == self::LOAI_GIOI_THIEU_KHAC)
         {
             $datanoiGioiThieu = [];
             $datanoiGioiThieu["ten"] = $dataHsba['ghi_chu'];
-            $datanoiGioiThieu["loai"] = self::LOAI_NOI_GIOI_THIEU;
+            $datanoiGioiThieu["loai"] = self::LOAI_NOI_GIOI_THIEU_KHONG_HUE_HONG;
             $dataHsba['noi_gioi_thieu_id'] = $this->noiGioiThieuRepository->create($datanoiGioiThieu);
         }
         unset($dataHsba['loai_gioi_thieu']);
         //$dataHsba['thong_tin_chuyen_tuyen'] = !empty($dataHsba['thong_tin_chuyen_tuyen']) ? json_encode($dataHsba['thong_tin_chuyen_tuyen']) : null;
         //var_dump($dataHsba);
-        // print_r($dataHsba);die();
+        //print_r($dataHsba);die();
         $dataHsba['id'] = $this->hsbaRepository->createDataHsba($dataHsba);
         $this->dataHsba = $dataHsba;
         return $this;

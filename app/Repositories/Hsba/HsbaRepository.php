@@ -400,4 +400,16 @@ class HsbaRepository extends BaseRepositoryV2
         $result = $this->model->findOrFail($hsbaId);
         return $result;
     }
+    
+    public function listBenhNhanTrung($ho_va_ten, $ngay_sinh, $gioi_tinh_id)
+    {
+        $result = $this->model->leftJoin('bhyt', 'bhyt.ms_bhyt', '=', 'hsba.ms_bhyt')
+                            ->whereRaw('LOWER(hsba.ten_benh_nhan) = ?', strtolower($ho_va_ten))
+                            ->where('hsba.ngay_sinh', '=', $ngay_sinh)
+                            ->where('hsba.gioi_tinh_id', '=', $gioi_tinh_id)
+                            ->get(['hsba.benh_nhan_id as id', 'hsba.ten_benh_nhan as ten'
+                                    , 'hsba.ms_bhyt', 'hsba.dia_chi_lien_he as dia_chi'
+                                    , 'hsba.gioi_tinh_id as gioi_tinh', 'hsba.ngay_sinh']);
+        return $result;
+    }
 }
