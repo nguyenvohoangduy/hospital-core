@@ -40,34 +40,19 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     // don-tiep-service
     Route::group(['prefix' => 'don-tiep-service','as' => 'don-tiep.' ], function () {
         Route::get('index','DonTiep\DonTiepController@index')->name('index');
-        Route::get('getListPatientByKhoaPhong/{phongId}/{benhVienId}','DonTiep\DonTiepController@getListPatientByKhoaPhong')->name('danh-sach-benh-nhan');
         Route::post('register','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.create');
-        Route::get('register','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.index');
-        
-        Route::get('goiSttDonTiep','DonTiep\SttDonTiepController@goiSttDonTiep')->name('goi-so-thu-tu.create');
-        Route::post('makeSttDonTiepWhenScanCard','DonTiep\SttDonTiepController@makeSttDonTiepWhenScanCard')->name('make-stt-when-scan-card.create');
-        Route::get('getHsbaByHsbaId/{hsbaId}/{phongId}/{benhVienId}','DonTiep\DonTiepController@getByHsbaId')->name('chi_tiet_hsba');
-        Route::post('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient')->name('update_hsba.create');
+
+        Route::post('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient')->name('hsba.update');
     });
     
     // phong-kham-service
     Route::group(['prefix' => 'phong-kham-service','as' => 'phong-kham.' ], function () {
-        Route::get('index','PhongKham\SttPhongKhamController@goiSttPhongKham')->name('index');
-        Route::get('goiSttPhongKham','PhongKham\SttPhongKhamController@goiSttPhongKham')->name('goi-stt');
-        Route::get('batDauKham/{hsbaDonViId}','PhongKham\PhongKhamController@batDauKham')->name('bat-dau-kham');
-		Route::post('updateHsbaDonVi/{hsbaDonViId}','PhongKham\PhongKhamController@update')->name('update-hsba-don-vi');
-		Route::post('updateInfoDieuTri','PhongKham\PhongKhamController@updateInfoDieuTri')->name('update-dieu-tri');
-		Route::post('xuTriBenhNhan','PhongKham\PhongKhamController@xuTriBenhNhan')->name('xu-tri-benh-nhan');
-		Route::post('saveYLenh','PhongKham\PhongKhamController@saveYLenh')->name('save-y-lenh');
-		Route::post('updateHsbaPhongKham/{hsbaDonViId}','PhongKham\PhongKhamController@updateHsbaPhongKham')->name('update-hsba');
-        Route::post('createMauHoiBenh','PhongKham\PhongKhamController@createMauHoiBenh')->name('create-mau-hoi-benh');
-                
+        Route::get('index','PhongKham\PhongKhamController@index')->name('index');
     }); 
     
     //noi-tru-service
     Route::group(['prefix' => 'noi-tru-service','as' => 'noi-tru.' ], function () {
-        Route::get('getByHsbaId/{hsbaId}/{phongId}/{benhVienId}','NoiTru\NoiTruController@getByHsbaId')->name('danh-sach-benh-nhan.index');
-        Route::post('luuNhapKhoa','NoiTru\NoiTruController@luuNhapKhoa')->name('luu-nhap-khoa.create');
+        Route::get('index','NoiTru\NoiTruController@index')->name('index');
     });     
         
     Route::group(['prefix' => 'dontiep'], function () {
