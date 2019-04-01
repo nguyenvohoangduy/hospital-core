@@ -310,7 +310,7 @@ class BenhNhanServiceV2 {
             $dataNoiGioiThieu = [];
             $dataNoiGioiThieu["ten"] = $dataHsba['ghi_chu'];
             $dataNoiGioiThieu["loai"] = self::LOAI_NOI_GIOI_THIEU_KHONG_HUE_HONG;
-            $dataHsba['noi_gioi_thieu_id'] = $this->noiGioiThieuRepository->create($datanoiGioiThieu);
+            $dataHsba['noi_gioi_thieu_id'] = $this->noiGioiThieuRepository->create($dataNoiGioiThieu);
         }
         unset($dataHsba['loai_gioi_thieu']);
         //$dataHsba['thong_tin_chuyen_tuyen'] = !empty($dataHsba['thong_tin_chuyen_tuyen']) ? json_encode($dataHsba['thong_tin_chuyen_tuyen']) : null;
