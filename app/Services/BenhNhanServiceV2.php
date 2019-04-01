@@ -307,9 +307,9 @@ class BenhNhanServiceV2 {
         unset($dataHsba['noi_gioi_thieu_khac']);
         if($dataHsba['loai_gioi_thieu'] == self::LOAI_GIOI_THIEU_KHAC)
         {
-            $datanoiGioiThieu = [];
-            $datanoiGioiThieu["ten"] = $dataHsba['ghi_chu'];
-            $datanoiGioiThieu["loai"] = self::LOAI_NOI_GIOI_THIEU_KHONG_HUE_HONG;
+            $dataNoiGioiThieu = [];
+            $dataNoiGioiThieu["ten"] = $dataHsba['ghi_chu'];
+            $dataNoiGioiThieu["loai"] = self::LOAI_NOI_GIOI_THIEU_KHONG_HUE_HONG;
             $dataHsba['noi_gioi_thieu_id'] = $this->noiGioiThieuRepository->create($datanoiGioiThieu);
         }
         unset($dataHsba['loai_gioi_thieu']);
