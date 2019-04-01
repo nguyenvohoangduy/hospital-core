@@ -148,4 +148,13 @@ class DonTiepController extends APIController
         }    
         
     }
+    
+    public function listBenhNhanTrung(Request $request)
+    {
+        $ho_va_ten = $request->query('ho_va_ten', '');
+        $ngay_sinh = $request->query('ngay_sinh', '');
+        $gioi_tinh_id = $request->query('gioi_tinh_id', 0);
+        
+        return $this->hsbaService->listBenhNhanTrung($ho_va_ten, $ngay_sinh, $gioi_tinh_id);
+    }
 }
