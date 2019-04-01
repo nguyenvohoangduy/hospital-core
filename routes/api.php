@@ -253,6 +253,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });
     
     Route::group(['prefix' => 'donvitinh'], function () {
+        Route::get('getAll','DonViTinh\DonViTinhController@getAll');
 		Route::get('getPartial','DonViTinh\DonViTinhController@getPartial');
 		Route::get('getDonViCoBan','DonViTinh\DonViTinhController@getDonViCoBan');
 		Route::post('create','DonViTinh\DonViTinhController@create');

@@ -93,6 +93,8 @@ class TheKhoRepository extends BaseRepositoryV2
                         'sl_ton_kho_le_1'   =>  $input['sl_ton_kho_le_1'],
                         'sl_ton_kho_le_2'   =>  $input['sl_ton_kho_le_2'],
                         'sl_ton_kho'        =>  $input['sl_ton_kho'],
+                        'sl_nhap_chan'      =>  $input['sl_nhap_chan'],
+                        'sl_nhap_le'        =>  $input['sl_nhap_le'],
                     ]);
     }
     

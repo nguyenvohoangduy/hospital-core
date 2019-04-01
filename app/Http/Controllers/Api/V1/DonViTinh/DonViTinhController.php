@@ -12,6 +12,12 @@ class DonViTinhController extends APIController
         $this->donViTinhService = $donViTinhService;
     }
     
+    public function getAll()
+    {
+        $data = $this->donViTinhService->getAll();
+        return $this->respond($data);
+    }
+    
     public function getPartial(Request $request) 
     {
         $limit = $request->query('limit', 100);
