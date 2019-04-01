@@ -302,6 +302,15 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::post('createPhieuDieuTri','DieuTri\DieuTriController@create');
     });
     
+    Route::group(['prefix' => 'benhvien'], function () {
+        Route::post('create','BenhVien\BenhVienController@create');
+        Route::get('find/{id}','BenhVien\BenhVienController@find');
+        Route::get('getPartial','BenhVien\BenhVienController@getPartial');
+        Route::put('update/{id}','BenhVien\BenhVienController@update');
+        Route::delete('delete/{id}','BenhVien\BenhVienController@delete');
+        Route::get('getListKhoaPhongByBenhVienId/{id}','BenhVien\BenhVienController@getListKhoaPhongByBenhVienId');
+    });
+    
     Route::group(['prefix' => 'phieuchamsoc'], function () {
         Route::post('createPhieuChamSoc','PhieuChamSoc\PhieuChamSocController@create');
         Route::get('getPhieuChamSocById/{id}','PhieuChamSoc\PhieuChamSocController@getById');
