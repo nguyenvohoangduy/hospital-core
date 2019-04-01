@@ -276,7 +276,8 @@ class DieuTriService
                         
                         //update hsba.loai_benh_an
                         $hsbaParams = null;
-                        $hsbaParams['loai_benh_an'] = $phong->loai_benh_an;
+                        //$hsbaParams['loai_benh_an'] = $phong->loai_benh_an;
+                        $hsbaParams['loai_benh_an'] = self::BENH_AN_KHAM_BENH;
                         $this->updateHsba($hsbaDv['hsba_id'], $hsbaParams);
                         
                         // // tao dieu tri

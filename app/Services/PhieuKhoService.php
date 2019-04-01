@@ -30,6 +30,8 @@ class PhieuKhoService {
     const LOAI_PHIEU_NHAP = 0;
     const LOAI_PHIEU_XUAT = 1;
     
+    const HE_SO_QUY_DOI = 1;
+    
     public function __construct
     (
         PhieuKhoRepository $phieuKhoRepository,
@@ -67,8 +69,8 @@ class PhieuKhoService {
             $phieuKhoParams['so_chung_tu']=$input['so_chung_tu'];
             $phieuKhoParams['ncc_id']=$input['nha_cung_cap_id'];
             //$phieuKhoParams['nguoi_giao']=$input['nguoi_giao'];
-            $phieuKhoParams['dia_chi_giao']=$input['dia_chi_giao'];
-            $phieuKhoParams['ghi_chu']=$input['ghi_chu'];
+            $phieuKhoParams['dia_chi_giao'] = $input['dia_chi_giao'] ?? null;
+            $phieuKhoParams['ghi_chu'] = $input['ghi_chu'] ?? null;
             $phieuKhoParams['trang_thai']=self::DA_NHAP_STATUS;
             $phieuKhoParams['loai_phieu']=self::LOAI_PHIEU_NHAP;
             $phieuKhoParams['ma_phieu']=$maPhieu;
@@ -81,11 +83,14 @@ class PhieuKhoService {
                 $theKhoParams = [];
                 $theKhoParams['kho_id']=$input['kho_id'];
                 $theKhoParams['danh_muc_thuoc_vat_tu_id']=$item['id'];
-                $theKhoParams['sl_dau_ky']=$item['so_luong'];
-                $theKhoParams['sl_kha_dung']=$item['so_luong'];
-                $theKhoParams['sl_ton_kho']=floor($item['so_luong']);
-                $theKhoParams['sl_ton_kho_chan']=floor($item['so_luong']);
-                //$theKhoParams['sl_ton_kho_le']=$item['so_luong']-floor($item['so_luong']);
+                $theKhoParams['sl_dau_ky'] = $item['so_luong'];
+                $theKhoParams['sl_kha_dung'] = $item['he_so_quy_doi'] ? $item['he_so_quy_doi'] * $item['so_luong'] : $item['so_luong'];
+                $theKhoParams['sl_nhap_chan'] = $item['so_luong'];
+                $theKhoParams['don_vi_nhap'] = $item['don_vi_tinh'];
+                $theKhoParams['sl_ton_kho'] = $theKhoParams['sl_kha_dung'];
+                $theKhoParams['sl_ton_kho_chan'] = $theKhoParams['sl_kha_dung'];
+                $theKhoParams['don_vi_co_ban'] = $item['don_vi_co_ban'];
+                $theKhoParams['he_so_quy_doi'] = $item['he_so_quy_doi'] ?? self::HE_SO_QUY_DOI;
                 $theKhoParams['gia_nhap']=$item['don_gia_nhap'];  
                 //$theKhoParams['vat_nhap']=$item['vat%'];
                 $theKhoParams['trang_thai']=self::SU_DUNG;   
@@ -99,6 +104,9 @@ class PhieuKhoService {
                 //$chiTietPhieuKhoParams['vat_gia_nhap']=$item['vat%'];
                 $chiTietPhieuKhoParams['gia_nhap']=$item['don_gia_nhap'];
                 $chiTietPhieuKhoParams['trang_thai'] = self::SU_DUNG;  
+                $chiTietPhieuKhoParams['don_vi_nhap'] = $item['don_vi_tinh'];
+                $chiTietPhieuKhoParams['he_so_quy_doi'] = $item['he_so_quy_doi'] ?? self::HE_SO_QUY_DOI;
+                $chiTietPhieuKhoParams['don_vi_co_ban'] = $item['don_vi_co_ban'];
                 $this->chiTietPhieuKhoRepository->createChiTietPhieuKho($chiTietPhieuKhoParams);
             }
             
@@ -295,6 +303,8 @@ class PhieuKhoService {
                             $soLuongTonKhoChan = 0;
                             $soLuongTonKhoLe1 = 0;
                             $soLuongTonKhoLe2 = 0;
+                            $soLuongNhapChan = 0;
+                            $soLuongNhapLe = 0;
                             $soLuongYeuCau = $chenhLech;
                         } else {
                             $soLuongTonKho = $chenhLech;
@@ -304,11 +314,15 @@ class PhieuKhoService {
                                 $soLuongTonKhoChan = 0;
                                 $soLuongTonKhoLe1 = 0;
                                 $soLuongTonKhoLe2 = 0;
+                                $soLuongNhapChan = 0;
+                                $soLuongNhapLe = 0;
                             } else {
                                 $arrSoLuong = explode('.', $chenhLech);
                                 $soLuongTonKhoChan = $arrSoLuong[0];
                                 $soLuongTonKhoLe1 = $itemDataTheKho['sl_ton_kho_le_1'];
                                 $soLuongTonKhoLe2 = $itemDataTheKho['sl_ton_kho_le_2'];
+                                $soLuongNhapChan = floor($chenhLech / $itemDataTheKho['he_so_quy_doi']);
+                                $soLuongNhapLe = $chenhLech - ($soLuongNhapChan * $itemDataTheKho['he_so_quy_doi']);
                                 
                                 if(isset($arrSoLuong[1])) {
                                     switch($arrSoLuong[1]) {
@@ -325,6 +339,9 @@ class PhieuKhoService {
                                             $soLuongTonKhoLe2 = 1;
                                             break;
                                     }
+                                } else {
+                                    $soLuongTonKhoLe1 = 0;
+                                    $soLuongTonKhoLe2 = 0;
                                 }
                             }
                         }
@@ -335,7 +352,9 @@ class PhieuKhoService {
                             'sl_ton_kho'        => $soLuongTonKho,
                             'sl_ton_kho_chan'   => $soLuongTonKhoChan,
                             'sl_ton_kho_le_1'   => $soLuongTonKhoLe1,
-                            'sl_ton_kho_le_2'   => $soLuongTonKhoLe2
+                            'sl_ton_kho_le_2'   => $soLuongTonKhoLe2,
+                            'sl_nhap_chan'      => $soLuongNhapChan,
+                            'sl_nhap_le'        => $soLuongNhapLe
                         ];
                     }
                 }
