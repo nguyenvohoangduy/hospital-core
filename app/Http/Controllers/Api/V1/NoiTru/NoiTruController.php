@@ -74,4 +74,9 @@ class NoiTruController extends APIController {
             return $this->respond([]);
         }
     }
+    
+    public function index(Request $request)
+    {
+        return response(200);
+    }     
 }
