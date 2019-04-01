@@ -172,6 +172,11 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::get('getNhomDmById/{id}','DanhMuc\DanhMucController@getNhomDmById');
     	Route::post('createNhomDanhMuc','DanhMuc\DanhMucController@createNhomDanhMuc');
     	Route::post('updateNhomDanhMuc/{id}','DanhMuc\DanhMucController@updateNhomDanhMuc');
+    	Route::get('getAllNoiGioiThieu','DanhMuc\DanhMucController@getAllNoiGioiThieu');
+    	Route::get('getPartialNoiGioiThieu','DanhMuc\DanhMucController@getPartialNoiGioiThieu');
+    	Route::post('createNoiGioiThieu','DanhMuc\DanhMucController@createNoiGioiThieu');
+    	Route::post('updateNoiGioiThieu/{id}','DanhMuc\DanhMucController@updateNoiGioiThieu');
+    	Route::delete('deleteNoiGioiThieu/{id}','DanhMuc\DanhMucController@deleteNoiGioiThieu');
     });
     
     Route::group(['prefix' => 'nguoidung'], function () {
@@ -271,6 +276,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });
     
     Route::group(['prefix' => 'donvitinh'], function () {
+        Route::get('getAll','DonViTinh\DonViTinhController@getAll');
 		Route::get('getPartial','DonViTinh\DonViTinhController@getPartial');
 		Route::get('getDonViCoBan','DonViTinh\DonViTinhController@getDonViCoBan');
 		Route::post('create','DonViTinh\DonViTinhController@create');
@@ -317,6 +323,15 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getListByHsbaId/{hsbaId}/{phongId}','DieuTri\DieuTriController@getAllByHsbaId');
 		Route::get('getDetailById/{id}','DieuTri\DieuTriController@getById');
 		Route::post('createPhieuDieuTri','DieuTri\DieuTriController@create');
+    });
+    
+    Route::group(['prefix' => 'benhvien'], function () {
+        Route::post('create','BenhVien\BenhVienController@create');
+        Route::get('find/{id}','BenhVien\BenhVienController@find');
+        Route::get('getPartial','BenhVien\BenhVienController@getPartial');
+        Route::put('update/{id}','BenhVien\BenhVienController@update');
+        Route::delete('delete/{id}','BenhVien\BenhVienController@delete');
+        Route::get('getListKhoaPhongByBenhVienId/{id}','BenhVien\BenhVienController@getListKhoaPhongByBenhVienId');
     });
     
     Route::group(['prefix' => 'phieuchamsoc'], function () {

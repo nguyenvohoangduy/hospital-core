@@ -11,7 +11,13 @@ class DonViTinhRepository extends BaseRepositoryV2
     public function getModel()
     {
         return DonViTinh::class;
-    }    
+    }  
+    
+    public function getAll()
+    {
+        $result = $this->model->orderBy('ten', 'asc')->get();
+        return $result;
+    }
 
     public function getPartial($limit = 100, $page = 1, $keyword = '')
     {
