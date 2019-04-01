@@ -39,7 +39,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     
     // don-tiep-service
     Route::group(['prefix' => 'don-tiep-service','as' => 'don-tiep.' ], function () {
-        Route::get('index','DonTiep\DonTiepController@register')->name('index');
+        Route::get('index','DonTiep\DonTiepController@index')->name('index');
         Route::get('getListPatientByKhoaPhong/{phongId}/{benhVienId}','DonTiep\DonTiepController@getListPatientByKhoaPhong')->name('danh-sach-benh-nhan');
         Route::post('register','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.create');
         Route::get('register','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.index');
