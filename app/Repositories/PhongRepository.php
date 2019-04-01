@@ -57,7 +57,7 @@ class PhongRepository extends BaseRepositoryV2
         $phong = $this->model->where([
                                 ['khoa_id', '=', $khoaId],
                                 ['loai_phong', '=', self::PHONG_HANH_CHINH],
-                                ['loai_benh_an', '!=', self::BENH_AN_KHAM_BENH]
+                                //['loai_benh_an', '!=', self::BENH_AN_KHAM_BENH]
                             ])
                             ->get()
                             ->first();
@@ -72,5 +72,26 @@ class PhongRepository extends BaseRepositoryV2
                             ->get()
                             ->first();
         return $phong;
+    }
+    
+    public function getListKhoaPhongByBenhVienId($benhVienId) {
+        $column = [
+            'phong.id',
+            'phong.khoa_id',
+            'phong.ten_phong',
+            'phong.ma_nhom',
+            'khoa.ten_khoa',
+            'phong.loai_phong',
+            'khoa.benh_vien_id'
+        ];
+        
+        $data = $this->model
+                        ->join('khoa', function($join) use ($benhVienId) {
+                            $join->on('khoa.id', '=', 'phong.khoa_id')
+                                ->where('khoa.benh_vien_id', '=', $benhVienId);
+                        })
+                        ->orderBy('khoa.ten_khoa')
+                        ->get($column);
+        return $data;
     }
 }
