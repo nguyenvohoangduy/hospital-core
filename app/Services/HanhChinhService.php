@@ -103,7 +103,7 @@ class HanhChinhService {
             try {
                 $hsbaDv = $this->hsbaDonViRepository->getById($request['hsba_don_vi_id']);
                 //viện phí ?
-                $request['doi_tuong_benh_nhan'] = $hsbaKp['doi_tuong_benh_nhan'];
+                $request['doi_tuong_benh_nhan'] = $hsbaDv['doi_tuong_benh_nhan'];
                 //0. update hsbakp cu
                 $this->updateOldHSBADV($request);
                 
