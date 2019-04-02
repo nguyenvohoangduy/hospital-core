@@ -114,7 +114,7 @@ class HanhChinhService {
                 $request['hsba_don_vi'] = $this->createHSBADV($request, $hsbaDv);
                 
                 //3. tạo viện phí mới
-                //$request['vien_phi_id'] = $this->createVienPhi($request, $hsbaDv);
+                $request['vien_phi_id'] = $this->createVienPhi($request, $hsbaDv);
                 
                 //4. Tao phieu dieu tri
                 //$request['dieu_tri_id'] = $this->createDieuTri($request);
