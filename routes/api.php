@@ -308,6 +308,13 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('getYLenhByDieuTriId/{dieuTriId}','PhieuChamSoc\PhieuChamSocController@getYLenhByDieuTriId');
     });    
     
+    Route::group(['prefix' => 'DBSChemaCompare'], function () {
+        Route::get('getAllTablesDevelop','DBSChemaCompare\DBSChemaCompareController@getAllTablesDevelop');
+        Route::get('getAllTablesStaging','DBSChemaCompare\DBSChemaCompareController@getAllTablesStaging');
+        Route::get('getAllColumsDevelop/{keyWords}','DBSChemaCompare\DBSChemaCompareController@getAllColumsDevelop');
+        Route::get('getAllColumsStaging/{keyWords}','DBSChemaCompare\DBSChemaCompareController@getAllColumsStaging');
+    }); 
+    
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {
         Route::get('user', 'AuthController@user');
         Route::post('logout', 'AuthController@logout');

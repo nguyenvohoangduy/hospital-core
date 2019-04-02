@@ -13,7 +13,7 @@ class DBSChemaCompare extends Command
      *
      * @var string
      */
-    protected $signature = 'db_schema_compare {--dest_db_host=*} {--dest_db_name=*} {--dest_db_user=*} {--dest_db_pass=*}';
+    protected $signature = 'db_schema_compare {--dest_db_host=env(DB_HOST)} {--dest_db_name=env(DB_DATABASE)} {--dest_db_user=env(DB_USERNAME)} {--dest_db_pass=env(DB_PASSWORD)}';
 
     /**
      * The console command description.
@@ -41,7 +41,7 @@ class DBSChemaCompare extends Command
     public function handle()
     {
      
-         $table = $this->dbSChemaCompareService->getTableColumns();
+         $table = $this->dbSChemaCompareService->getAllTablesDevelop();
          print_r($table);
   
     }

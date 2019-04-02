@@ -13,7 +13,7 @@ class DBSChemaCompareStaging extends Command
      *
      * @var string
      */
-    protected $signature = 'db_schema_compare_staging {--dest_db_host=hospitalstaging-dbins.c3mlizysfydl.ap-southeast-1.rds.amazonaws.com} {--dest_db_name=hospital_dev} {--dest_db_user=robustaeng} {--dest_db_pass=robustaeng}';
+    protected $signature = 'db_schema_compare_staging {--dest_db_host=env(DB_HOST_STAGING)} {--dest_db_name=env(DB_DATABASE_STAGING)} {--dest_db_user=env(DB_USERNAME_STAGING)} {--dest_db_pass=env(DB_PASSWORD_STAGING)}';
 
     /**
      * The console command description.
@@ -41,7 +41,7 @@ class DBSChemaCompareStaging extends Command
     public function handle()
     {
      
-         $table2 = $this->dbSChemaCompareService->getTableColumnsStaging();
+         $table2 = $this->dbSChemaCompareService->getAllTablesStaging();
          print_r($table2);
   
     }

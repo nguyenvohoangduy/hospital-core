@@ -5,27 +5,32 @@ namespace App\Services;
 use Illuminate\Http\Request;
 use Validator;
 use DB;
+use Schema;
 
 class DBSChemaCompareService {
     
-    public function getTableColumns() {
-       
-        //get col table
-        //  return $this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable());
+    public function getAllTablesDevelop() {
         //getall table name
-        
         $tables = DB::connection()->getDoctrineSchemaManager()->listTableNames();
         return $tables;
-        
     }
-    public function getTableColumnsStaging() {
+    public function getAllTablesStaging() {
        
-        //get col table
-        //  return $this->getConnection()->getSchemaBuilder()->getColumnListing($this->getTable());
         //getall table name
-        
         $tables2 = DB::connection()->getDoctrineSchemaManager()->listTableNames();
         return $tables2;
-        
     }
+    
+    public function getAllColumsDevelop($keyWords){
+          // $columns = Schema::getColumnListing('phong');
+           $columns = DB::getSchemaBuilder()->getColumnListing($keyWords);
+           return $columns;
+    }
+    
+    public function getAllColumsStaging(){
+          // $columns = Schema::getColumnListing('phong');
+           $columns = DB::getSchemaBuilder()->getColumnListing('khoa');
+           return $columns;
+    }
+   
 }
