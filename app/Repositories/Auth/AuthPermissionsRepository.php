@@ -72,4 +72,10 @@ class AuthPermissionsRepository extends BaseRepositoryV2
         $data = $this->model->findOrFail($id);
         return $data;
     }
+    
+    public function getAllPermission()
+    {
+        $data = $this->model->all();
+        return $data;
+    }     
 }

@@ -32,4 +32,10 @@ class AuthPermissionsService {
         $data = $this->authPermissionsRepository->getById($id);
         return $data;
     }
+    
+    public function getAllPermission()
+    {
+        $data = $this->authPermissionsRepository->getAllPermission();
+        return $data;
+    }    
 }

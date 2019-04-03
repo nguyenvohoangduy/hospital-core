@@ -205,6 +205,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getListRoles','AuthController@getListRoles');
 		Route::get('getRolesByGroupsId/{id}','AuthController@getRolesByGroupsId');
 		Route::get('getKhoaPhongByGroupsId/{id}/{benhVienId}','AuthController@getKhoaPhongByGroupsId');
+		Route::get('getAllPermission','AuthController@getAllPermission');
     });     
     
     Route::group(['prefix' => 'thungan'], function () {
