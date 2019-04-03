@@ -21,19 +21,17 @@ class AuthGroupsRepository extends BaseRepositoryV2
             'description',
             'benh_vien_id'
         ];
-        $query = DB::table('auth_groups');
+        $model = $this->model->where('benh_vien_id',$benhVienId);
         if($keyWords!=""){
-           $query->where([['name', 'like', '%' . $keyWords . '%'],['benh_vien_id','=',$benhVienId]])
-                 ->orWhere([['description', 'like', '%' . $keyWords . '%'],['benh_vien_id','=',$benhVienId]]);
+            $query = $model->where([['name', 'like', '%' . $keyWords . '%']])
+                 ->orWhere([['description', 'like', '%' . $keyWords . '%']]);
         }
-        else {
-            $query->where('benh_vien_id',$benhVienId);
-        }
-        $totalRecord = $query->count();
+
+        $totalRecord = $model->count();
         if($totalRecord) {
             $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
             
-            $data = $query->orderBy('id', 'asc')
+            $data = $model->orderBy('id', 'asc')
                         ->offset($offset)
                         ->limit($limit)
                         ->get($column);
