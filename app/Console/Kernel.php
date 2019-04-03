@@ -16,8 +16,7 @@ class Kernel extends ConsoleKernel
         Commands\PushDmtvt::class,
         Commands\PushTvtTheoKho::class,
         Commands\CacheDmth::class,
-        Commands\DBSChemaCompare::class, 
-        Commands\DBSChemaCompareStaging::class,
+        Commands\DBSChemaCompare::class
     ];
 
     /**

@@ -13,8 +13,12 @@ class DBSChemaCompare extends Command
      *
      * @var string
      */
-    protected $signature = 'db_schema_compare {--dest_db_host=env(DB_HOST)} {--dest_db_name=env(DB_DATABASE)} {--dest_db_user=env(DB_USERNAME)} {--dest_db_pass=env(DB_PASSWORD)}';
-
+    // protected $signature = 'db_schema_compare {db_host1=env(DB_HOST)} {db_name1=env(DB_DATABASE)} {db_user1=env(DB_USERNAME)} {db_pass1=env(DB_PASSWORD)} {db_host2=env(DB_HOST_STAGING)} {db_name2=env(DB_DATABASE_STAGING)} {db_user2=env(DB_USERNAME_STAGING)} {db_pass2=env(DB_PASSWORD_STAGING)}';
+    // {--db_host2=*} {--db_name2=*} {--db_user2=*} {--db_pass2=*}
+    
+    protected $signature = 'db_schema_compare';
+  
+    
     /**
      * The console command description.
      *
@@ -42,7 +46,8 @@ class DBSChemaCompare extends Command
     {
      
          $table = $this->dbSChemaCompareService->getAllTablesDevelop();
-         print_r($table);
-  
+          print_r($table);
+          
+        
     }
 }
