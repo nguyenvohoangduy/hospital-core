@@ -79,5 +79,11 @@ class PermissionController extends APIController
     public function getMaNhomPhongByKhoaId($khoaId) {
         $data = $this->phongService->getMaNhomPhongByKhoaId($khoaId);
         return $this->respond($data);
+    }
+    
+    public function checkData(Request $request) {
+        $input = $request->all();
+        $status = $this->authPermissionsService->checkData($input);
+        return $this->respond($status);
     }    
 }

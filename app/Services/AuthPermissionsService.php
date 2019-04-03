@@ -37,5 +37,11 @@ class AuthPermissionsService {
     {
         $data = $this->authPermissionsRepository->getAllPermission();
         return $data;
+    }
+    
+    public function checkData($input)
+    {
+        $status = $this->authPermissionsRepository->checkData($input);
+        return $status;
     }    
 }

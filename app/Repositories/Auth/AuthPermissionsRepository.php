@@ -77,5 +77,30 @@ class AuthPermissionsRepository extends BaseRepositoryV2
     {
         $data = $this->model->all();
         return $data;
+    }
+    
+    public function checkData($input)
+    {
+        $where=[
+            ['policy_id','=',$input['policy_id']],
+            ['service_id','=',$input['service_id']],
+            ['benh_vien_id','=',$input['benh_vien_id']],
+            ['key','=',$input['key']]
+            ];
+        if(array_key_exists('id',$input)) {
+            $where[]=['id','!=',$input['id']];
+        }            
+        if(array_key_exists('khoa',$input)) {
+            $where[]=['khoa','=',$input['khoa']];
+        }
+        if(array_key_exists('ma_nhom_phong',$input)) {
+            $where[]=['ma_nhom_phong','=',$input['ma_nhom_phong']];
+        }        
+        $data = $this->model->where($where)->first();
+        
+        if($data)
+            return true;
+        else
+            return false;
     }     
 }
