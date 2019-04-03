@@ -94,4 +94,9 @@ class PhongRepository extends BaseRepositoryV2
                         ->get($column);
         return $data;
     }
+    
+    public function getMaNhomPhongByKhoaId($khoaId) {
+        $data = $this->model->where('khoa_id',$khoaId)->distinct()->orderBy('ma_nhom')->get(['ma_nhom']);
+        return $data;
+    }    
 }

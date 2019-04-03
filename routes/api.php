@@ -40,8 +40,11 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     // don-tiep-service
     Route::group(['prefix' => 'don-tiep-service','as' => 'don-tiep.' ], function () {
         Route::get('index','DonTiep\DonTiepController@index')->name('index');
+        
+        //Route::get('register-index','DonTiep\DonTiepController@registerIndex')->name('dang-ky-kham-benh.index');
+        Route::get('register','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.index');
         Route::post('register','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.create');
-
+        //Route::get('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient')->name('hsba.update.index');
         Route::post('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient')->name('hsba.update');
     });
     
@@ -353,6 +356,16 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::get('getRoute/{serviceName}','Auth\PolicyController@getRoute');
      	Route::get('getAllRoute','Auth\PolicyController@getAllRoute');
      	Route::get('checkKey/{key}','Auth\PolicyController@checkKey');
+     	Route::get('getByServiceId/{serviceId}','Auth\PolicyController@getByServiceId');
+    });
+    
+    Route::group(['prefix' => 'permission'], function () {
+		Route::get('getPartial','Auth\PermissionController@getPartial');
+		Route::get('getById/{id}','Auth\PermissionController@getById');
+		Route::post('create','Auth\PermissionController@create');
+     	Route::post('update/{id}','Auth\PermissionController@update');
+     	Route::get('getKhoaByLoaiKhoaBenhVienId/{loaiKhoa}/{benhVienId}','Auth\PermissionController@getKhoaByLoaiKhoaBenhVienId');
+     	Route::get('getMaNhomPhongByKhoaId/{khoaId}','Auth\PermissionController@getMaNhomPhongByKhoaId');
     });    
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {

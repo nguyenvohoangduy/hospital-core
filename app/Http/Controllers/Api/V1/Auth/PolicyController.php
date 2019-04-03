@@ -131,5 +131,11 @@ class PolicyController extends APIController
     {
         $data = $this->authPolicyService->checkKey($key);   
         return $this->respond($data);
-    }     
+    }
+    
+    public function getByServiceId($serviceId)
+    {
+        $data = $this->authPolicyService->getByServiceId($serviceId);   
+        return $this->respond($data);
+    }   
 }
