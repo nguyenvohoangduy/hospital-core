@@ -6,7 +6,8 @@ CREATE TABLE public.auth_permissions
   khoa integer,
   ma_nhom_phong text,
   key character varying(100),
-  service_id integer
+  service_id integer,
+  name character varying(200)
 )
 WITH (
   OIDS=FALSE

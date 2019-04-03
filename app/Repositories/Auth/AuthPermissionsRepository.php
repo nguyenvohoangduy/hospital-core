@@ -17,9 +17,9 @@ class AuthPermissionsRepository extends BaseRepositoryV2
 
         $model = $this->model;
         
-        // if($keywords!=''){
-        //     $model = $model->whereRaw('LOWER(auth_policy.name) LIKE ? ',['%'.strtolower($keywords).'%']);
-        // }
+        if($keywords!=''){
+            $model = $model->whereRaw('LOWER(auth_permissions.name) LIKE ? ',['%'.strtolower($keywords).'%']);
+        }
         
         $column = [
             'auth_permissions.*',
