@@ -473,4 +473,9 @@ class PhongKhamController extends APIController
         
         return $this->respond($data);
     }
+    
+    public function index(Request $request)
+    {
+        return response(200);
+    }     
 }

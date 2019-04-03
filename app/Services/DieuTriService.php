@@ -13,6 +13,7 @@ use App\Repositories\VienPhi\VienPhiRepository;
 use App\Repositories\PhongRepository;
 use App\Repositories\RaVienRepository;
 use App\Repositories\ChuyenVienRepository;
+use App\Repositories\BenhVienRepository;
 use App\Services\SttPhongKhamService;
 use App\Services\PhieuKhoService;
 use App\Helper\AwsS3;
@@ -73,7 +74,8 @@ class DieuTriService
         RaVienRepository $raVienRepository,
         HsbaPhongKhamRepository $hsbaPhongKhamRepository,
         ChuyenVienRepository $chuyenVienRepository,
-        PhieuKhoService $phieuKhoService
+        PhieuKhoService $phieuKhoService,
+        BenhVienRepository $benhVienRepository
     )
     {
         $this->dieuTriRepository = $dieuTriRepository;
@@ -87,6 +89,7 @@ class DieuTriService
         $this->raVienRepository = $raVienRepository;
         $this->chuyenVienRepository = $chuyenVienRepository;
         $this->phieuKhoService = $phieuKhoService;
+        $this->benhVienRepository = $benhVienRepository;
     }
     
     public function updateInfoDieuTri(array $dieuTriParams)
@@ -106,9 +109,14 @@ class DieuTriService
                 });
                 $input = array_except($input, ['hsba_don_vi_id', 'thoi_gian_chi_dinh', 'khoa_id']);
                 
+                // Get Data Benh Vien Thiet Lap
+                if(empty($params['benh_vien_id'])) $params['benh_vien_id'] = 1;
+                $dataBenhVienThietLap = $this->getBenhVienThietLap($params['benh_vien_id']);
+                unset($params['benh_vien_id']);
+                
                 $fileUpload = [];
                 // Config S3
-                $s3 = new AwsS3();
+                $s3 = new AwsS3($dataBenhVienThietLap['bucket']);
                 
                 // GET OLD FILE
                 $item = $this->hsbaPhongKhamRepository->getByHsbaDvId($dieuTriParams['hsba_don_vi_id']);
@@ -136,9 +144,10 @@ class DieuTriService
                 
                 if(!empty($input['files'])) {
                     foreach ($input['files'] as $file) {
-                        $imageFileName = time() . '_' . rand(0, 999999) . '.' . $file->getClientOriginalExtension();
-                        $fileUpload[] = $imageFileName;
-                        
+                        $fileName = $file->getClientOriginalName();
+                        $namePatient = preg_replace("/(\s+)/", "-", $input['ten_benh_nhan']);
+                        $imageFileName = 'kham-benh/' . env('APP_ENV') . '/' . date("Y/m/d") . '/' . $namePatient . '/' . $fileName;
+                        $fileUpload[] = 'https://s3-'. env('S3_REGION') .'.amazonaws.com/' .$dataBenhVienThietLap['bucket']. '/' . $imageFileName;
                         $pathName = $file->getPathName();
                         $mimeType = $file->getMimeType();
                         $result = $s3->putObject($imageFileName, $pathName, $mimeType);
@@ -466,6 +475,10 @@ class DieuTriService
     {
         $data = $this->dieuTriRepository->getAllByHsbaId($hsbaId,$phongId);
         return $data;
-    }   
+    }     
     
+    private function getBenhVienThietLap($id) {
+        $data = $this->benhVienRepository->getBenhVienThietLap($id);
+        return $data;
+    }
 }

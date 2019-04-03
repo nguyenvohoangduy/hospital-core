@@ -36,6 +36,24 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::post('patient', 'SamplePatientController@store');
     Route::post('patient/{id}', 'SamplePatientController@update');
     Route::delete('patient/{id}', 'SamplePatientController@delete');
+    
+    // don-tiep-service
+    Route::group(['prefix' => 'don-tiep-service','as' => 'don-tiep.' ], function () {
+        Route::get('index','DonTiep\DonTiepController@index')->name('index');
+        Route::post('register','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.create');
+
+        Route::post('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient')->name('hsba.update');
+    });
+    
+    // phong-kham-service
+    Route::group(['prefix' => 'phong-kham-service','as' => 'phong-kham.' ], function () {
+        Route::get('index','PhongKham\PhongKhamController@index')->name('index');
+    }); 
+    
+    //noi-tru-service
+    Route::group(['prefix' => 'noi-tru-service','as' => 'noi-tru.' ], function () {
+        Route::get('index','NoiTru\NoiTruController@index')->name('index');
+    });     
         
     Route::group(['prefix' => 'dontiep'], function () {
         Route::post('makeSttDonTiepWhenScanCard','DonTiep\SttDonTiepController@makeSttDonTiepWhenScanCard');
@@ -52,6 +70,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         
         Route::post('scanqrcode', 'DonTiep\ScanQRCodeController@getInfoFromCard');
         Route::post('register','DonTiep\DonTiepController@register');
+        Route::get('listBenhNhanTrung','DonTiep\DonTiepController@listBenhNhanTrung');
+        Route::get('getHsbaByBenhNhanId/{benhNhanId}','DonTiep\DonTiepController@getHsbaByBenhNhanId');
         
         // store to cache from queue
         Route::post('hsbaKp/cache/fromQueue','DonTiep\DonTiepController@pushToRedisFromQueue');
@@ -101,7 +121,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getHsbaKhoaPhongById/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@getById');
 		Route::post('updateInfoDieuTri','PhongKham\PhongKhamController@updateInfoDieuTri');
 		Route::get('getListPhongKham/{hsbaId}','PhongKham\PhongKhamController@getListPhongKham');
-		Route::post('xuTriBenhNhan','PhongKham\PhongKhamController@xuTriBenhNhan');
+		Route::post('xuTriBenhNhan','PhongKham\PhongKhamController@xuTriBenhNhan')->name('xu_tri_phong_kham');
 		Route::get('getIcd10ByCode/{icd10Code}','PhongKham\PhongKhamController@getIcd10ByCode');
 		Route::post('saveYLenh','PhongKham\PhongKhamController@saveYLenh');
 		Route::get('getLichSuYLenh','PhongKham\PhongKhamController@getLichSuYLenh');
@@ -154,6 +174,11 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::get('getNhomDmById/{id}','DanhMuc\DanhMucController@getNhomDmById');
     	Route::post('createNhomDanhMuc','DanhMuc\DanhMucController@createNhomDanhMuc');
     	Route::post('updateNhomDanhMuc/{id}','DanhMuc\DanhMucController@updateNhomDanhMuc');
+    	Route::get('getAllNoiGioiThieu','DanhMuc\DanhMucController@getAllNoiGioiThieu');
+    	Route::get('getPartialNoiGioiThieu','DanhMuc\DanhMucController@getPartialNoiGioiThieu');
+    	Route::post('createNoiGioiThieu','DanhMuc\DanhMucController@createNoiGioiThieu');
+    	Route::post('updateNoiGioiThieu/{id}','DanhMuc\DanhMucController@updateNoiGioiThieu');
+    	Route::delete('deleteNoiGioiThieu/{id}','DanhMuc\DanhMucController@deleteNoiGioiThieu');
     });
     
     Route::group(['prefix' => 'nguoidung'], function () {
@@ -317,6 +342,18 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('getPhieuChamSocById/{id}','PhieuChamSoc\PhieuChamSocController@getById');
         Route::get('getListPhieuChamSocByDieuTriId/{dieuTriId}','PhieuChamSoc\PhieuChamSocController@getAllByDieuTriId');
         Route::get('getYLenhByDieuTriId/{dieuTriId}','PhieuChamSoc\PhieuChamSocController@getYLenhByDieuTriId');
+    });
+    
+    Route::group(['prefix' => 'policy'], function () {
+		Route::get('getPartial','Auth\PolicyController@getPartial');
+		Route::get('getById/{id}','Auth\PolicyController@getById');
+		Route::post('create','Auth\PolicyController@create');
+     	Route::post('update/{id}','Auth\PolicyController@update');
+     	Route::delete('delete/{id}','Auth\PolicyController@delete');
+     	Route::get('getAllService','Auth\PolicyController@getAllService');
+     	Route::get('getRoute/{serviceName}','Auth\PolicyController@getRoute');
+     	Route::get('getAllRoute','Auth\PolicyController@getAllRoute');
+     	Route::get('checkKey/{key}','Auth\PolicyController@checkKey');
     });    
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {

@@ -7,10 +7,12 @@ use App\Services\DanhMucDichVuService;
 use App\Services\DanhMucTongHopService;
 use App\Services\DanhMucTrangThaiService;
 use App\Services\DanhMucThuocVatTuService;
+use App\Services\NoiGioiThieuService;
 use App\Services\NhomDanhMucService;
 use App\Http\Requests\DanhMucDichVuFormRequest;
 use App\Http\Requests\DanhMucTongHopFormRequest;
 use App\Http\Requests\DanhMucTrangThaiFormRequest;
+use App\Http\Requests\NoiGioiThieuFormRequest;
 
 class DanhMucController extends APIController
 {
@@ -20,7 +22,8 @@ class DanhMucController extends APIController
         DanhMucTongHopService $dmthService, 
         DanhMucTrangThaiService $dmttService, 
         DanhMucThuocVatTuService $dmtvtService,
-        NhomDanhMucService $nhomDanhMucService
+        NhomDanhMucService $nhomDanhMucService,
+        NoiGioiThieuService $noiGioiThieuService
     )
     {
         $this->dmdvService = $dmdvService;
@@ -28,6 +31,7 @@ class DanhMucController extends APIController
         $this->dmttService = $dmttService;
         $this->dmtvtService = $dmtvtService;
         $this->nhomDanhMucService = $nhomDanhMucService;
+        $this->noiGioiThieuService = $noiGioiThieuService;
     }
     
     public function getListDanhMucDichVu(Request $request)
@@ -372,5 +376,63 @@ class DanhMucController extends APIController
         } catch (\Exception $ex) {
             return $ex;
         }
+    }
+    
+    public function getAllNoiGioiThieu()
+    {
+        $data = $this->noiGioiThieuService->getAll();
+        return $this->respond($data);
+    }
+    
+    public function getPartialNoiGioiThieu(Request $request)
+    {
+        $limit = $request->query('limit', 100);
+        $page = $request->query('page', 1);
+        $ten = $request->query('ten', '');
+        
+        $data = $this->noiGioiThieuService->getPartial($limit, $page, $ten);
+        return $this->respond($data);
+    }
+    
+    public function createNoiGioiThieu(NoiGioiThieuFormRequest $request) {
+        $input = $request->all();
+        
+        $id = $this->noiGioiThieuService->create($input);
+        if($id) {
+            $this->setStatusCode(201);
+        } else {
+            $this->setStatusCode(400);
+        }
+        
+        return $this->respond([]);
+    }
+    
+    public function updateNoiGioiThieu($id, NoiGioiThieuFormRequest $request)
+    {
+        try {
+            $isNumericId = is_numeric($id);
+            $input = $request->all();
+            if($isNumericId) {
+                $this->noiGioiThieuService->update($id, $input);
+            } else {
+                $this->setStatusCode(400);
+            }
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+    
+    public function deleteNoiGioiThieu($id)
+    {
+        $isNumericId = is_numeric($id);
+        
+        if($isNumericId) {
+            $this->noiGioiThieuService->delete($id);
+            $this->setStatusCode(204);
+        } else {
+            $this->setStatusCode(400);
+        }
+        
+        return $this->respond([]);        
     }
 }
