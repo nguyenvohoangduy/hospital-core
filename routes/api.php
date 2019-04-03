@@ -300,6 +300,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getListByHsbaId/{hsbaId}/{phongId}','DieuTri\DieuTriController@getAllByHsbaId');
 		Route::get('getDetailById/{id}','DieuTri\DieuTriController@getById');
 		Route::post('createPhieuDieuTri','DieuTri\DieuTriController@create');
+		Route::post('tongHopYLenh','DieuTri\DieuTriController@tongHopYLenh');
     });
     
     Route::group(['prefix' => 'benhvien'], function () {

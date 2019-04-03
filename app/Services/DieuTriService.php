@@ -14,6 +14,7 @@ use App\Repositories\PhongRepository;
 use App\Repositories\RaVienRepository;
 use App\Repositories\ChuyenVienRepository;
 use App\Services\SttPhongKhamService;
+use App\Services\PhieuKhoService;
 use App\Helper\AwsS3;
 
 class DieuTriService
@@ -71,7 +72,8 @@ class DieuTriService
         SttPhongKhamService $sttPhongKhamService,
         RaVienRepository $raVienRepository,
         HsbaPhongKhamRepository $hsbaPhongKhamRepository,
-        ChuyenVienRepository $chuyenVienRepository
+        ChuyenVienRepository $chuyenVienRepository,
+        PhieuKhoService $phieuKhoService
     )
     {
         $this->dieuTriRepository = $dieuTriRepository;
@@ -84,6 +86,7 @@ class DieuTriService
         $this->sttPhongKhamService = $sttPhongKhamService;
         $this->raVienRepository = $raVienRepository;
         $this->chuyenVienRepository = $chuyenVienRepository;
+        $this->phieuKhoService = $phieuKhoService;
     }
     
     public function updateInfoDieuTri(array $dieuTriParams)
@@ -463,5 +466,6 @@ class DieuTriService
     {
         $data = $this->dieuTriRepository->getAllByHsbaId($hsbaId,$phongId);
         return $data;
-    }     
+    }   
+    
 }

@@ -230,21 +230,14 @@ class PhieuKhoService {
                 $theKhoParams['danh_muc_thuoc_vat_tu_id']=$item['id'];
                 $theKhoParams['so_luong']=$item['so_luong'];
  
-                $theKho = $this->theKhoRepository->updateTheKho($theKhoParams);
-                
-                //update so_luong_kha_dung in table gioi_han
-                $theKhoParams['sl_kha_dung'] = $theKho['sl_kha_dung'];
-                $this->gioiHanRepository->updateSoLuongKhaDung($theKhoParams);
-                
-                //update so_luong_kha_dung in elasticsearch
-                $this->danhMucThuocVatTuService->updateSoLuongKhaDungById($theKhoParams);
+                $theKho = $this->theKhoRepository->getTheKhoById($theKhoParams);
                 
                 if($theKho) {
                     $chiTietPhieuKhoParams = [];
-                    $chiTietPhieuKhoParams['phieu_kho_id']=$phieuKhoId;
-                    $chiTietPhieuKhoParams['danh_muc_thuoc_vat_tu_id']=$item['id'];
-                    $chiTietPhieuKhoParams['the_kho_id']=$theKho['id'];
-                    $chiTietPhieuKhoParams['so_luong_yeu_cau']=$item['so_luong'];
+                    $chiTietPhieuKhoParams['phieu_kho_id'] = $phieuKhoId;
+                    $chiTietPhieuKhoParams['danh_muc_thuoc_vat_tu_id'] = $item['id'];
+                    // $chiTietPhieuKhoParams['the_kho_id'] = $theKho['id'];
+                    $chiTietPhieuKhoParams['so_luong_yeu_cau'] = $item['so_luong'];
                     $chiTietPhieuKhoParams['trang_thai'] = self::THUOC_VAT_TU_KHONG_DUYET; 
                     $this->chiTietPhieuKhoRepository->createChiTietPhieuKho($chiTietPhieuKhoParams); 
                 }
@@ -305,7 +298,7 @@ class PhieuKhoService {
                             $soLuongTonKhoLe2 = 0;
                             $soLuongNhapChan = 0;
                             $soLuongNhapLe = 0;
-                            $soLuongYeuCau = $chenhLech;
+                            $soLuongYeuCau = $chenhLech * (-1);
                         } else {
                             $soLuongTonKho = $chenhLech;
                             $soLuongYeuCau = 0;
@@ -345,7 +338,6 @@ class PhieuKhoService {
                                 }
                             }
                         }
-                        
                         
                         $arrTheKho[] = [
                             'id'                => $itemDataTheKho['id'],

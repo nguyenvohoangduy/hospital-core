@@ -16,6 +16,8 @@ class YLenhRepository extends BaseRepositoryV2
     const Y_LENH_CODE_VAT_TU = 6;
     const Y_LENH_CODE_CAN_LAM_SANG = [2, 3, 4];
     const Y_LENH_CODE_THUOC_VAT_TU = [5, 6];
+    const Y_LENH_CHUA_TONG_HOP = 1;
+    const Y_LENH_DA_TONG_HOP = 0;
     
     const Y_LENH_TEXT_YEU_CAU_KHAM = 'YÊU CẦU KHÁM';
     const Y_LENH_TEXT_XET_NGHIEM = 'XÉT NGHIỆM';
@@ -517,5 +519,33 @@ class YLenhRepository extends BaseRepositoryV2
             ->whereIn('id',$arrayYLenhId)
             ->get();
 		return $data;
-    }    
+    }  
+    
+    public function tongHopYLenh(array $input)
+    {
+        $where = [
+            ['khoa_id', '=', $input['khoa_id']],
+            ['trang_thai', '=', self::Y_LENH_CHUA_TONG_HOP]
+        ];
+        $query = $this->model->where($where)
+                            ->whereIn('loai_y_lenh', self::Y_LENH_CODE_THUOC_VAT_TU)
+                            ->whereBetween('thoi_gian_chi_dinh', [Carbon::parse($input['thoi_gian_chi_dinh'])->startOfDay(), Carbon::parse($input['thoi_gian_chi_dinh'])->endOfDay()]);
+                            
+        $listIdYLenh = $query->get('id');
+                            
+        $listThuocVatTu = $query->select('ten', 'ma', DB::raw('sum(so_luong) as so_luong'), 'kho_id')              
+                        ->groupBy('ten', 'ma', 'kho_id')
+                        ->get();
+                        
+        if($listIdYLenh) {
+            $this->updateStatus($listIdYLenh, self::Y_LENH_DA_TONG_HOP);
+        }
+        
+        return $listThuocVatTu;
+    }
+    
+    public function updateStatus(array $arrayId, $status)
+    {
+        $this->model->whereIn('id', $arrayId)->update(['trang_thai' => $status]);
+    }
 }

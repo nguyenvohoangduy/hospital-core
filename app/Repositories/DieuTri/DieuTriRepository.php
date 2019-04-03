@@ -89,5 +89,6 @@ class DieuTriRepository extends BaseRepositoryV2
             ->orderBy('dieu_tri.id','DESC')
             ->get($column);
         return $data;
-    }     
+    }
+    
 }

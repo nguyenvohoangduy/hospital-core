@@ -55,21 +55,84 @@ class TheKhoRepository extends BaseRepositoryV2
     {
         $where = [
             ['danh_muc_thuoc_vat_tu_id','=',$input['danh_muc_thuoc_vat_tu_id']],
-            ['kho_id','=',$input['kho_id']]
-            ];
-        $find = $this->model
+            ['kho_id','=',$input['kho_id']],
+            ['sl_kha_dung', '>', 0]
+        ];
+        
+        $data = $this->model
                      ->where($where)
                      ->orderBy('ma_con','ASC')
-                     ->first();
-        if($find) {
-            $newKhaDung = $find['sl_kha_dung']-$input['so_luong'];
-            $this->model->where('id',$find['id'])->update(['sl_kha_dung' => $newKhaDung]);
-            $find['sl_kha_dung'] = $newKhaDung;
-            return $find;
+                     ->get();
+                     
+        $soLuongYeuCau = $input['so_luong'];
+        $newKhaDung = 0;
+        
+        if($data) {
+            foreach($data as $item) {
+                if($soLuongYeuCau > 0 && $item['sl_kha_dung'] > 0) {
+                    $chenhLech = $item['sl_kha_dung'] - $soLuongYeuCau;
+                    if($chenhLech < 0) {
+                        $soLuongKhaDung = 0;
+                        $soLuongYeuCau = $chenhLech * (-1);
+                    } else {
+                        $soLuongKhaDung = $chenhLech;
+                        $soLuongYeuCau = 0;
+                    }
+                    
+                    $this->model->where('id', $item['id'])->update(['sl_kha_dung' => $soLuongKhaDung]);
+                    $newKhaDung += $soLuongKhaDung;
+                } else {
+                    $newKhaDung += $item['sl_kha_dung'];
+                }
+            }
         }
-        else
-            return null;
+        
+        return $newKhaDung;
     }
+    
+    // public function updateTheKhoV2(array $theKho, array $chiTietPhieuKho)
+    // {
+    //     $where = [
+    //         ['danh_muc_thuoc_vat_tu_id', '=', $theKho['danh_muc_thuoc_vat_tu_id']],
+    //         ['kho_id', '=', $theKho['kho_id']],
+    //         ['sl_kha_dung', '>', 0]
+    //     ];
+        
+    //     $data = $this->model
+    //                  ->where($where)
+    //                  ->orderBy('ma_con','ASC')
+    //                  ->get();
+                     
+    //     $soLuongYeuCau = $theKho['so_luong'];
+    //     $newKhaDung = 0;
+        
+    //     if($data) {
+    //         foreach($data as $item) {
+    //             if($soLuongYeuCau > 0 && $item['sl_kha_dung'] > 0) {
+    //                 $chenhLech = $item['sl_kha_dung'] - $soLuongYeuCau;
+    //                 if($chenhLech < 0) {
+    //                     $soLuongKhaDung = 0;
+    //                     $soLuongYeuCau = $chenhLech * (-1);
+    //                     $chiTietPhieuKho['so_luong_yeu_cau'] = $item['sl_kha_dung'];
+    //                 } else {
+    //                     $soLuongKhaDung = $chenhLech;
+    //                     $soLuongYeuCau = 0;
+    //                     $chiTietPhieuKho['so_luong_yeu_cau'] = $soLuongYeuCau;
+    //                 }
+                    
+    //                 $this->model->where('id', $item['id'])->update(['sl_kha_dung' => $soLuongKhaDung]);
+    //                 $newKhaDung += $soLuongKhaDung;
+                    
+    //                 $chiTietPhieuKho['the_kho_id'] = $item['id'];
+    //                 $this->chiTietPhieuKhoRepository->createChiTietPhieuKho($chiTietPhieuKho); 
+    //             } else {
+    //                 $newKhaDung += $item['sl_kha_dung'];
+    //             }
+    //         }
+    //     }
+        
+    //     return $newKhaDung;
+    // }
     
     public function getTheKho($khoId,$arrDmtvt)
     {
@@ -98,4 +161,19 @@ class TheKhoRepository extends BaseRepositoryV2
                     ]);
     }
     
+    public function getTheKhoById(array $input)
+    {
+        $where = [
+            ['danh_muc_thuoc_vat_tu_id','=',$input['danh_muc_thuoc_vat_tu_id']],
+            ['kho_id','=',$input['kho_id']],
+            ['sl_ton_kho', '>', 0]
+        ];
+        
+        $data = $this->model
+                     ->where($where)
+                     ->orderBy('ma_con','ASC')
+                     ->get();
+                     
+        return $data;
+    }
 }
