@@ -168,4 +168,9 @@ class DonTiepController extends APIController
         
         return $this->hsbaService->listBenhNhanTrung($ho_va_ten, $ngay_sinh, $gioi_tinh_id);
     }
+    
+    public function getHsbaByBenhNhanId($benhNhanId)
+    {
+        return $this->hsbaService->getHsbaByBenhNhanId($benhNhanId);
+    }
 }

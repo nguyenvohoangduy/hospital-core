@@ -103,7 +103,7 @@ class HanhChinhService {
             try {
                 $hsbaDv = $this->hsbaDonViRepository->getById($request['hsba_don_vi_id']);
                 //viện phí ?
-                $request['doi_tuong_benh_nhan'] = $hsbaKp['doi_tuong_benh_nhan'];
+                $request['doi_tuong_benh_nhan'] = $hsbaDv['doi_tuong_benh_nhan'];
                 //0. update hsbakp cu
                 $this->updateOldHSBADV($request);
                 
@@ -114,7 +114,7 @@ class HanhChinhService {
                 $request['hsba_don_vi'] = $this->createHSBADV($request, $hsbaDv);
                 
                 //3. tạo viện phí mới
-                //$request['vien_phi_id'] = $this->createVienPhi($request, $hsbaDv);
+                $request['vien_phi_id'] = $this->createVienPhi($request, $hsbaDv);
                 
                 //4. Tao phieu dieu tri
                 //$request['dieu_tri_id'] = $this->createDieuTri($request);

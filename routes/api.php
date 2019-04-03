@@ -70,6 +70,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         
         Route::post('scanqrcode', 'DonTiep\ScanQRCodeController@getInfoFromCard');
         Route::post('register','DonTiep\DonTiepController@register');
+        Route::get('listBenhNhanTrung','DonTiep\DonTiepController@listBenhNhanTrung');
+        Route::get('getHsbaByBenhNhanId/{benhNhanId}','DonTiep\DonTiepController@getHsbaByBenhNhanId');
         
         // store to cache from queue
         Route::post('hsbaKp/cache/fromQueue','DonTiep\DonTiepController@pushToRedisFromQueue');
