@@ -202,24 +202,6 @@ class PhongKhamController extends APIController
                     $this->setStatusCode(400);
                 }
                 return $this->respond([]);
-                
-                // $phieuDieuTri = $this->dieuTriService->getPhieuDieuTri($input);
-        
-                // if($phieuDieuTri) {
-                //     $input['dieu_tri_id'] = $phieuDieuTri->id;
-                //     $bool = $this->yLenhService->saveYLenh($input);
-                    
-                //     if($bool) {
-                //         $this->setStatusCode(201);
-                //     } else {
-                //         $this->setStatusCode(400);
-                //     }
-                
-                //     return $this->respond($bool);
-                // } else {
-                //     $this->setStatusCode(400);
-                //     return $this->respond([]);
-                // }
             }
         } else {
             $this->setStatusCode(400);
