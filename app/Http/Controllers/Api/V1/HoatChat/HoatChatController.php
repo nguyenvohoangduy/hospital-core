@@ -7,6 +7,8 @@ use App\Services\HoatChatService;
 
 //use Requests
 use App\Http\Requests\HoatChatFormRequest;
+use Validator;
+use App\Models\HoatChat;
 
 class HoatChatController extends APIController
 {
@@ -14,6 +16,7 @@ class HoatChatController extends APIController
     {
         $this->hoatChatService = $hoatChatService;
     }
+    
     
     public function getAll() 
     {

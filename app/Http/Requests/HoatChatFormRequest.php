@@ -34,7 +34,7 @@ class HoatChatFormRequest extends ApiFormRequest
             }
             case 'PUT':
                 return [
-                    'ten'   => 'required|string'
+                      'ten'   => 'required|string|unique:hoat_chat,ten,'.$this->id
                 ];
                 break;
             case 'PATCH': {

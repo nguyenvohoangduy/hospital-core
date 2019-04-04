@@ -58,7 +58,7 @@ class HoatChatRepository extends BaseRepositoryV2
             $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
           
             $data = $model
-                        ->orderBy('id', 'desc')
+                        ->orderBy('ten', 'ASC')
                         ->offset($offset)
                         ->limit($limit)
                         ->get();
