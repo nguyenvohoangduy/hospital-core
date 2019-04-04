@@ -34,9 +34,9 @@ class HoatChatService
         $this->hoatChatRepository->update($id, $input);
     }
 
-    public function getHoatChatById($id)
+    public function getById($id)
     {
-        $data = $this->hoatChatRepository->getHoatChatById($id);
+        $data = $this->hoatChatRepository->getById($id);
         return $data;
     }
     

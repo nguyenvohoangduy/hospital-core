@@ -61,12 +61,12 @@ class HoatChatController extends APIController
         }
     }
     
-    public function getHoatChatById($id)
+    public function getById($id)
     {
         $isNumericId = is_numeric($id);
         
         if($isNumericId) {
-            $data = $this->hoatChatService->getHoatChatById($id);
+            $data = $this->hoatChatService->getById($id);
         } else {
             $this->setStatusCode(400);
             $data = [];

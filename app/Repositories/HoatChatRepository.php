@@ -93,12 +93,5 @@ class HoatChatRepository extends BaseRepositoryV2
         }
     }
 
-    public function getHoatChatById($id)
-    {
-        $data = $this->model
-                    ->where('id', $id)
-                    ->first();
-        return $data;
-    }
 
 }
