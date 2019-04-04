@@ -242,7 +242,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('getAll','HoatChat\HoatChatController@getAll');
         Route::get('getPartial','HoatChat\HoatChatController@getPartial');
         Route::post('create','HoatChat\HoatChatController@create');
-     	Route::post('update/{id}','HoatChat\HoatChatController@update');
+     	Route::put('update/{id}','HoatChat\HoatChatController@update');
     //  	Route::delete('delete/{id}','HoatChat\HoatChatController@delete');
      	Route::get('getHoatChatById/{id}','HoatChat\HoatChatController@getHoatChatById');
     });
