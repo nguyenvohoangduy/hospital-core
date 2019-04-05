@@ -435,4 +435,83 @@ class DanhMucController extends APIController
         
         return $this->respond([]);        
     }
+    // quanlydanhmucthuocvattu
+    public function getPartialDMTVatTu(Request $request)
+    {
+        $limit = $request->query('limit', 100);
+        $page = $request->query('page', 1);
+        $keyWords = $request->query('keyWords', '');
+        
+        $data = $this->dmtvtService->getPartialDMTVatTu($limit,$page,$keyWords);
+        return $this->respond($data);
+    }
+    
+    public function createDMTVatTu(DanhMucThuocVatTuFormRequest $request)
+    {
+        $input = $request->all();
+        
+        $id = $this->dmtvtService->create($input);
+        if($id) {
+            $this->setStatusCode(201);
+        } else {
+            $this->setStatusCode(400);
+        }
+        
+        return $this->respond([]);
+    }
+    
+    public function updateDMTVatTu($id, DanhMucThuocVatTuFormRequest $request)
+    {
+        try {
+            $isNumericId = is_numeric($id);
+            $input = $request->all();
+            
+            if($isNumericId) {
+                $this->dmtvtService->update($id, $input);
+            } else {
+                $this->setStatusCode(400);
+            }
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+    
+    public function deleteDMTVatTu($id)
+    {
+        $isNumericId = is_numeric($id);
+        
+        if($isNumericId) {
+            $this->dmtvtService->delete($id);
+            $this->setStatusCode(204);
+        } else {
+            $this->setStatusCode(400);
+        }
+        
+        return $this->respond([]);        
+    }
+    
+    public function getAllNhomDanhMuc()
+    {
+        $data = $this->dmtvtService->getAllNhomDanhMuc();
+        return $this->respond($data);
+    }
+    
+    public function getAllDonViTinh()
+    {
+        $data = $this->dmtvtService->getAllDonViTinh();
+        return $this->respond($data);
+    }
+    
+    public function getAllHoatChat()
+    {
+        $data = $this->dmtvtService->getAllHoatChat();
+        return $this->respond($data);
+    }
+    
+    public function getAllNuocSanXuat($khoa)
+    {
+        $data = $this->dmtvtService->getAllNuocSanXuat($khoa);
+        return $this->respond($data);
+    }
+    
 }
