@@ -22,5 +22,14 @@ class AuthGroupsHasPermissionsRepository extends BaseRepositoryV2
         if($find) {
 		    $find->update($input);
         }
+    }
+    
+    public function deleteByGroupId($groupId)
+    {
+        $this->model->where('group_id',$groupId)->delete();
     }    
+    
+    public function getGroupIdsByPermissionIds(array $permissionIds):array {
+        return $model->whereIn('permission_id',$permissionIds)->get('group_id')->toArray();
+    }
 }

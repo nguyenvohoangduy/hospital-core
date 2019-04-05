@@ -10,7 +10,11 @@ class AuthPermissionsRepository extends BaseRepositoryV2
     {
         return AuthPermissions::class;
     }
-
+    
+    public function getAllByHospitalAndPolicies(int $benhVienId, array $policieIds):array{
+        return $model->whereIn('policy_id',$policieIds)>where('benh_vien_id',$benhVienId)->get()->toArray();
+    }
+    
     public function getPartial($limit = 100, $page = 1, $keywords='', $serviceId='')
     {
         $offset = ($page - 1) * $limit;
@@ -83,9 +87,7 @@ class AuthPermissionsRepository extends BaseRepositoryV2
     {
         $where=[
             ['policy_id','=',$input['policy_id']],
-            ['service_id','=',$input['service_id']],
-            ['benh_vien_id','=',$input['benh_vien_id']],
-            ['key','=',$input['key']]
+            ['benh_vien_id','=',$input['benh_vien_id']]
             ];
         if(array_key_exists('id',$input)) {
             $where[]=['id','!=',$input['id']];

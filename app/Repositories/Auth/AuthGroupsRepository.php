@@ -108,8 +108,8 @@ class AuthGroupsRepository extends BaseRepositoryV2
         $result = $this->model
             ->leftJoin('auth_groups_has_permissions','auth_groups_has_permissions.group_id','=','auth_groups.id')
             ->where('auth_groups.id', $id)
-            ->get($column)
-            ->first(); 
+            ->get($column);
+            //->first(); 
         return $result;
     }
     

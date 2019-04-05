@@ -39,6 +39,12 @@ class AuthPermissionsService {
         return $data;
     }
     
+    public function getAllPermissionByBenhVienId(int $benhVienId)
+    {
+        $data = $this->authPermissionsRepository->getAllPermissionByBenhVienId($benhVienId);
+        return $data;
+    }
+    
     public function checkData($input)
     {
         $status = $this->authPermissionsRepository->checkData($input);

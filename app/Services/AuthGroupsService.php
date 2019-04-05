@@ -42,9 +42,11 @@ class AuthGroupsService
             
             $id = $this->authGroupsRepository->createAuthGroups($authGroupsParams);
             
-            $groupsHasPermissionsParams['permission_id'] = json_encode($input['permission_id']);
             $groupsHasPermissionsParams['group_id'] = $id;
-            $this->authGroupsHasPermissionsRepository->create($groupsHasPermissionsParams);
+            foreach($input['permission_id'] as $item) {
+                $groupsHasPermissionsParams['permission_id'] = $item;
+                $this->authGroupsHasPermissionsRepository->create($groupsHasPermissionsParams);
+            }
             return $id;
         });
     }
@@ -52,7 +54,17 @@ class AuthGroupsService
     public function getAuthGroupsById($id)
     {
         $data = $this->authGroupsRepository->getAuthGroupsById($id);
-        return $data;
+        if(count($data)>0) {
+            $permissionId = [];
+            foreach($data as $item) {
+                $permissionId[] = $item->permission_id;
+            }
+            $result = $data[0];
+            $result->permission_id = $permissionId;
+            return $result;
+        }
+        else
+            return $data;
     }
     
     public function updateAuthGroups($id,array $input)
@@ -64,10 +76,14 @@ class AuthGroupsService
 
             $this->authGroupsRepository->updateAuthGroups($id, $authGroupsParams);
             
-            $groupsHasPermissionsParams['permission_id'] = json_encode($input['permission_id']);
+            $this->authGroupsHasPermissionsRepository->deleteByGroupId($id);
+            $groupsHasPermissionsParams['group_id'] = $id;
+            foreach($input['permission_id'] as $item) {
+                $groupsHasPermissionsParams['permission_id'] = $item;
 
-            $this->authGroupsHasPermissionsRepository->update($id,$groupsHasPermissionsParams);
-            //$this->authGroupsHasRolesRepository->updateAuthGroupsHasRoles($id, $input['rolesSelected']);
+                $this->authGroupsHasPermissionsRepository->create($groupsHasPermissionsParams);
+                //$this->authGroupsHasRolesRepository->updateAuthGroupsHasRoles($id, $input['rolesSelected']);
+            }
         });        
     }
     
@@ -75,5 +91,5 @@ class AuthGroupsService
     {
         $data = $this->authGroupsRepository->getKhoaPhongByGroupsId($id,$benhVienId);
         return $data;
-    }    
+    }
 }

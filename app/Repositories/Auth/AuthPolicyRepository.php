@@ -11,6 +11,10 @@ class AuthPolicyRepository extends BaseRepositoryV2
         return AuthPolicy::class;
     }
 
+    public function getAllByUri($uri): array {
+        return $this->model->where('uri',$uri)->get('id')->toArray();
+    }
+    
     public function getPartial($limit = 100, $page = 1, $keywords='', $serviceId='')
     {
         $offset = ($page - 1) * $limit;
