@@ -100,6 +100,8 @@ class PhongKhamController extends APIController
             
         } catch (\Exception $ex) {
             return $this->respondInternalError($ex->getMessage());
+        } catch (\Throwable  $ex) {
+            return $this->respondInternalError($ex->getMessage());
         }
     }
   
@@ -326,6 +328,8 @@ class PhongKhamController extends APIController
                 $this->setStatusCode(400);
             }
         } catch (\Exception $ex) {
+            return $this->respondInternalError($ex->getMessage());
+        } catch (\Throwable  $ex) {
             return $this->respondInternalError($ex->getMessage());
         }
     }
