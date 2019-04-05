@@ -223,17 +223,19 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
             });
         }
         
-        // $column = [
-        //     'phong.*',
-        //     'danh_muc_tong_hop.dien_giai as ten_loai_phong',
-        //     'khoa.ten_khoa as ten_khoa'
-        // ];
+        $column = [
+            'danh_muc_thuoc_vat_tu.*',
+            // 'danh_muc_tong_hop.dien_giai as ten_nuoc_san_xuat',
+            // 'khoa.ten_khoa as ten_khoa'
+        ];
             
         $totalRecord = $model->count();
         if($totalRecord) {
             $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
           
             $data = $model
+    
+                        // ->leftJoin('danh_muc_thuoc_vat_tu','danh_muc_thuoc_vat_tu.khoa','=','quoc_tich')
                         ->orderBy('id', 'desc')
                         ->offset($offset)
                         ->limit($limit)
