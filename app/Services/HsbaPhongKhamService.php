@@ -55,7 +55,7 @@ class HsbaPhongKhamService {
             foreach ($params['files'] as $file) {
                 $fileName = $file->getClientOriginalName();
                 $namePatient = preg_replace("/(\s+)/", "-", $params['ten_benh_nhan']);
-                $imageFileName = 'hoi-benh/' . env('APP_ENV') . '/' . date("Y/m/d") . '/' . $namePatient . '/' . $fileName;
+                $imageFileName = 'storage/hoi-benh/' . env('APP_ENV') . '/' . date("Y/m/d") . '/' . $namePatient . '/' . $fileName;
                 $fileUpload[] = 'https://s3-'. env('S3_REGION') .'.amazonaws.com/' .$dataBenhVienThietLap['bucket']. '/' . $imageFileName;
                 $pathName = $file->getPathName();
                 $mimeType = $file->getMimeType();

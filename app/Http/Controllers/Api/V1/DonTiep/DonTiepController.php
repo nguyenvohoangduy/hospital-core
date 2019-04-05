@@ -122,6 +122,8 @@ class DonTiepController extends APIController
             return $this->respond($dataPrint);
         } catch (\Exception $ex) {
             return $this->respondInternalError($ex->getMessage());
+        } catch (\Throwable $ex) {
+            return $this->respondInternalError($ex->getMessage());
         }
     }
     
