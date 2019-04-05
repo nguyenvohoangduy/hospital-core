@@ -1,0 +1,4 @@
+BEGIN TRANSACTION;
+ALTER TABLE y_lenh ADD COLUMN don_vi_tinh varchar(20);
+ALTER TABLE y_lenh ADD COLUMN kho_id integer;
+END TRANSACTION;

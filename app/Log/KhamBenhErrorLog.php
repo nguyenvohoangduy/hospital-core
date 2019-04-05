@@ -2,7 +2,7 @@
 
 namespace App\Log;
 
-class ChiDinhYLenhErrorLog extends ErrorLog
+class KhamBenhErrorLog extends ErrorLog
 {
     public function logMessageFromUserInput($request){
         return $request;

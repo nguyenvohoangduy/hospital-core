@@ -12,15 +12,21 @@ use App\Repositories\DanhMuc\DanhMucDichVuRepository;
 use App\Repositories\VienPhi\VienPhiRepository;
 use App\Services\DieuTriService;
 use App\Services\PhieuKhoService;
+use App\Repositories\BenhVienRepository;
 use Illuminate\Http\Request;
 use Validator;
 use DB;
 use Carbon\Carbon;
+use App\Log\ChiDinhYLenhErrorLog;
 
 class YLenhService {
     const PHIEU_DIEU_TRI = 3;
     const THUOC = 5;
     const LOAI_PHIEU_XUAT = 1;
+    const Y_LENH = 'y-lenh';
+    const THUOC_VAT_TU = 'thuoc-vat-tu';
+    
+    private $bucketS3;
     
     public function __construct
     (
@@ -31,8 +37,10 @@ class YLenhService {
         AuthUsersRepository $authUsersRepository,
         DanhMucDichVuRepository $danhMucDichVuRepository,
         VienPhiRepository $vienPhiRepository,
+        BenhVienRepository $benhVienRepository,
         DieuTriService $dieuTriService,
-        PhieuKhoService $phieuKhoService
+        PhieuKhoService $phieuKhoService,
+        ChiDinhYLenhErrorLog $errorLog
     )
     {
         $this->yLenhRepository = $yLenhRepository;
@@ -42,8 +50,10 @@ class YLenhService {
         $this->authUsersRepository=$authUsersRepository;
         $this->danhMucDichVuRepository=$danhMucDichVuRepository;
         $this->vienPhiRepository = $vienPhiRepository;
+        $this->benhVienRepository = $benhVienRepository;
         $this->dieuTriService = $dieuTriService;
         $this->phieuKhoService = $phieuKhoService;
+        $this->errorLog = $errorLog;
     }
 
     public function saveYLenh(array $input)
@@ -52,9 +62,9 @@ class YLenhService {
         
         $result = DB::transaction(function() use ($input, $array) {
             try {
+                $this->bucketS3 = $this->getBucketByBenhVienId($input['benh_vien_id']);
                 //insert table phieu_y_lenh
                 $phieuYLenhId = $this->createPhieuYLenh($input);
-                
                 //insert table y_lenh
                 if($input['data']) {
                     foreach($input['data'] as $value) {
@@ -85,9 +95,12 @@ class YLenhService {
                     }
                 }
                 $this->yLenhRepository->saveYLenh($array);
-                
                 return true;
+            } catch(\Throwable  $ex) {
+                $this->exceptionToLog($input, $ex, self::Y_LENH);
+                throw $ex;
             } catch (\Exception $ex) {
+                $this->exceptionToLog($input, $ex, self::Y_LENH);
                 throw $ex;
             }
         });
@@ -99,17 +112,9 @@ class YLenhService {
     {
         $result = DB::transaction(function() use ($input) {
             try {
-                //get phieu_dieu_tri_id
-                // $phieuDieuTri = $this->dieuTriService->getPhieuDieuTri($input);
-                // if($phieuDieuTri) {
-                //     $input['dieu_tri_id'] = $phieuDieuTri->id;   
-                // } else {
-                //     return false;
-                // }
-                
                 //insert table phieu_y_lenh
+                $this->bucketS3 = $this->getBucketByBenhVienId($input['benh_vien_id']);
                 $phieuYLenhId = $this->createPhieuYLenh($input);
-                
                 //insert table y_lenh
                 if($input['data']) {
                     foreach($input['data'] as $value) {
@@ -147,7 +152,9 @@ class YLenhService {
                             'loai_thanh_toan_cu'    => $input['loai_vien_phi'],
                             'loai_thanh_toan_moi'   => $input['loai_vien_phi'],
                             'ms_bhyt'               => $input['ms_bhyt'],
-                            'huong_dan_su_dung'     => count($huongDanSuDung) > 0 ? json_encode($huongDanSuDung) : null
+                            'huong_dan_su_dung'     => count($huongDanSuDung) > 0 ? json_encode($huongDanSuDung) : null,
+                            'don_vi_tinh'           => $value['don_vi_tinh'],
+                            'kho_id'                => $value['kho_id']
                         ];
                     }
                 }
@@ -166,7 +173,11 @@ class YLenhService {
                 $this->phieuKhoService->createPhieuYeuCau($phieuYeuCauParams);
                 
                 return true;
+            } catch(\Throwable  $ex) {
+                $this->exceptionToLog($input, $ex, self::THUOC_VAT_TU);
+                throw $ex;
             } catch (\Exception $ex) {
+                $this->exceptionToLog($input, $ex, self::THUOC_VAT_TU);
                 throw $ex;
             }
         });
@@ -252,9 +263,10 @@ class YLenhService {
         if(isset($input['kho_id_xu_ly']))
             $input = array_except($input, ['kho_id_xu_ly', 'ten_kho_xu_ly']);
         $phieuYLenhParams = $input;
-        $phieuYLenhParams = array_except($phieuYLenhParams, ['ten_benh_nhan', 'hsba_khoa_phong_id', 'data', 'doi_tuong_benh_nhan', 'muc_huong', 'loai_vien_phi', 'ms_bhyt']);
+        $phieuYLenhParams = array_except($phieuYLenhParams, ['ten_benh_nhan', 'benh_vien_id', 'hsba_khoa_phong_id', 'data', 'doi_tuong_benh_nhan', 'muc_huong', 'loai_vien_phi', 'ms_bhyt']);
         $phieuYLenhParams['loai_phieu_y_lenh'] = self::PHIEU_DIEU_TRI;
         $phieuYLenhParams['trang_thai'] = 0;
+        $phieuYLenhParams['thoi_gian_chi_dinh'] = Carbon::now()->toDateTimeString();
         $phieuYLenhId = $this->phieuYLenhRepository->getPhieuYLenhId($phieuYLenhParams);
         return $phieuYLenhId;
     }
@@ -270,4 +282,20 @@ class YLenhService {
         $yLenh = $this->yLenhRepository->getByPhieuYLenhId($phieuYLenhId);
         return $yLenh;
     }    
+    
+    private function getBucketByBenhVienId($id) {
+        $data = $this->benhVienRepository->getBenhVienThietLap($id);
+        return $data['bucket'];
+    }
+    
+    private function exceptionToLog($params, $ex, $folder) {
+        $this->errorLog->setBucketS3($this->bucketS3);
+        $this->errorLog->setFolder($folder);
+        $messageAttributes = [
+            'key'    => ['DataType' => "String",
+                'StringValue' => $params['ten_benh_nhan']
+            ],
+        ];
+        $this->errorLog->toLogQueue($params, $ex, $messageAttributes);
+    }
 }

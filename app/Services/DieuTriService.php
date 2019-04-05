@@ -16,6 +16,7 @@ use App\Repositories\ChuyenVienRepository;
 use App\Repositories\BenhVienRepository;
 use App\Services\SttPhongKhamService;
 use App\Helper\AwsS3;
+use App\Log\KhamBenhErrorLog;
 
 class DieuTriService
 {
@@ -73,7 +74,8 @@ class DieuTriService
         RaVienRepository $raVienRepository,
         HsbaPhongKhamRepository $hsbaPhongKhamRepository,
         ChuyenVienRepository $chuyenVienRepository,
-        BenhVienRepository $benhVienRepository
+        BenhVienRepository $benhVienRepository,
+        KhamBenhErrorLog $errorLog
     )
     {
         $this->dieuTriRepository = $dieuTriRepository;
@@ -87,6 +89,7 @@ class DieuTriService
         $this->raVienRepository = $raVienRepository;
         $this->chuyenVienRepository = $chuyenVienRepository;
         $this->benhVienRepository = $benhVienRepository;
+        $this->errorLog = $errorLog;
     }
     
     public function updateInfoDieuTri(array $dieuTriParams)
@@ -107,9 +110,9 @@ class DieuTriService
                 $input = array_except($input, ['hsba_don_vi_id', 'thoi_gian_chi_dinh', 'khoa_id']);
                 
                 // Get Data Benh Vien Thiet Lap
-                if(empty($params['benh_vien_id'])) $params['benh_vien_id'] = 1;
-                $dataBenhVienThietLap = $this->getBenhVienThietLap($params['benh_vien_id']);
-                unset($params['benh_vien_id']);
+                if (empty($dieuTriParams['benh_vien_id'])) $dieuTriParams = 1;
+                $dataBenhVienThietLap = $this->getBenhVienThietLap($dieuTriParams['benh_vien_id']);
+                unset($dieuTriParams['benh_vien_id']);
                 
                 $fileUpload = [];
                 // Config S3
@@ -143,7 +146,7 @@ class DieuTriService
                     foreach ($input['files'] as $file) {
                         $fileName = $file->getClientOriginalName();
                         $namePatient = preg_replace("/(\s+)/", "-", $input['ten_benh_nhan']);
-                        $imageFileName = 'kham-benh/' . env('APP_ENV') . '/' . date("Y/m/d") . '/' . $namePatient . '/' . $fileName;
+                        $imageFileName = 'storage/kham-benh/' . env('APP_ENV') . '/' . date("Y/m/d") . '/' . $namePatient . '/' . $fileName;
                         $fileUpload[] = 'https://s3-'. env('S3_REGION') .'.amazonaws.com/' .$dataBenhVienThietLap['bucket']. '/' . $imageFileName;
                         $pathName = $file->getPathName();
                         $mimeType = $file->getMimeType();
@@ -159,8 +162,12 @@ class DieuTriService
                     $input['upload_file_kham_benh'] = NULL;
                 }
                 $this->hsbaPhongKhamRepository->update($dieuTriParams['hsba_don_vi_id'], $input);
+            } catch(\Throwable  $ex) {
+                $this->exceptionToLog($input, $ex);
+                throw $ex;
             } catch (\Exception $ex) {
-                 throw $ex;
+                $this->exceptionToLog($input, $ex);
+                throw $ex;
             }
         });
         return $result;
@@ -477,5 +484,17 @@ class DieuTriService
     private function getBenhVienThietLap($id) {
         $data = $this->benhVienRepository->getBenhVienThietLap($id);
         return $data;
+    }
+    
+    private function exceptionToLog($params, $ex) {
+        $bucketS3 = $this->getBenhVienThietLap($params['benh_vien_id'])['bucket'];
+        $this->errorLog->setBucketS3($bucketS3);
+        $this->errorLog->setFolder('kham-benh');
+        $messageAttributes = [
+            'key'    => ['DataType' => "String",
+                'StringValue' => $params['ten_benh_nhan']
+            ],
+        ];
+        $this->errorLog->toLogQueue($params, $ex, $messageAttributes);
     }
 }

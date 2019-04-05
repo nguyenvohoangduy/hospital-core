@@ -34,7 +34,7 @@ class HsbaPhongKhamService {
             $this->bucketS3 = $dataBenhVienThietLap['bucket'];
             
             // GET OLD FILE
-            $item = $this->hsbaPhongKhamRepository->getDetail();
+            $item = $this->hsbaPhongKhamRepository->getDetail($params['hsba_id'], $params['phong_id']);
             $fileItem =  isset($item->upload_file_hoi_benh) ? json_decode($item->upload_file_hoi_benh, true) : [];
             
             // Remove File old
@@ -61,7 +61,7 @@ class HsbaPhongKhamService {
                 foreach ($params['files'] as $file) {
                     $fileName = $file->getClientOriginalName();
                     $namePatient = preg_replace("/(\s+)/", "-", $params['ten_benh_nhan']);
-                    $imageFileName = 'hoi-benh/' . env('APP_ENV') . '/' . date("Y/m/d") . '/' . $namePatient . '/' . $fileName;
+                    $imageFileName = 'storage/hoi-benh/' . env('APP_ENV') . '/' . date("Y/m/d") . '/' . $namePatient . '/' . $fileName;
                     $fileUpload[] = 'https://s3-'. env('S3_REGION') .'.amazonaws.com/' .$dataBenhVienThietLap['bucket']. '/' . $imageFileName;
                     $pathName = $file->getPathName();
                     $mimeType = $file->getMimeType();
@@ -104,7 +104,7 @@ class HsbaPhongKhamService {
     public function getListHsbaPhongKham($hsbaId) {
         $data = $this->hsbaPhongKhamRepository->getListHsbaPhongKham($hsbaId);
         return $data;
-    }    
+    }
     
     private function exceptionToLog($params, $ex) {
         $this->errorLog->setBucketS3($this->bucketS3);
