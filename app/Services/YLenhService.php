@@ -99,14 +99,6 @@ class YLenhService {
     {
         $result = DB::transaction(function() use ($input) {
             try {
-                //get phieu_dieu_tri_id
-                // $phieuDieuTri = $this->dieuTriService->getPhieuDieuTri($input);
-                // if($phieuDieuTri) {
-                //     $input['dieu_tri_id'] = $phieuDieuTri->id;   
-                // } else {
-                //     return false;
-                // }
-                
                 //insert table phieu_y_lenh
                 $phieuYLenhId = $this->createPhieuYLenh($input);
                 
@@ -147,7 +139,9 @@ class YLenhService {
                             'loai_thanh_toan_cu'    => $input['loai_vien_phi'],
                             'loai_thanh_toan_moi'   => $input['loai_vien_phi'],
                             'ms_bhyt'               => $input['ms_bhyt'],
-                            'huong_dan_su_dung'     => count($huongDanSuDung) > 0 ? json_encode($huongDanSuDung) : null
+                            'huong_dan_su_dung'     => count($huongDanSuDung) > 0 ? json_encode($huongDanSuDung) : null,
+                            'don_vi_tinh'           => $value['don_vi_tinh'],
+                            'kho_id'                => $value['kho_id']
                         ];
                     }
                 }
@@ -255,6 +249,7 @@ class YLenhService {
         $phieuYLenhParams = array_except($phieuYLenhParams, ['ten_benh_nhan', 'hsba_khoa_phong_id', 'data', 'doi_tuong_benh_nhan', 'muc_huong', 'loai_vien_phi', 'ms_bhyt']);
         $phieuYLenhParams['loai_phieu_y_lenh'] = self::PHIEU_DIEU_TRI;
         $phieuYLenhParams['trang_thai'] = 0;
+        $phieuYLenhParams['thoi_gian_chi_dinh'] = Carbon::now()->toDateTimeString();
         $phieuYLenhId = $this->phieuYLenhRepository->getPhieuYLenhId($phieuYLenhParams);
         return $phieuYLenhId;
     }
