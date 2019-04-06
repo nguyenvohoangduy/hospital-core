@@ -1,4 +1,0 @@
-BEGIN TRANSACTION;
-ALTER TABLE don_vi_tinh DROP COLUMN he_so_le_1;
-ALTER TABLE don_vi_tinh DROP COLUMN he_so_le_2;
-END TRANSACTION;
