@@ -79,7 +79,7 @@ class BenhNhanServiceV2 {
         'benh_nhan_id', 'ho_va_ten', 'ngay_sinh', 'gioi_tinh_id'
         , 'so_nha', 'duong_thon', 'noi_lam_viec'
         , 'url_hinh_anh', 'dien_thoai_benh_nhan', 'email_benh_nhan', 'dia_chi_lien_he'
-        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id'
+        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id', 'ma_so_thue', 'so_cmnd', 'ma_tiem_chung'
     ];
     
     private $hsbaKeys = [
