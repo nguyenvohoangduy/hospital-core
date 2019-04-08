@@ -2,17 +2,17 @@
 namespace App\Repositories\Auth;
 use DB;
 use App\Repositories\BaseRepositoryV2;
-use App\Models\Auth\AuthPolicy;
-use Carbon\Carbon;
-class AuthPolicyRepository extends BaseRepositoryV2
+use App\Models\Auth\AuthPermissions;
+
+class AuthPermissionsRepository extends BaseRepositoryV2
 {
     public function getModel()
     {
-        return AuthPolicy::class;
+        return AuthPermissions::class;
     }
-
-    public function getAllByUri($uri): array {
-        return $this->model->where('uri',$uri)->get('id')->toArray();
+    
+    public function getAllByHospitalAndPolicies(int $benhVienId, array $policieIds):array{
+        return $model->whereIn('policy_id',$policieIds)>where('benh_vien_id',$benhVienId)->get()->toArray();
     }
     
     public function getPartial($limit = 100, $page = 1, $keywords='', $serviceId='')
@@ -20,18 +20,15 @@ class AuthPolicyRepository extends BaseRepositoryV2
         $offset = ($page - 1) * $limit;
 
         $model = $this->model;
-      
-        if($serviceId!=''){
-            $model = $model->where('auth_policy.service_id',$serviceId);
-        }
         
         if($keywords!=''){
-            $model = $model->whereRaw('LOWER(auth_policy.name) LIKE ? ',['%'.strtolower($keywords).'%']);
+            $model = $model->whereRaw('LOWER(auth_permissions.name) LIKE ? ',['%'.strtolower($keywords).'%']);
         }
         
         $column = [
-            'auth_policy.*',
-            'auth_service.name as service_name'
+            'auth_permissions.*',
+            'benh_vien.ten as ten_benh_vien',
+            'khoa.ten_khoa',
             ];
           
         $totalRecord = $model->count();
@@ -39,8 +36,9 @@ class AuthPolicyRepository extends BaseRepositoryV2
             $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
           
             $data = $model
-                    ->leftJoin('auth_service','auth_service.id','=','auth_policy.service_id')
-                    ->orderBy('auth_policy.id', 'desc')
+                    ->leftJoin('benh_vien','benh_vien.id','=','auth_permissions.benh_vien_id')
+                    ->leftJoin('khoa','khoa.id','=','auth_permissions.khoa')
+                    ->orderBy('auth_permissions.id', 'desc')
                     ->offset($offset)
                     ->limit($limit)
                     ->get($column);
@@ -73,29 +71,38 @@ class AuthPolicyRepository extends BaseRepositoryV2
 	    $find->update($input);
     }
     
-    public function deleteKho($id)
-    {
-        $this->model->destroy($id);
-    }
-    
     public function getById($id)
     {
         $data = $this->model->findOrFail($id);
         return $data;
     }
     
-    public function checkKey($key)
+    public function getAllPermission()
     {
-        $data = $this->model->where('key',$key)->first();
+        $data = $this->model->all();
+        return $data;
+    }
+    
+    public function checkData($input)
+    {
+        $where=[
+            ['policy_id','=',$input['policy_id']],
+            ['benh_vien_id','=',$input['benh_vien_id']]
+            ];
+        if(array_key_exists('id',$input)) {
+            $where[]=['id','!=',$input['id']];
+        }            
+        if(array_key_exists('khoa',$input)) {
+            $where[]=['khoa','=',$input['khoa']];
+        }
+        if(array_key_exists('ma_nhom_phong',$input)) {
+            $where[]=['ma_nhom_phong','=',$input['ma_nhom_phong']];
+        }        
+        $data = $this->model->where($where)->first();
+        
         if($data)
             return true;
         else
             return false;
-    }
-    
-    public function getByServiceId($serviceId)
-    {
-        $data = $this->model->where('service_id',$serviceId)->get();
-        return $data;
-    }    
+    }     
 }
