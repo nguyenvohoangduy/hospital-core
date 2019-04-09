@@ -21,21 +21,44 @@ class DanhMucThuocVatTuFormRequest extends ApiFormRequest
      */
     public function rules()
     {
-        return [
-            'ten'               => 'required|string',
-            'nhom_danh_muc_id'  => 'required|int',
-            'ma'                => 'required|string',
-            'don_vi_tinh_id'    => 'required|int',
-            'hoat_chat_id'      => 'required|int',
-            'nong_do'           => 'required|string',
-            'duong_dung'        => 'required|string',
-            'dong_goi'          => 'required|string',
-            'hang_san_xuat'     => 'required|string',
-            'nuoc_san_xuat'     => 'required|string',
-            'loai_nhom'         => 'required|string',
-            'gia'               => 'required|regex:/^\d*(\.\d{1,2})?$/',
-            'gia_bhyt'          => 'nullable|regex:/^\d*(\.\d{1,2})?$/',
-            'gia_nuoc_ngoai'    => 'nullable|regex:/^\d*(\.\d{1,2})?$/'
-        ];
+        switch ($this->method()) {
+            case 'GET':
+            case 'DELETE': {
+                return [];
+            }
+            case 'POST': {
+                return [
+                    'ten'               => 'required|string|unique:danh_muc_thuoc_vat_tu,ten',
+                    'nhom_danh_muc_id'  => 'required|int',
+                    'ma'                => 'required|string',
+                    'don_vi_tinh_id'    => 'required|int',
+                    'hoat_chat_id'      => 'required|int',
+                    'loai_nhom'         => 'required|int',
+                    'dong_goi'          => 'required|string',
+                    'hang_san_xuat'     => 'required|string',
+                    'nuoc_san_xuat'     => 'required|string',
+                    'loai_nhom'         => 'required|string',
+                    'gia'               => 'required|regex:/^\d*(\.\d{1,2})?$/'
+                ];
+                break;
+            }
+            case 'PUT':
+                return [
+                    'ten'               => 'required|string|unique:danh_muc_thuoc_vat_tu,ten,'.$this->id,
+                    'nhom_danh_muc_id'  => 'required|int',
+                    'ma'                => 'required|string',
+                    'don_vi_tinh_id'    => 'required|int',
+                    'hoat_chat_id'      => 'required|int',
+                    'loai_nhom'         => 'required|int',
+                    'dong_goi'          => 'required|string',
+                    'hang_san_xuat'     => 'required|string',
+                    'nuoc_san_xuat'     => 'required|string',
+                    'loai_nhom'         => 'required|string',
+                    'gia'               => 'required|regex:/^\d*(\.\d{1,2})?$/'
+                ];
+                break;
+            default:
+                break;
+        }
     }
 }

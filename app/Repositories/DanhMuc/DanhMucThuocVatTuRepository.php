@@ -208,25 +208,25 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
         $model = $this->model;
         
         if($keyWords!=""){
-         
             $model = $model->where(function($queryAdv) use ($keyWords) {
                 $upperCase = mb_convert_case($keyWords, MB_CASE_UPPER, "UTF-8");
                 $lowerCase = mb_convert_case($keyWords, MB_CASE_LOWER, "UTF-8");
                 $titleCase = mb_convert_case($keyWords, MB_CASE_TITLE, "UTF-8");
                 $ucfirst = ucfirst($keyWords);
                 
-                $queryAdv->where('ten', 'like', '%'.$upperCase.'%')
-                        ->orWhere('ten', 'like', '%'.$lowerCase.'%')
-                        ->orWhere('ten', 'like', '%'.$titleCase.'%')
-                        ->orWhere('ten', 'like', '%'.$keyWords.'%')
-                        ->orWhere('ten', 'like', '%'.$ucfirst.'%');
+                $queryAdv->where('danh_muc_thuoc_vat_tu.ten', 'like', '%'.$upperCase.'%')
+                        ->orWhere('danh_muc_thuoc_vat_tu.ten', 'like', '%'.$lowerCase.'%')
+                        ->orWhere('danh_muc_thuoc_vat_tu.ten', 'like', '%'.$titleCase.'%')
+                        ->orWhere('danh_muc_thuoc_vat_tu.ten', 'like', '%'.$keyWords.'%')
+                        ->orWhere('danh_muc_thuoc_vat_tu.ten', 'like', '%'.$ucfirst.'%');
             });
         }
         
         $column = [
             'danh_muc_thuoc_vat_tu.*',
-            // 'danh_muc_tong_hop.dien_giai as ten_nuoc_san_xuat',
-            // 'khoa.ten_khoa as ten_khoa'
+            'nhom_danh_muc.ten_danh_muc as ten_danh_muc',
+            'don_vi_tinh.ten as ten_don_vi_tinh',
+            'hoat_chat.ten as ten_hoat_chat'
         ];
             
         $totalRecord = $model->count();
@@ -234,12 +234,13 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
             $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
           
             $data = $model
-    
-                        // ->leftJoin('danh_muc_thuoc_vat_tu','danh_muc_thuoc_vat_tu.khoa','=','quoc_tich')
-                        ->orderBy('id', 'desc')
+                        ->leftJoin('nhom_danh_muc','nhom_danh_muc.id','=','danh_muc_thuoc_vat_tu.nhom_danh_muc_id')
+                        ->leftJoin('don_vi_tinh','don_vi_tinh.id','=','danh_muc_thuoc_vat_tu.don_vi_tinh_id')
+                        ->leftJoin('hoat_chat','hoat_chat.id','=','danh_muc_thuoc_vat_tu.hoat_chat_id')
+                        ->orderBy('danh_muc_thuoc_vat_tu.id', 'DESC')
                         ->offset($offset)
                         ->limit($limit)
-                        ->get();
+                        ->get($column);
         } else {
             $totalPage = 0;
             $data = [];
@@ -277,6 +278,13 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
         if ($result) {
             $result->destroy($id);
         }
+    }
+    public function getDMTVatTuById($id)
+    {
+        $data = $this->model
+                    ->where('id', $id)
+                    ->first();
+        return $data;
     }
   
 }

@@ -7,6 +7,7 @@ use App\Repositories\DanhMuc\NhomDanhMucRepository;
 use App\Repositories\HoatChatRepository;
 use App\Repositories\DonViTinhRepository;
 use App\Repositories\DanhMuc\DanhMucTongHopRepository;
+use App\Repositories\Auth\AuthUsersRepository;
 
 use Illuminate\Http\Request;
 use App\Helper\Util;
@@ -23,13 +24,15 @@ class DanhMucThuocVatTuService
         HoatChatRepository $hoatChatRepository,
         NhomDanhMucRepository $nhomdanhmucRepository,
         DonViTinhRepository $donvitinhRepository,
-        DanhMucTongHopRepository $danhmucTongHopRepository
+        DanhMucTongHopRepository $danhmucTongHopRepository,
+        AuthUsersRepository $authUsersRepository
     ){
         $this->repository = $repository;
         $this->hoatChatRepository = $hoatChatRepository;  
         $this->nhomdanhmucRepository = $nhomdanhmucRepository;
         $this->donvitinhRepository = $donvitinhRepository;
         $this->danhmucTongHopRepository = $danhmucTongHopRepository;
+        $this->authUsersRepository = $authUsersRepository;
     }
     
     // public function getListDanhMucThuocVatTu($limit, $page)
@@ -412,7 +415,11 @@ class DanhMucThuocVatTuService
     {
         $this->repository->deleteDMTVatTu($id);
     }
-    
+    public function getDMTVatTuById($id)
+    {
+        $data = $this->repository->getDMTVatTuById($id);
+        return $data;
+    }
     public function getAllNhomDanhMuc()
     {
         $data = $this->nhomdanhmucRepository->getListNhomDanhMuc();
@@ -436,4 +443,5 @@ class DanhMucThuocVatTuService
         $data = $this->danhmucTongHopRepository->getAllByKhoa($khoa);
         return $data;
     }  
+ 
 }

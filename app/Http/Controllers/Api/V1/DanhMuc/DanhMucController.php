@@ -13,6 +13,7 @@ use App\Http\Requests\DanhMucDichVuFormRequest;
 use App\Http\Requests\DanhMucTongHopFormRequest;
 use App\Http\Requests\DanhMucTrangThaiFormRequest;
 use App\Http\Requests\NoiGioiThieuFormRequest;
+use App\Http\Requests\DanhMucThuocVatTuFormRequest;
 
 class DanhMucController extends APIController
 {
@@ -449,8 +450,7 @@ class DanhMucController extends APIController
     public function createDMTVatTu(DanhMucThuocVatTuFormRequest $request)
     {
         $input = $request->all();
-        
-        $id = $this->dmtvtService->create($input);
+        $id = $this->dmtvtService->createDMTVatTu($input);
         if($id) {
             $this->setStatusCode(201);
         } else {
@@ -467,7 +467,7 @@ class DanhMucController extends APIController
             $input = $request->all();
             
             if($isNumericId) {
-                $this->dmtvtService->update($id, $input);
+                $this->dmtvtService->updateDMTVatTu($id, $input);
             } else {
                 $this->setStatusCode(400);
             }
@@ -481,7 +481,7 @@ class DanhMucController extends APIController
         $isNumericId = is_numeric($id);
         
         if($isNumericId) {
-            $this->dmtvtService->delete($id);
+            $this->dmtvtService->deleteDMTVatTu($id);
             $this->setStatusCode(204);
         } else {
             $this->setStatusCode(400);
@@ -489,7 +489,19 @@ class DanhMucController extends APIController
         
         return $this->respond([]);        
     }
-    
+    public function getDMTVatTuById($id)
+    {
+        $isNumericId = is_numeric($id);
+        
+        if($isNumericId) {
+            $data = $this->dmtvtService->getDMTVatTuById($id);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
     public function getAllNhomDanhMuc()
     {
         $data = $this->dmtvtService->getAllNhomDanhMuc();
@@ -513,5 +525,4 @@ class DanhMucController extends APIController
         $data = $this->dmtvtService->getAllNuocSanXuat($khoa);
         return $this->respond($data);
     }
-    
 }
