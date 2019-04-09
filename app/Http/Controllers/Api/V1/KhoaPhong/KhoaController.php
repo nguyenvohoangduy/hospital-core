@@ -81,9 +81,9 @@ class KhoaController extends APIController
         return $this->respond($data);
     }
     
-    public function getAllByBenhVienId($benhVienid)
+    public function getAllByBenhVienId($benhVienId)
     {
-        $data = $this->khoaService->getAllByBenhVienId($benhVienid);
+        $data = $this->khoaService->getAllByBenhVienId($benhVienId);
         return $this->respond($data);
     }
     

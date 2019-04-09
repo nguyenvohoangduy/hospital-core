@@ -12,10 +12,10 @@ use Illuminate\Http\Request;
 use Validator;
 
 class PhongService {
-    public function __construct(PhongRepository $phongRepository,DanhMucTongHopRepository $danhmucTongHopRepository,KhoaRepository $khoaRepository)
+    public function __construct(PhongRepository $phongRepository,DanhMucTongHopRepository $danhMucTongHopRepository,KhoaRepository $khoaRepository)
     {
         $this->phongRepository = $phongRepository;
-        $this->danhmucTongHopRepository = $danhmucTongHopRepository;
+        $this->danhMucTongHopRepository = $danhMucTongHopRepository;
         $this->khoaRepository = $khoaRepository;
     }
 
@@ -74,7 +74,7 @@ class PhongService {
     
     public function getAllByLoaiPhong($loaiPhong)
     {
-        $data = $this->danhmucTongHopRepository->getAllByKhoa($loaiPhong);
+        $data = $this->danhMucTongHopRepository->getAllByKhoa($loaiPhong);
         return $data;
     }  
     
