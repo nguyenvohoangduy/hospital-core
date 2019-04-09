@@ -26,9 +26,9 @@ class AuthService {
 
     public function getUserRolesByEmail($email)
     {
-        $id = $this->authUsersRepository->getIdbyEmail($email);
-        $idGroup = $this->authUsersGroupsRepository->getIdGroupbyId($id->id);
-        $roles = $this->authGroupsHasRolesRepository->getRolesbyIdGroup($idGroup);
+        $id = $this->authUsersRepository->getIdByEmail($email);
+        $idGroup = $this->authUsersGroupsRepository->getIdGroupById($id->id);
+        $roles = $this->authGroupsHasRolesRepository->getRolesByIdGroup($idGroup);
         $data = [
             'roles' => $roles,
             'idGroup' => $idGroup

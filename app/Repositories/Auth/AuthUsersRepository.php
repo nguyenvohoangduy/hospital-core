@@ -12,11 +12,9 @@ class AuthUsersRepository extends BaseRepositoryV2
         return AuthUsers::class;
     }    
 
-     public function getIdbyEmail($email)
+     public function getIdByEmail($email)
     {
-        $data = DB::table('auth_users')
-                ->where('email',$email)
-                ->first();
+        $data = $this->model->where('email',$email)->first();
         if($data)
             return $data;
         else 
@@ -25,18 +23,16 @@ class AuthUsersRepository extends BaseRepositoryV2
     
     public function getUserNameByEmail($email)
     {
-        $data = DB::table('auth_users')
-                ->where('email',$email)
-                ->first();
+        $data = $this->model->where('email',$email)->first();
         if($data)
             return $data;
+        else
+            return null;
     }
     
     public function getUserById($authUsersId)
     {
-        $data = DB::table('auth_users')
-                ->where('id', $authUsersId)
-                ->first();
+        $data = $this->model->where('id', $authUsersId)->first();
         if($data)
             return true;
         else
@@ -45,9 +41,7 @@ class AuthUsersRepository extends BaseRepositoryV2
     
     public function getInforAuthUserById($authUsersId)
     {
-        $data = DB::table('auth_users')
-                ->where('id', $authUsersId)
-                ->first();
+        $data = $this->model->where('id', $authUsersId)->first();
         return $data;
     }    
     
@@ -66,9 +60,9 @@ class AuthUsersRepository extends BaseRepositoryV2
             'userstatus'
         ];
         
-        $query = DB::table('auth_users');
+        $query = $this->model;
         if($keyWords!=""){
-           $query->where('fullname', 'like', '%' . strtolower($keyWords) . '%')
+            $query = $query->where('fullname', 'like', '%' . strtolower($keyWords) . '%')
                  ->orWhere('email', 'like', '%' . strtolower($keyWords) . '%');
         }
             
@@ -99,13 +93,13 @@ class AuthUsersRepository extends BaseRepositoryV2
     
     public function getAuthUsersById($id)
     {
-        $result = DB::table('auth_users')->where('id', $id)->first(); 
+        $result = $this->model->where('id', $id)->first(); 
         return $result;
     }
     
     public function createAuthUsers(array $input)
     {
-        $unique=DB::table('auth_users')->where('email',$input['email'])->first();
+        $unique=$this->model->where('email',$input['email'])->first();
         if(!$unique)
         {
             if($input['userstatus']==true)
@@ -115,20 +109,18 @@ class AuthUsersRepository extends BaseRepositoryV2
             $input['password']=bcrypt($input['password']);    
             $input['created_at']=Carbon::now()->toDateTimeString();
             $input['updated_at']=Carbon::now()->toDateTimeString();
-            $id = AuthUsers::create($input)->id;
+            $id = $this->model->create($input)->id;
             return $id;
         }
     }
     public function deleteAuthUsers($id)
     {
-        AuthUsers::destroy($id);
+        $this->model->destroy($id);
     }
     
     public function checkEmailbyEmail($email)
     {
-        $data = DB::table('auth_users')
-                ->where('email', $email)
-                ->first();
+        $data = $this->model->where('email', $email)->first();
         return $data;
     }
     
@@ -138,19 +130,19 @@ class AuthUsersRepository extends BaseRepositoryV2
             $input['userstatus']=1;
         else
             $input['userstatus']=0; 
-        $update = AuthUsers::findOrFail($id);
+        $update = $this->model->findOrFail($id);
 		$update->update($input);
     }
     
      public function resetPasswordByUserId($input)
     {
         $password = bcrypt($input['password']);
-        DB::table('auth_users')->where('id',$input['id'])->update(['password' => $password]);
+        $this->model->where('id',$input['id'])->update(['password' => $password]);
     }  
     
     public function updateLastVisit($email)
     {
         $loginDate = date('m/d/Y h:i:s a', time());
-        DB::table('auth_users')->where('email',$email)->update(['login_at' => $loginDate]);
+        $this->model->where('email',$email)->update(['login_at' => $loginDate]);
     }
 }
