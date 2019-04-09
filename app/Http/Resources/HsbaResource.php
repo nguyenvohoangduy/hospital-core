@@ -26,7 +26,29 @@ class HsbaResource extends Resource
             'phuong_xa_id'              => $this->phuong_xa_id,
             'quan_huyen_id'             => $this->quan_huyen_id,
             'tinh_thanh_pho_id'         => $this->tinh_thanh_pho_id,
-            'noi_lam_viec'              => $this->noi_lam_viec
+            'noi_lam_viec'              => $this->noi_lam_viec,
+            'hsba_id'                   => $this->hsba_id,
+            'ten_phuong_xa'             => $this->ten_phuong_xa,
+            'ten_quan_huyen'            => $this->ten_quan_huyen,
+            'ten_tinh_thanh_pho'        => $this->ten_tinh_thanh_pho,
+            'dien_thoai_benh_nhan'      => $this->dien_thoai_benh_nhan,
+            'email_benh_nhan'           => $this->email_benh_nhan,
+            'dia_chi_lien_he'           => $this->dia_chi_lien_he,
+            'url_hinh_anh'              => $this->url_hinh_anh,
+            'nguoi_than'                => $this->nguoi_than,
+            'trang_thai_hsba'           => $this->trang_thai_hsba,
+            'is_dang_ky_truoc'          => $this->is_dang_ky_truoc,
+            'phong_id'                  => $this->phong_id,
+            'ten_phong'                 => $this->ten_phong,
+            'ma_cskcbbd'                => $this->ma_cskcbbd,
+            'tu_ngay'                   => $this->tu_ngay,
+            'den_ngay'                  => $this->den_ngay,
+            'ma_noi_song'               => $this->ma_noi_song,
+            'du5nam6thangluongcoban'    => $this->du5nam6thangluongcoban,
+            'dtcbh_luyke6thang'         => $this->dtcbh_luyke6thang,
+            'ma_so_thue'                => $this->ma_so_thue,
+            'so_cmnd'                   => $this->so_cmnd,
+            'ma_tiem_chung'             => $this->ma_tiem_chung
         ];
     }
 }

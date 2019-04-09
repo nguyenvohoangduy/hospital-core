@@ -16,6 +16,7 @@ use App\Repositories\ChuyenVienRepository;
 use App\Repositories\BenhVienRepository;
 use App\Services\SttPhongKhamService;
 use App\Helper\AwsS3;
+use App\Log\KhamBenhErrorLog;
 
 class DieuTriService
 {
@@ -61,6 +62,10 @@ class DieuTriService
     // Chuyển viện
     const LOAI_CHUYEN_VIEN = 1;
     
+    // Folder Log
+    const KHAM_BENH = 'kham-benh';
+    const XU_TRI = 'xu-tri';
+    
     public function __construct
     (
         DieuTriRepository $dieuTriRepository, 
@@ -73,7 +78,8 @@ class DieuTriService
         RaVienRepository $raVienRepository,
         HsbaPhongKhamRepository $hsbaPhongKhamRepository,
         ChuyenVienRepository $chuyenVienRepository,
-        BenhVienRepository $benhVienRepository
+        BenhVienRepository $benhVienRepository,
+        KhamBenhErrorLog $errorLog
     )
     {
         $this->dieuTriRepository = $dieuTriRepository;
@@ -87,6 +93,7 @@ class DieuTriService
         $this->raVienRepository = $raVienRepository;
         $this->chuyenVienRepository = $chuyenVienRepository;
         $this->benhVienRepository = $benhVienRepository;
+        $this->errorLog = $errorLog;
     }
     
     public function updateInfoDieuTri(array $dieuTriParams)
@@ -107,9 +114,9 @@ class DieuTriService
                 $input = array_except($input, ['hsba_don_vi_id', 'thoi_gian_chi_dinh', 'khoa_id']);
                 
                 // Get Data Benh Vien Thiet Lap
-                if(empty($params['benh_vien_id'])) $params['benh_vien_id'] = 1;
-                $dataBenhVienThietLap = $this->getBenhVienThietLap($params['benh_vien_id']);
-                unset($params['benh_vien_id']);
+                if (empty($dieuTriParams['benh_vien_id'])) $dieuTriParams = 1;
+                $dataBenhVienThietLap = $this->getBenhVienThietLap($dieuTriParams['benh_vien_id']);
+                unset($dieuTriParams['benh_vien_id']);
                 
                 $fileUpload = [];
                 // Config S3
@@ -159,8 +166,12 @@ class DieuTriService
                     $input['upload_file_kham_benh'] = NULL;
                 }
                 $this->hsbaPhongKhamRepository->update($dieuTriParams['hsba_don_vi_id'], $input);
+            } catch(\Throwable  $ex) {
+                $this->exceptionToLog($input, self::KHAM_BENH, $ex);
+                throw $ex;
             } catch (\Exception $ex) {
-                 throw $ex;
+                $this->exceptionToLog($input, self::KHAM_BENH, $ex);
+                throw $ex;
             }
         });
         return $result;
@@ -299,9 +310,12 @@ class DieuTriService
                         return [];
                     break;
                 }
-            }
-            catch (\Exception $ex) {
-                 throw $ex;
+            } catch(\Throwable  $ex) {
+                $this->exceptionToLog($request, self::XU_TRI, $ex);
+                throw $ex;
+            } catch (\Exception $ex) {
+                $this->exceptionToLog($request, self::XU_TRI, $ex);
+                throw $ex;
             }
         });
         return $result;
@@ -370,9 +384,12 @@ class DieuTriService
                 $vienPhiParams = null;
                 $vienPhiParams['trang_thai'] = self::VP_TRANG_THAI;
                 $this->vienPhiRepository->updateVienPhi($hsbaDv['vien_phi_id'], $vienPhiParams);
-            }
-            catch (\Exception $ex) {
-                 throw $ex;
+            } catch(\Throwable  $ex) {
+                $this->exceptionToLog($request, self::XU_TRI, $ex);
+                throw $ex;
+            } catch (\Exception $ex) {
+                $this->exceptionToLog($request, self::XU_TRI, $ex);
+                throw $ex;
             }
         });
         return $result;    
@@ -404,9 +421,12 @@ class DieuTriService
                 $request = array_except($request,['thoi_gian_ra_vien','tinh_trang', 'phuong_phap_dieu_tri','huong_dieu_tri_tiep_theo','lich_hen','loi_dan_bac_si']);
                 $this->createKetThucKham($request);
                 
-            }
-            catch (\Exception $ex) {
-                 throw $ex;
+            } catch(\Throwable  $ex) {
+                $this->exceptionToLog($request, self::XU_TRI, $ex);
+                throw $ex;
+            } catch (\Exception $ex) {
+                $this->exceptionToLog($request, self::XU_TRI, $ex);
+                throw $ex;
             }
         });
         return $result;
@@ -443,9 +463,12 @@ class DieuTriService
                                         'thuoc', 'nguoi_van_chuyen', 'tinh_trang_nguoi_benh', 'khoa_id']);
                 $this->createKetThucKham($params);
                 
-            }
-            catch (\Exception $ex) {
-                 throw $ex;
+            } catch(\Throwable  $ex) {
+                $this->exceptionToLog($params, self::XU_TRI, $ex);
+                throw $ex;
+            } catch (\Exception $ex) {
+                $this->exceptionToLog($params, self::XU_TRI, $ex);
+                throw $ex;
             }
         });
         return $result;
@@ -477,5 +500,17 @@ class DieuTriService
     private function getBenhVienThietLap($id) {
         $data = $this->benhVienRepository->getBenhVienThietLap($id);
         return $data;
+    }
+    
+    private function exceptionToLog($params, $folder, $ex) {
+        $bucketS3 = $this->getBenhVienThietLap($params['benh_vien_id'])['bucket'];
+        $this->errorLog->setBucketS3($bucketS3);
+        $this->errorLog->setFolder($folder);
+        $messageAttributes = [
+            'key'    => ['DataType' => "String",
+                'StringValue' => $params['ten_benh_nhan']
+            ],
+        ];
+        $this->errorLog->toLogQueue($params, $ex, $messageAttributes);
     }
 }

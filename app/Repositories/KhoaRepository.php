@@ -89,6 +89,12 @@ class KhoaRepository extends BaseRepositoryV2
         ];
         
         return $result;
-    }    
+    }
+    
+    public function getByLoaiKhoaBenhVienId($loaiKhoa,$benhVienId)
+    {
+        $data = $this->model->where([['loai_khoa','=',$loaiKhoa],['benh_vien_id','=',$benhVienId]])->get();
+        return $data;   
+    }      
     
 }

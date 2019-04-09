@@ -50,4 +50,32 @@ class Util
         
         return $input;
     }
+    
+    static function getPartial($queryData = [], $limit = 100, $page = 1)
+    {
+        $data = [];
+        $offset = ($page - 1) * $limit;
+        $totalRecord = $queryData->count();
+        
+        if($totalRecord) {
+            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
+            
+            $data = $queryData->offset($offset)
+                        ->limit($limit)
+                        ->get();
+        } else {
+            $totalPage = 0;
+            $page = 0;
+            $totalRecord = 0;
+        }
+        
+        $result = [
+            'data'          => $data,
+            'page'          => $page,
+            'totalPage'     => $totalPage,
+            'totalRecord'   => $totalRecord
+        ];
+        
+        return $result;
+    }
 }

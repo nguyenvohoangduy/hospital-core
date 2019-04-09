@@ -63,6 +63,7 @@ class Kernel extends HttpKernel
         'jsonify'    => \App\Http\Middleware\Jsonify::class,
         //'cors' => \App\Http\Middleware\Cors::class, 
         'cors' => \Barryvdh\Cors\HandleCors::class, 
+        'authorization' => \App\Http\Middleware\Authorization::class, 
         
     ];
 }

@@ -41,6 +41,7 @@ use App\Helper\AwsS3;
 use Aws\Sqs\SqsClient;
 use Aws\Exception\AwsException;
 use App\Repositories\Sqs\Dkkb\InputLogRepository as InputLogSqsRepository;
+use App\Log\DangKyKhamBenhErrorLog;
 
 class BenhNhanServiceV2 {
     
@@ -79,7 +80,7 @@ class BenhNhanServiceV2 {
         'benh_nhan_id', 'ho_va_ten', 'ngay_sinh', 'gioi_tinh_id'
         , 'so_nha', 'duong_thon', 'noi_lam_viec'
         , 'url_hinh_anh', 'dien_thoai_benh_nhan', 'email_benh_nhan', 'dia_chi_lien_he'
-        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id'
+        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id', 'ma_so_thue', 'so_cmnd', 'ma_tiem_chung'
     ];
     
     private $hsbaKeys = [
@@ -118,10 +119,6 @@ class BenhNhanServiceV2 {
         ,'benh_vien_id','loai_vien_phi'
     ];    
     
-    private $logParamKeys = [
-        'benh_vien_id', 'khoa_id', 'phong_id', 'ho_va_ten'
-    ];
-    
     public function __construct
     (
         HsbaKhoaPhongService $hsbaKhoaPhongService,
@@ -144,7 +141,8 @@ class BenhNhanServiceV2 {
         ChuyenVienRepository $chuyenVienRepository,
         BenhVienRepository $benhVienRepository,
         noiGioiThieuRepository $noiGioiThieuRepository,
-        InputLogSqsRepository $sqsRepositpry
+        InputLogSqsRepository $sqsRepository,
+        DangKyKhamBenhErrorLog $errorLog
     )
     {
         // Services
@@ -169,7 +167,8 @@ class BenhNhanServiceV2 {
         $this->chuyenVienRepository = $chuyenVienRepository;
         $this->benhVienRepository = $benhVienRepository;
         $this->noiGioiThieuRepository = $noiGioiThieuRepository;
-        $this->sqsRepositpry = $sqsRepositpry;
+        $this->sqsRepository = $sqsRepository;
+        $this->errorLog = $errorLog;
     }
     
     public function registerBenhNhan(Request $request)
@@ -620,13 +619,15 @@ class BenhNhanServiceV2 {
         return $data['bucket'];
     }
     
-    private function exceptionToLog($request, $ex) {
-        $logParams = $request->only(...$this->logParamKeys);
-        $logParams['file'] = $ex->getFile();
-        $logParams['line'] = $ex->getLine();
-        $logParams['message'] = $ex->getMessage();
-        $this->pushLogQueue($logParams, self::TYPE_LOG_ERROR);
+    private function exceptionToLog($params, $ex) {
+        $bucketS3 = $this->getBucketS3ByBenhVienId($params['benh_vien_id']);
+        $this->errorLog->setBucketS3($bucketS3);
+        $this->errorLog->setFolder('dkkb');
+        $messageAttributes = [
+            'key'    => ['DataType' => "String",
+                'StringValue' => $params['ho_va_ten']
+            ],
+        ];
+        $this->errorLog->toLogQueue($params, $ex, $messageAttributes);
     }
-    
-
 }

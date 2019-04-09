@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models\Auth;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,6 +15,12 @@ class AuthPermissions extends Model
     /**
      * @var array
      */
-    protected $fillable = ['id', 'name', 'description', 'authorized_uri'];
+    protected $table = 'auth_permissions';
+
+    protected $primaryKey = 'id';
+
+    protected $guarded = ['id'];
+
+    public $timestamps = false;
 
 }

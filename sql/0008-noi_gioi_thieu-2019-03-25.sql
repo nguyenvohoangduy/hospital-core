@@ -19,4 +19,5 @@ end;
 begin transaction;
 ALTER TABLE hsba ADD COLUMN noi_gioi_thieu_id integer;
 ALTER TABLE hsba ADD COLUMN ghi_chu varchar(255);
+alter table noi_gioi_thieu add trang_thai integer;
 end;

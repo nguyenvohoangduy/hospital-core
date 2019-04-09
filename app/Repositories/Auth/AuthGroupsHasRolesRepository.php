@@ -63,6 +63,5 @@ class AuthGroupsHasRolesRepository extends BaseRepositoryV2
             ->distinct()
             ->get($column);
         return $result;
-    }    
-    
+    }   
 }
