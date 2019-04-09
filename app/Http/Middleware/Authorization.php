@@ -5,11 +5,17 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 use Closure;
-// Service 
-use App\Service\Auth\AuthService;
+// Service
+use App\Services\AuthService;
 
 class Authorization
 {
+    
+    public function __construct(AuthService $authService)
+      {
+        $this->authService = $authService;
+      }
+      
     /**
      * Handle an incoming request.
      *
@@ -20,19 +26,26 @@ class Authorization
     public function handle($request, Closure $next)
     {
         $route = Route::getCurrentRoute();
-        $matchPolicyIds = $authService->matchPolicyByUri($route);
-        if (empty($matchPolicyIds)) {
+        $authService=$this->authService;
+        //print_r($matchPolicyId);die;
+        $matchPolicy = $this->authService->matchPolicyByUri($route);
+        //print_r($matchPolicy);die;
+        if (empty($matchPolicy)) {
             return $next($request);
         }
-        if (!Auth::user() || !$request->header('X-RED-HID') || !is_int($request->header('X-RED-HID')) ) {
-            return response('Unauthorized.', 401);
+        if (!Auth::user() || !$request->header('X-RED-HID')  ) {
+            return response('Unauthorized..', 401);
         } 
         else {
             $group = [];
             $benhVienId = $request->header('X-RED-HID');
-            $benhVienId = $request->header('X-RED-HID');
-            $authService = new AuthService();
-            $authService->authorize($benhVienId, Auth::user(), $route, $matchPolicyIds);
+            $khoaId = $request->header('X-RED-GID',null);
+            $maNhomPhong = $request->header('X-RED-DCODE',null);
+            $matchPolicyId = $matchPolicy['id'];
+            $authService->setBenhVienId($benhVienId)
+                        ->setKhoaId($khoaId)
+                        ->setMaNhomPhong($maNhomPhong);
+            $isAuthorized= $authService->authorize(Auth::user()->ids, $route, $matchPolicyId);
             
             /*
             $routeCollection = Route::getRoutes();
@@ -49,7 +62,9 @@ class Authorization
             //var_dump(get_class(Auth::user()));
             $user = User::find(Auth::user()->id);
             */
-            return $next($request);
+            if ($isAuthorized){
+                return $next($request);
+            }
         }
         return response('Unauthorized.', 401);
         
