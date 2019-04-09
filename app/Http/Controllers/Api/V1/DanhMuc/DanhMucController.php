@@ -502,9 +502,9 @@ class DanhMucController extends APIController
         
         return $this->respond($data);
     }
-    public function getAllNuocSanXuat($khoa)
+    public function getAllByKhoa($khoa)
     {
-        $data = $this->dmtvtService->getAllNuocSanXuat($khoa);
+        $data = $this->dmthService->getAllByKhoa($khoa);
         return $this->respond($data);
     }
 }

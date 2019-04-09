@@ -420,10 +420,4 @@ class DanhMucThuocVatTuService
         $data = $this->repository->getDMTVatTuById($id);
         return $data;
     }
-    public function getAllNuocSanXuat($khoa)
-    {
-        $data = $this->danhmucTongHopRepository->getAllByKhoa($khoa);
-        return $data;
-    }  
- 
 }
