@@ -38,7 +38,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::delete('patient/{id}', 'SamplePatientController@delete');
     
     // don-tiep-service
-    Route::group(['prefix' => 'don-tiep-service','as' => 'don-tiep.','middleware' => ['jwt.auth', 'authorization'] ], function () {
+    Route::group(['prefix' => 'don-tiep-service','as' => 'don-tiep.','middleware' => ['jwt.auth'] ], function () {
         Route::get('index','DonTiep\DonTiepController@index')->name('index');
         
         //Route::get('register-index','DonTiep\DonTiepController@registerIndex')->name('dang-ky-kham-benh.index');
