@@ -30,7 +30,13 @@ class PhongService {
         $data = $this->phongRepository->getNhomPhong($loaiPhong,$khoaId);
         return $data;
     }
-    
+  
+    public function getMaNhomPhongByKhoaId($khoaId)
+    {
+        $data = $this->phongRepository->getMaNhomPhongByKhoaId($khoaId);
+        return $data;
+    }    
+  
     public function getPartial($limit, $page, $keyWords)
     {
         $data = $this->phongRepository->getPartial($limit, $page, $keyWords);
@@ -83,5 +89,4 @@ class PhongService {
         $data = $this->khoaRepository->getAll();
         return $data;
     }  
-    
 }

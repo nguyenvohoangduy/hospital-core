@@ -10,6 +10,12 @@ class DonViTinhService
         $this->donViTinhRepository = $donViTinhRepository;
     }
     
+    public function getAll()
+    {
+        $result = $this->donViTinhRepository->getAll();
+        return $result;
+    }
+    
     public function getPartial($limit, $page, $keyword)
     {
         $result = $this->donViTinhRepository->getPartial($limit, $page, $keyword);

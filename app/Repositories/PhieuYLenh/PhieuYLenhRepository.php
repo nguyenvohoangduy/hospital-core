@@ -22,7 +22,7 @@ class PhieuYLenhRepository extends BaseRepositoryV2
     {
         $result = $this->model
                 ->where('hsba_id',$hsbaId)
-                ->orderBy('id')
+                ->orderBy('id', 'desc')
                 ->get();
         if($result)
             return $result;

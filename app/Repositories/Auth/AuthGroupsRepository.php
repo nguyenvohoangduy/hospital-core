@@ -21,19 +21,17 @@ class AuthGroupsRepository extends BaseRepositoryV2
             'description',
             'benh_vien_id'
         ];
-        $query = DB::table('auth_groups');
+        $model = $this->model->where('benh_vien_id',$benhVienId);
         if($keyWords!=""){
-           $query->where([['name', 'like', '%' . $keyWords . '%'],['benh_vien_id','=',$benhVienId]])
-                 ->orWhere([['description', 'like', '%' . $keyWords . '%'],['benh_vien_id','=',$benhVienId]]);
+            $query = $model->where([['name', 'like', '%' . $keyWords . '%']])
+                 ->orWhere([['description', 'like', '%' . $keyWords . '%']]);
         }
-        else {
-            $query->where('benh_vien_id',$benhVienId);
-        }
-        $totalRecord = $query->count();
+
+        $totalRecord = $model->count();
         if($totalRecord) {
             $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
             
-            $data = $query->orderBy('id', 'asc')
+            $data = $model->orderBy('id', 'asc')
                         ->offset($offset)
                         ->limit($limit)
                         ->get($column);
@@ -103,22 +101,29 @@ class AuthGroupsRepository extends BaseRepositoryV2
 
     public function getAuthGroupsById($id)
     {
-        $result = $this->model->where('id', $id)->first(); 
+        $column = [
+            'auth_groups.*',
+            'auth_groups_has_permissions.permission_id',
+            ];
+        $result = $this->model
+            ->leftJoin('auth_groups_has_permissions','auth_groups_has_permissions.group_id','=','auth_groups.id')
+            ->where('auth_groups.id', $id)
+            ->get($column);
+            //->first(); 
         return $result;
     }
     
     public function updateAuthGroups($id, array $input)
     {
-        $arr = [];
-        if($input['phongId']){
-            foreach($input['phongId'] as $item){
-                if(isset($item['phong_id'])){
-                    $arr[]=$item['phong_id'];
-                }
-            }
-        }
-        $input['meta_data']=json_encode($arr);
-        $input['description']=$input['ghi_chu'];
+        // $arr = [];
+        // if($input['phongId']){
+        //     foreach($input['phongId'] as $item){
+        //         if(isset($item['phong_id'])){
+        //             $arr[]=$item['phong_id'];
+        //         }
+        //     }
+        // }
+        // $input['meta_data']=json_encode($arr);
         $update = $this->model->findOrFail($id);
 		$update->update($input);
     }

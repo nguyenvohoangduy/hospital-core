@@ -11,6 +11,10 @@ use Cviebrock\LaravelElasticsearch\Facade as Elasticsearch;
 
 class DanhMucThuocVatTuService
 {
+    const MOT_NUA = 0.5;
+    const MOT_PHAN_TU = 0.25;
+    const THUOC_DANG_VIEN = 'Viên';
+    
     public function __construct(DanhMucThuocVatTuRepository $repository,HoatChatRepository $hoatChatRepository)
     {
         $this->repository = $repository;
@@ -253,37 +257,6 @@ class DanhMucThuocVatTuService
         return $result;        
     }  
     
-    // public function pushSlkdToElasticSearch()
-    // {
-    //     $lastParams = [
-    //         'index' => 'sl_kha_dung_tvt',
-    //         'type' => 'doc',
-    //         'size' => 1,
-    //         'body' => [
-    //             'sort' =>[
-    //                 'id' => [
-    //                     'order' => 'desc'
-    //                 ]
-    //             ]
-    //         ]
-    //     ];
-    //     $last = Elasticsearch::search($lastParams);
-    //     $lastId = $last['hits']['hits'][0]['_source']['id'];
-        
-    //     $data = $this->repository->getSoLuongKhaDung($lastId);
-    //     foreach($data as $item) {
-    //         $params = [ 'index' => 'sl_kha_dung_tvt',
-    //                     'type' => 'doc',
-    //                     'id' => $item->id,
-    //                     'body' => [
-    //                         'id'                => $item->id,
-    //                         'sl_kha_dung'       => $item->sl_kha_dung
-    //                     ]
-    //                 ];
-    //         $return = Elasticsearch::index($params);  
-    //     };
-    // }
-    
     public function pushTvtByKhoToElasticSearch($khoId)
     {
         $data = $this->repository->getThuocVatTuByKhoId($khoId);
@@ -298,6 +271,14 @@ class DanhMucThuocVatTuService
                     '_id' => $data[$i-1]->id
                 ]
             ];
+            
+            $nuaVien = '';
+            $motPhanTu = '';
+            
+            if($data[$i-1]->don_vi_quy_doi == self::THUOC_DANG_VIEN || $data[$i-1]->don_vi_tinh == self::THUOC_DANG_VIEN) {
+                $nuaVien = self::MOT_NUA;
+                $motPhanTu = self::MOT_PHAN_TU;
+            }
         
             $params['body'][] = [
                 'id'                    => $data[$i-1]->id,
@@ -310,6 +291,7 @@ class DanhMucThuocVatTuService
                 'ma_bhyt'               => $data[$i-1]->ma_bhyt,
                 'don_vi_tinh_id'        => $data[$i-1]->don_vi_tinh_id,
                 'don_vi_tinh'           => $data[$i-1]->don_vi_tinh,
+                'don_vi_quy_doi'        => $data[$i-1]->don_vi_quy_doi,
                 'sl_kha_dung'           => $data[$i-1]->sl_kha_dung,
                 'nhan_vien_tao'         => $data[$i-1]->nhan_vien_tao,
                 'nhan_vien_cap_nhat'    => $data[$i-1]->nhan_vien_cap_nhat,
@@ -329,8 +311,8 @@ class DanhMucThuocVatTuService
                 'gia'                   => $data[$i-1]->gia,
                 'gia_bhyt'              => $data[$i-1]->gia_bhyt,
                 'gia_nuoc_ngoai'        => $data[$i-1]->gia_nuoc_ngoai,
-                'he_so_le_1'            => $data[$i-1]->he_so_le_1,
-                'he_so_le_2'            => $data[$i-1]->he_so_le_2
+                'he_so_le_1'            => $nuaVien,
+                'he_so_le_2'            => $motPhanTu
             ];
         
             // Every 1000 documents stop and send the bulk request

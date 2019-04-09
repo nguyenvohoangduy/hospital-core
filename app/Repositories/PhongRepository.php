@@ -74,6 +74,32 @@ class PhongRepository extends BaseRepositoryV2
         return $phong;
     }
     
+    public function getListKhoaPhongByBenhVienId($benhVienId) {
+        $column = [
+            'phong.id',
+            'phong.khoa_id',
+            'phong.ten_phong',
+            'phong.ma_nhom',
+            'khoa.ten_khoa',
+            'phong.loai_phong',
+            'khoa.benh_vien_id'
+        ];
+        
+        $data = $this->model
+                        ->join('khoa', function($join) use ($benhVienId) {
+                            $join->on('khoa.id', '=', 'phong.khoa_id')
+                                ->where('khoa.benh_vien_id', '=', $benhVienId);
+                        })
+                        ->orderBy('khoa.ten_khoa')
+                        ->get($column);
+        return $data;
+    }
+    
+    public function getMaNhomPhongByKhoaId($khoaId) {
+        $data = $this->model->where('khoa_id',$khoaId)->distinct()->orderBy('ma_nhom')->get(['ma_nhom']);
+        return $data;
+    }    
+  
     public function getPartial($limit = 100, $page = 1, $keyWords ='')
     {
         $offset = ($page - 1) * $limit;

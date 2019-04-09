@@ -36,6 +36,27 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::post('patient', 'SamplePatientController@store');
     Route::post('patient/{id}', 'SamplePatientController@update');
     Route::delete('patient/{id}', 'SamplePatientController@delete');
+    
+    // don-tiep-service
+    Route::group(['prefix' => 'don-tiep-service','as' => 'don-tiep.','middleware' => ['jwt.auth'] ], function () {
+        Route::get('index','DonTiep\DonTiepController@index')->name('index');
+        
+        //Route::get('register-index','DonTiep\DonTiepController@registerIndex')->name('dang-ky-kham-benh.index');
+        Route::get('register','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.index');
+        //Route::post('register','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.create');
+        //Route::get('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient')->name('hsba.update.index');
+        Route::post('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient')->name('hsba.update');
+    });
+    
+    // phong-kham-service
+    Route::group(['prefix' => 'phong-kham-service','as' => 'phong-kham.' ], function () {
+        Route::get('index','PhongKham\PhongKhamController@index')->name('index');
+    }); 
+    
+    //noi-tru-service
+    Route::group(['prefix' => 'noi-tru-service','as' => 'noi-tru.' ], function () {
+        Route::get('index','NoiTru\NoiTruController@index')->name('index');
+    });     
         
     Route::group(['prefix' => 'dontiep'], function () {
         Route::post('makeSttDonTiepWhenScanCard','DonTiep\SttDonTiepController@makeSttDonTiepWhenScanCard');
@@ -52,6 +73,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         
         Route::post('scanqrcode', 'DonTiep\ScanQRCodeController@getInfoFromCard');
         Route::post('register','DonTiep\DonTiepController@register');
+        Route::get('listBenhNhanTrung','DonTiep\DonTiepController@listBenhNhanTrung');
+        Route::get('getHsbaByBenhNhanId/{benhNhanId}','DonTiep\DonTiepController@getHsbaByBenhNhanId');
         
         // store to cache from queue
         Route::post('hsbaKp/cache/fromQueue','DonTiep\DonTiepController@pushToRedisFromQueue');
@@ -101,7 +124,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getHsbaKhoaPhongById/{hsbaKhoaPhongId}','PhongKham\PhongKhamController@getById');
 		Route::post('updateInfoDieuTri','PhongKham\PhongKhamController@updateInfoDieuTri');
 		Route::get('getListPhongKham/{hsbaId}','PhongKham\PhongKhamController@getListPhongKham');
-		Route::post('xuTriBenhNhan','PhongKham\PhongKhamController@xuTriBenhNhan');
+		Route::post('xuTriBenhNhan','PhongKham\PhongKhamController@xuTriBenhNhan')->name('xu_tri_phong_kham');
 		Route::get('getIcd10ByCode/{icd10Code}','PhongKham\PhongKhamController@getIcd10ByCode');
 		Route::post('saveYLenh','PhongKham\PhongKhamController@saveYLenh');
 		Route::get('getLichSuYLenh','PhongKham\PhongKhamController@getLichSuYLenh');
@@ -154,6 +177,11 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::get('getNhomDmById/{id}','DanhMuc\DanhMucController@getNhomDmById');
     	Route::post('createNhomDanhMuc','DanhMuc\DanhMucController@createNhomDanhMuc');
     	Route::post('updateNhomDanhMuc/{id}','DanhMuc\DanhMucController@updateNhomDanhMuc');
+    	Route::get('getAllNoiGioiThieu','DanhMuc\DanhMucController@getAllNoiGioiThieu');
+    	Route::get('getPartialNoiGioiThieu','DanhMuc\DanhMucController@getPartialNoiGioiThieu');
+    	Route::post('createNoiGioiThieu','DanhMuc\DanhMucController@createNoiGioiThieu');
+    	Route::post('updateNoiGioiThieu/{id}','DanhMuc\DanhMucController@updateNoiGioiThieu');
+    	Route::delete('deleteNoiGioiThieu/{id}','DanhMuc\DanhMucController@deleteNoiGioiThieu');
     });
     
     Route::group(['prefix' => 'nguoidung'], function () {
@@ -177,6 +205,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getListRoles','AuthController@getListRoles');
 		Route::get('getRolesByGroupsId/{id}','AuthController@getRolesByGroupsId');
 		Route::get('getKhoaPhongByGroupsId/{id}/{benhVienId}','AuthController@getKhoaPhongByGroupsId');
+		Route::get('getAllPermission','AuthController@getAllPermission');
     });     
     
     Route::group(['prefix' => 'thungan'], function () {
@@ -215,6 +244,10 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     
     Route::group(['prefix' => 'hoatchat'], function () {
         Route::get('getAll','HoatChat\HoatChatController@getAll');
+        Route::get('getPartial','HoatChat\HoatChatController@getPartial');
+        Route::post('create','HoatChat\HoatChatController@create');
+     	Route::put('update/{id}','HoatChat\HoatChatController@update');
+     	Route::get('getById/{id}','HoatChat\HoatChatController@getById');
     });
     
     Route::group(['prefix' => 'noitru'], function () {
@@ -253,6 +286,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });
     
     Route::group(['prefix' => 'donvitinh'], function () {
+        Route::get('getAll','DonViTinh\DonViTinhController@getAll');
 		Route::get('getPartial','DonViTinh\DonViTinhController@getPartial');
 		Route::get('getDonViCoBan','DonViTinh\DonViTinhController@getDonViCoBan');
 		Route::post('create','DonViTinh\DonViTinhController@create');
@@ -301,11 +335,43 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::post('createPhieuDieuTri','DieuTri\DieuTriController@create');
     });
     
+    Route::group(['prefix' => 'benhvien'], function () {
+        Route::post('create','BenhVien\BenhVienController@create');
+        Route::get('find/{id}','BenhVien\BenhVienController@find');
+        Route::get('getPartial','BenhVien\BenhVienController@getPartial');
+        Route::put('update/{id}','BenhVien\BenhVienController@update');
+        Route::delete('delete/{id}','BenhVien\BenhVienController@delete');
+        Route::get('getListKhoaPhongByBenhVienId/{id}','BenhVien\BenhVienController@getListKhoaPhongByBenhVienId');
+    });
+    
     Route::group(['prefix' => 'phieuchamsoc'], function () {
         Route::post('createPhieuChamSoc','PhieuChamSoc\PhieuChamSocController@create');
         Route::get('getPhieuChamSocById/{id}','PhieuChamSoc\PhieuChamSocController@getById');
         Route::get('getListPhieuChamSocByDieuTriId/{dieuTriId}','PhieuChamSoc\PhieuChamSocController@getAllByDieuTriId');
         Route::get('getYLenhByDieuTriId/{dieuTriId}','PhieuChamSoc\PhieuChamSocController@getYLenhByDieuTriId');
+    });
+    
+    Route::group(['prefix' => 'policy'], function () {
+		Route::get('getPartial','Auth\PolicyController@getPartial');
+		Route::get('getById/{id}','Auth\PolicyController@getById');
+		Route::post('create','Auth\PolicyController@create');
+     	Route::post('update/{id}','Auth\PolicyController@update');
+     	Route::delete('delete/{id}','Auth\PolicyController@delete');
+     	Route::get('getAllService','Auth\PolicyController@getAllService');
+     	Route::get('getRoute/{serviceName}','Auth\PolicyController@getRoute');
+     	Route::get('getAllRoute','Auth\PolicyController@getAllRoute');
+     	Route::get('checkKey/{key}','Auth\PolicyController@checkKey');
+     	Route::get('getByServiceId/{serviceId}','Auth\PolicyController@getByServiceId');
+    });
+    
+    Route::group(['prefix' => 'permission'], function () {
+		Route::get('getPartial','Auth\PermissionController@getPartial');
+		Route::get('getById/{id}','Auth\PermissionController@getById');
+		Route::post('create','Auth\PermissionController@create');
+     	Route::post('update/{id}','Auth\PermissionController@update');
+     	Route::get('getKhoaByLoaiKhoaBenhVienId/{loaiKhoa}/{benhVienId}','Auth\PermissionController@getKhoaByLoaiKhoaBenhVienId');
+     	Route::get('getMaNhomPhongByKhoaId/{khoaId}','Auth\PermissionController@getMaNhomPhongByKhoaId');
+     	Route::post('checkData','Auth\PermissionController@checkData');
     });    
     
     Route::group(['prefix' => 'khoa'], function () {

@@ -17,5 +17,28 @@ class HoatChatService
         return $result;
     }
     
+     public function getPartial($limit, $page, $keyWords)
+    {
+        $data = $this->hoatChatRepository->getPartial($limit, $page, $keyWords);
+        return $data;
+    }
+    
+    public function create(array $input)
+    {
+        $id = $this->hoatChatRepository->create($input);
+        return $id;
+    } 
+    
+    public function update($id, array $input)
+    {
+        $this->hoatChatRepository->update($id, $input);
+    }
+
+    public function getById($id)
+    {
+        $data = $this->hoatChatRepository->getById($id);
+        return $data;
+    }
+    
     
 }

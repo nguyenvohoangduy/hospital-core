@@ -95,6 +95,9 @@ class DonTiepController extends APIController
     public function updateInfoPatient($hsbaId, UpdateHsbaFormRequest $request)
     {
         try {
+            if ($request->isMethod('get')) {
+                return response(200);
+            }
             if(is_numeric($hsbaId)) {
                 $input = $request->except('location','tinh_key','huyen_key','xa_key','thx_name','thx_key','keys');
                 $this->hsbaService->updateHsba($hsbaId, $input);
@@ -111,10 +114,16 @@ class DonTiepController extends APIController
     {   
         try 
         {
+            if ($request->isMethod('get')) {
+                $this->setStatusCode(200);
+                return $this->respond([]);
+            }
             $dataPrint = $this->benhNhanService->registerBenhNhan($request);
             $this->setStatusCode(201);
             return $this->respond($dataPrint);
         } catch (\Exception $ex) {
+            return $this->respondInternalError($ex->getMessage());
+        } catch (\Throwable $ex) {
             return $this->respondInternalError($ex->getMessage());
         }
     }
@@ -147,5 +156,25 @@ class DonTiepController extends APIController
             return $this->respondInternalError($ex->getMessage());
         }    
         
+    }
+    
+    public function index(Request $request)
+    {
+        $this->setStatusCode(200);
+        return $this->respond([]);
+    }
+  
+    public function listBenhNhanTrung(Request $request)
+    {
+        $ho_va_ten = $request->query('ho_va_ten', '');
+        $ngay_sinh = $request->query('ngay_sinh', '');
+        $gioi_tinh_id = $request->query('gioi_tinh_id', 0);
+        
+        return $this->hsbaService->listBenhNhanTrung($ho_va_ten, $ngay_sinh, $gioi_tinh_id);
+    }
+    
+    public function getHsbaByBenhNhanId($benhNhanId)
+    {
+        return $this->hsbaService->getHsbaByBenhNhanId($benhNhanId);
     }
 }

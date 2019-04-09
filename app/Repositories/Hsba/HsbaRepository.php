@@ -247,12 +247,16 @@ class HsbaRepository extends BaseRepositoryV2
             'bhyt.den_ngay',
             'bhyt.ma_noi_song',
             'bhyt.du5nam6thangluongcoban',
-            'bhyt.dtcbh_luyke6thang'
+            'bhyt.dtcbh_luyke6thang',
+            'benh_nhan.ma_so_thue',
+            'benh_nhan.so_cmnd',
+            'benh_nhan.ma_tiem_chung'
         ];
         
         $result = $this->model->where('hsba.benh_nhan_id', $benhNhanId)
                             ->leftJoin('phong', 'phong.id', '=', 'hsba.phong_id')
                             ->leftJoin('bhyt', 'bhyt.ms_bhyt', '=', 'hsba.ms_bhyt')
+                            ->leftJoin('benh_nhan', 'benh_nhan.id', '=', 'hsba.benh_nhan_id')
                             ->get($column)
                             ->first();
         
@@ -398,6 +402,18 @@ class HsbaRepository extends BaseRepositoryV2
     public function getById($hsbaId)
     {
         $result = $this->model->findOrFail($hsbaId);
+        return $result;
+    }
+    
+    public function listBenhNhanTrung($ho_va_ten, $ngay_sinh, $gioi_tinh_id)
+    {
+        $result = $this->model
+                            ->whereRaw('LOWER(hsba.ten_benh_nhan) = ?', strtolower($ho_va_ten))
+                            ->where('hsba.ngay_sinh', '=', $ngay_sinh)
+                            ->where('hsba.gioi_tinh_id', '=', $gioi_tinh_id)
+                            ->get(['hsba.benh_nhan_id as id', 'hsba.ten_benh_nhan as ten'
+                                    , 'hsba.ms_bhyt', 'hsba.dia_chi_lien_he as dia_chi'
+                                    , 'hsba.gioi_tinh_id as gioi_tinh', 'hsba.ngay_sinh']);
         return $result;
     }
 }
