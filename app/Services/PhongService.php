@@ -25,4 +25,10 @@ class PhongService {
         $data = $this->phongRepository->getNhomPhong($loaiPhong,$khoaId);
         return $data;
     }
+    
+    public function getMaNhomPhongByKhoaId($khoaId)
+    {
+        $data = $this->phongRepository->getMaNhomPhongByKhoaId($khoaId);
+        return $data;
+    }    
 }

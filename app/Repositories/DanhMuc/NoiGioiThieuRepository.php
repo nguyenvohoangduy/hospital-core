@@ -3,6 +3,7 @@ namespace App\Repositories\DanhMuc;
 use DB;
 use App\Repositories\BaseRepositoryV2;
 use App\Models\NoiGioiThieu;
+use App\Helper\Util;
 
 class NoiGioiThieuRepository extends BaseRepositoryV2
 {
@@ -33,37 +34,14 @@ class NoiGioiThieuRepository extends BaseRepositoryV2
     }
 
     public function getPartial($limit = 100, $page = 1, $ten = '') {
-        $offset = ($page - 1) * $limit;
         
         $query = $this->model->where('trang_thai', '=', self::TRANG_THAI_SU_DUNG);
         if($ten)
             $query = $query
-                ->where('ten', 'like', '%' . $ten . '%');
-                
-        $totalRecord = $query->count();
+                ->where('ten', 'like', '%' . $ten . '%')
+                ->orderBy('id', 'desc');
         
-        if($totalRecord) {
-            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
-            
-            $data = $query->orderBy('id', 'desc')
-                        ->offset($offset)
-                        ->limit($limit)
-                        ->get();
-        } else {
-            $totalPage = 0;
-            $data = [];
-            $page = 0;
-            $totalRecord = 0;
-        }
-        
-        $result = [
-            'data'          => $data,
-            'page'          => $page,
-            'totalPage'     => $totalPage,
-            'totalRecord'   => $totalRecord
-        ];
-        
-        return $result;
+        return Util::getPartial($query,$limit,$page);
     }
     
     public function create(array $input)
