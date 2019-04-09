@@ -420,24 +420,6 @@ class DanhMucThuocVatTuService
         $data = $this->repository->getDMTVatTuById($id);
         return $data;
     }
-    public function getAllNhomDanhMuc()
-    {
-        $data = $this->nhomdanhmucRepository->getListNhomDanhMuc();
-        return $data;
-    }  
-    
-    public function getAllDonViTinh()
-    {
-        $data = $this->donvitinhRepository->getAll();
-        return $data;
-    } 
-    
-    public function getAllHoatChat()
-    {
-        $data = $this->hoatChatRepository->getAll();
-        return $data;
-    } 
-    
     public function getAllNuocSanXuat($khoa)
     {
         $data = $this->danhmucTongHopRepository->getAllByKhoa($khoa);

@@ -187,9 +187,6 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::put('updateDMTVatTu/{id}','DanhMuc\DanhMucController@updateDMTVatTu');
      	Route::delete('deleteDMTVatTu/{id}','DanhMuc\DanhMucController@deleteDMTVatTu');
      	Route::get('getDMTVatTuById/{id}','DanhMuc\DanhMucController@getDMTVatTuById');
-     	Route::get('getAllNhomDanhMuc','DanhMuc\DanhMucController@getAllNhomDanhMuc');
-     	Route::get('getAllDonViTinh','DanhMuc\DanhMucController@getAllDonViTinh');
-     	Route::get('getAllHoatChat','DanhMuc\DanhMucController@getAllHoatChat');
      	Route::get('getAllNuocSanXuat/{khoa}','DanhMuc\DanhMucController@getAllNuocSanXuat');
     });
     

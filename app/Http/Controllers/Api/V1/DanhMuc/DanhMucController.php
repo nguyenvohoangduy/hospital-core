@@ -502,24 +502,6 @@ class DanhMucController extends APIController
         
         return $this->respond($data);
     }
-    public function getAllNhomDanhMuc()
-    {
-        $data = $this->dmtvtService->getAllNhomDanhMuc();
-        return $this->respond($data);
-    }
-    
-    public function getAllDonViTinh()
-    {
-        $data = $this->dmtvtService->getAllDonViTinh();
-        return $this->respond($data);
-    }
-    
-    public function getAllHoatChat()
-    {
-        $data = $this->dmtvtService->getAllHoatChat();
-        return $this->respond($data);
-    }
-    
     public function getAllNuocSanXuat($khoa)
     {
         $data = $this->dmtvtService->getAllNuocSanXuat($khoa);
