@@ -31,7 +31,7 @@ class AuthPermissionsRepository extends BaseRepositoryV2
             
         $permission = $query->where($where)->get()->toArray();// $query->where($where)->toSql();
         
-        var_dump($permission);die;
+        //var_dump($permission);die;
         return $permission;
     }
     
