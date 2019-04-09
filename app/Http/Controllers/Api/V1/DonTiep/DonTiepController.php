@@ -115,7 +115,8 @@ class DonTiepController extends APIController
         try 
         {
             if ($request->isMethod('get')) {
-                return response(200);
+                $this->setStatusCode(200);
+                return $this->respond([]);
             }
             $dataPrint = $this->benhNhanService->registerBenhNhan($request);
             $this->setStatusCode(201);
@@ -159,7 +160,8 @@ class DonTiepController extends APIController
     
     public function index(Request $request)
     {
-        return response(200);
+        $this->setStatusCode(200);
+        return $this->respond([]);
     }
   
     public function listBenhNhanTrung(Request $request)
