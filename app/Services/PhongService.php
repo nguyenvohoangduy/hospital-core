@@ -66,15 +66,15 @@ class PhongService {
         return $data;
     }  
     
-    public function getPhongById($id)
+    public function getById($id)
     {
-        $data = $this->phongRepository->getPhongById($id);
+        $data = $this->phongRepository->getById($id);
         return $data;
     }
     
-    public function getAllByLoaiPhong($khoa)
+    public function getAllByLoaiPhong($loaiPhong)
     {
-        $data = $this->danhmucTongHopRepository->getAllByKhoa($khoa);
+        $data = $this->danhmucTongHopRepository->getAllByKhoa($loaiPhong);
         return $data;
     }  
     

@@ -12,10 +12,10 @@ use Illuminate\Http\Request;
 use Validator;
 
 class KhoaService {
-    public function __construct(KhoaRepository $khoaRepository,DanhMucTongHopRepository $danhmucTongHopRepository)
+    public function __construct(KhoaRepository $khoaRepository,DanhMucTongHopRepository $danhMucTongHopRepository)
     {
         $this->khoaRepository = $khoaRepository;
-        $this->danhmucTongHopRepository = $danhmucTongHopRepository;
+        $this->danhMucTongHopRepository = $danhMucTongHopRepository;
     }
 
     public function getListKhoa($loaiKhoa, $benhVienId)
@@ -71,15 +71,15 @@ class KhoaService {
         return $data;
     }  
     
-    public function getAllByLoaiKhoa($khoa)
+    public function getAllByLoaiKhoa($loaiKhoa)
     {
-        $data = $this->danhmucTongHopRepository->getAllByKhoa($khoa);
+        $data = $this->danhMucTongHopRepository->getAllByKhoa($loaiKhoa);
         return $data;
     }  
     
-    public function getKhoaById($id)
+    public function getById($id)
     {
-        $data = $this->khoaRepository->getKhoaById($id);
+        $data = $this->khoaRepository->getById($id);
         return $data;
     }
     

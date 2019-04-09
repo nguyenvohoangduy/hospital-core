@@ -24,7 +24,7 @@ class KhoaFormRequest extends ApiFormRequest
         return [
             'ma_khoa'                   => 'required|string',
             'ten_khoa'                   => 'required|string',
-            'loai_khoa'                => 'nullable|int',
+            'loai_khoa'                => 'required|int',
             'benh_vien_id'              => 'required|int'
         ];
     }

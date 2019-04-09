@@ -87,12 +87,12 @@ class PhongController extends APIController
         return $this->respond($data);
     }
    
-    public function getPhongById($id)
+    public function getById($id)
     {
         $isNumericId = is_numeric($id);
         
         if($isNumericId) {
-            $data = $this->phongService->getPhongById($id);
+            $data = $this->phongService->getById($id);
         } else {
             $this->setStatusCode(400);
             $data = [];
@@ -101,9 +101,9 @@ class PhongController extends APIController
         return $this->respond($data);
     }
     
-    public function getAllByLoaiPhong($khoa)
+    public function getAllByLoaiPhong($loaiPhong)
     {
-        $data = $this->phongService->getAllByLoaiPhong($khoa);
+        $data = $this->phongService->getAllByLoaiPhong($loaiPhong);
         return $this->respond($data);
     }
     

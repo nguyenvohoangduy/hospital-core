@@ -87,18 +87,18 @@ class KhoaController extends APIController
         return $this->respond($data);
     }
     
-    public function getAllByLoaiKhoa($khoa)
+    public function getAllByLoaiKhoa($loaiKhoa)
     {
-        $data = $this->khoaService->getAllByLoaiKhoa($khoa);
+        $data = $this->khoaService->getAllByLoaiKhoa($loaiKhoa);
         return $this->respond($data);
     }
     
-    public function getKhoaById($id)
+    public function getById($id)
     {
         $isNumericId = is_numeric($id);
         
         if($isNumericId) {
-            $data = $this->khoaService->getKhoaById($id);
+            $data = $this->khoaService->getById($id);
         } else {
             $this->setStatusCode(400);
             $data = [];

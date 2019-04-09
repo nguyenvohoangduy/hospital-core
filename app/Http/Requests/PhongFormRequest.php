@@ -26,7 +26,7 @@ class PhongFormRequest extends ApiFormRequest
             'so_phong'              => 'required|int',
             'ma_nhom'                   => 'required|string',
             'ten_phong'                   => 'required|string',
-            'loai_phong'                => 'nullable|int'
+            'loai_phong'                => 'required|int'
            
         ];
     }
