@@ -10,6 +10,9 @@ use App\Services\AuthService;
 
 class Authorization
 {
+    const HTTP_HEADER_BENH_VIEN_ID = 'X-RED-HID';
+    const HTTP_HEADER_KHOA_ID = 'X-RED-GID';
+    const HTTP_HEADER_MA_NHOM_PHONG = 'X-RED-DCODE';
     
     public function __construct(AuthService $authService)
       {
@@ -33,35 +36,20 @@ class Authorization
         if (empty($matchPolicy)) {
             return $next($request);
         }
-        if (!Auth::user() || !$request->header('X-RED-HID')  ) {
+        if (!Auth::user() || !$request->header(self::HTTP_HEADER_BENH_VIEN_ID)  ) {
             return response('Unauthorized..', 401);
         } 
         else {
             $group = [];
-            $benhVienId = $request->header('X-RED-HID');
-            $khoaId = $request->header('X-RED-GID',null);
-            $maNhomPhong = $request->header('X-RED-DCODE',null);
+            $benhVienId = $request->header(self::HTTP_HEADER_BENH_VIEN_ID);
+            $khoaId = $request->header(self::HTTP_HEADER_KHOA_ID, null);
+            $maNhomPhong = $request->header(self::HTTP_HEADER_MA_NHOM_PHONG, null);
             $matchPolicyId = $matchPolicy['id'];
             $authService->setBenhVienId($benhVienId)
                         ->setKhoaId($khoaId)
                         ->setMaNhomPhong($maNhomPhong);
             $isAuthorized= $authService->authorize(Auth::user()->ids, $route, $matchPolicyId);
             
-            /*
-            $routeCollection = Route::getRoutes();
-            $routesWithName  =[];
-            foreach ($routeCollection as $route) {
-                //$routesWithName[]= $route->getName();  
-                if($route->getName() != 'v1.' && $route->getName()!= NULL) {
-                    //echo $route->getName();
-                    $routesWithName[]= $route->getName();  
-                } 
-            }   
-            
-            var_dump($routesWithName);
-            //var_dump(get_class(Auth::user()));
-            $user = User::find(Auth::user()->id);
-            */
             if ($isAuthorized){
                 return $next($request);
             }
