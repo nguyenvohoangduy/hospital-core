@@ -100,9 +100,11 @@ class PolicyController extends APIController
                 //echo $route->getName()
                 $arrRoute = explode('.',$route->getName());
                 if($arrRoute[1]==$serviceName) {
+                    $routeName = str_replace('v1.'.$serviceName.'.','',$route->getName());
                     $routesWithName[]= [
-                        'route_name'  => $route->getName(),
-                        'method'     => $route->methods[0]
+                        'uri'           => $route->uri,
+                        'route_name'    => $routeName,
+                        'method'        => $route->methods[0]
                     ];
                 }
             } 
@@ -118,9 +120,10 @@ class PolicyController extends APIController
             if($route->getName() != 'v1.' && $route->getName()!= NULL) {
                 $arrRoute = explode('.',$route->getName());
                 $routesWithName[]= [
+                    'uri'           => $route->uri,
                     'service_name'  => $arrRoute[1],
-                    'route_name'    => $route->getName(),
-                    'method'        => $route->methods[0]
+                    //'route_name'    => $route->getName(),
+                    //'method'        => $route->methods[0]
                 ];
             } 
         }
@@ -131,5 +134,11 @@ class PolicyController extends APIController
     {
         $data = $this->authPolicyService->checkKey($key);   
         return $this->respond($data);
-    }     
+    }
+    
+    public function getByServiceId($serviceId)
+    {
+        $data = $this->authPolicyService->getByServiceId($serviceId);   
+        return $this->respond($data);
+    }   
 }

@@ -11,7 +11,7 @@ class AuthGroupsHasRolesRepository extends BaseRepositoryV2
         return AuthGroupsHasRoles::class;
     }    
 
-     public function getRolesbyIdGroup($idGroup)
+     public function getRolesByIdGroup($idGroup)
     {
         $dataSet =  $this->model->whereIn('group_id',$idGroup)->get();
         if($dataSet)
@@ -63,6 +63,5 @@ class AuthGroupsHasRolesRepository extends BaseRepositoryV2
             ->distinct()
             ->get($column);
         return $result;
-    }    
-    
+    }   
 }

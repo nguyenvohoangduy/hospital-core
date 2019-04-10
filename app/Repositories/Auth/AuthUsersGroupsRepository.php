@@ -12,7 +12,7 @@ class AuthUsersGroupsRepository extends BaseRepositoryV2
         return AuthUsersGroups::class;
     }    
 
-     public function getIdGroupbyId($id)
+     public function getIdGroupById($id)
     {
         $dataSet = $this->model->where('user_id',$id)->get();
         if($dataSet)

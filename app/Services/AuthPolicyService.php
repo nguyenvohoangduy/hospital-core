@@ -42,5 +42,11 @@ class AuthPolicyService {
     {
         $data = $this->authPolicyRepository->checkKey($key);
         return $data;
+    } 
+    
+    public function getByServiceId($serviceId)
+    {
+        $data = $this->authPolicyRepository->getByServiceId($serviceId);
+        return $data;
     }    
 }

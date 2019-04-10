@@ -38,10 +38,13 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::delete('patient/{id}', 'SamplePatientController@delete');
     
     // don-tiep-service
-    Route::group(['prefix' => 'don-tiep-service','as' => 'don-tiep.' ], function () {
+    Route::group(['prefix' => 'don-tiep-service','as' => 'don-tiep.','middleware' => ['jwt.auth'] ], function () {
         Route::get('index','DonTiep\DonTiepController@index')->name('index');
-        Route::post('register','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.create');
-
+        
+        //Route::get('register-index','DonTiep\DonTiepController@registerIndex')->name('dang-ky-kham-benh.index');
+        Route::get('register','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.index');
+        //Route::post('register','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.create');
+        //Route::get('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient')->name('hsba.update.index');
         Route::post('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient')->name('hsba.update');
     });
     
@@ -202,6 +205,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getListRoles','AuthController@getListRoles');
 		Route::get('getRolesByGroupsId/{id}','AuthController@getRolesByGroupsId');
 		Route::get('getKhoaPhongByGroupsId/{id}/{benhVienId}','AuthController@getKhoaPhongByGroupsId');
+		Route::get('getAllPermission','AuthController@getAllPermission');
     });     
     
     Route::group(['prefix' => 'thungan'], function () {
@@ -240,6 +244,10 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     
     Route::group(['prefix' => 'hoatchat'], function () {
         Route::get('getAll','HoatChat\HoatChatController@getAll');
+        Route::get('getPartial','HoatChat\HoatChatController@getPartial');
+        Route::post('create','HoatChat\HoatChatController@create');
+     	Route::put('update/{id}','HoatChat\HoatChatController@update');
+     	Route::get('getById/{id}','HoatChat\HoatChatController@getById');
     });
     
     Route::group(['prefix' => 'noitru'], function () {
@@ -353,7 +361,41 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::get('getRoute/{serviceName}','Auth\PolicyController@getRoute');
      	Route::get('getAllRoute','Auth\PolicyController@getAllRoute');
      	Route::get('checkKey/{key}','Auth\PolicyController@checkKey');
+     	Route::get('getByServiceId/{serviceId}','Auth\PolicyController@getByServiceId');
+    });
+    
+    Route::group(['prefix' => 'permission'], function () {
+		Route::get('getPartial','Auth\PermissionController@getPartial');
+		Route::get('getById/{id}','Auth\PermissionController@getById');
+		Route::post('create','Auth\PermissionController@create');
+     	Route::post('update/{id}','Auth\PermissionController@update');
+     	Route::get('getKhoaByLoaiKhoaBenhVienId/{loaiKhoa}/{benhVienId}','Auth\PermissionController@getKhoaByLoaiKhoaBenhVienId');
+     	Route::get('getMaNhomPhongByKhoaId/{khoaId}','Auth\PermissionController@getMaNhomPhongByKhoaId');
+     	Route::post('checkData','Auth\PermissionController@checkData');
     });    
+    
+    Route::group(['prefix' => 'khoa'], function () {
+		Route::get('getPartial','KhoaPhong\KhoaController@getPartial');
+		Route::post('create','KhoaPhong\KhoaController@create');
+     	Route::post('update/{id}','KhoaPhong\KhoaController@update');
+     	Route::delete('delete/{id}','KhoaPhong\KhoaController@delete');
+ 		Route::get('getAllByLoaiKhoa/{loaiKhoa}','KhoaPhong\KhoaController@getAllByLoaiKhoa');
+ 	    Route::get('getKhoaById/{id}','KhoaPhong\KhoaController@getById');
+ 	    Route::get('getAllByBenhVienId/{benhVienId}','KhoaPhong\KhoaController@getAllByBenhVienId');
+ 		Route::get('searchByKeywords/{keyWords}','KhoaPhong\KhoaController@searchByKeywords');
+    });
+    
+    Route::group(['prefix' => 'phong'], function () {
+		Route::get('getPartial','KhoaPhong\PhongController@getPartial');
+		Route::post('create','KhoaPhong\PhongController@create');
+     	Route::post('update/{id}','KhoaPhong\PhongController@update');
+     	Route::delete('delete/{id}','KhoaPhong\PhongController@delete');
+     	Route::get('getPhongById/{id}','KhoaPhong\PhongController@getById');
+ 		Route::get('searchByKeywords/{keyWords}','KhoaPhong\PhongController@searchByKeywords');
+ 		Route::get('getAllByKhoaId/{khoaId}','KhoaPhong\PhongController@getAllByKhoaId');
+ 		Route::get('getAllByLoaiPhong/{loaiPhong}','KhoaPhong\PhongController@getAllByLoaiPhong');
+ 		Route::get('getAllKhoa','KhoaPhong\PhongController@getAllKhoa');
+    });
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {
         Route::get('user', 'AuthController@user');
