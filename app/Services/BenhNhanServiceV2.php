@@ -606,7 +606,7 @@ class BenhNhanServiceV2 {
         
         try {
         // Push
-            $this->sqsRepositpry->push(
+            $this->sqsRepository->push(
                 $messageAttributes, $message
             );
         } catch ( \Exception $ex) {
