@@ -103,6 +103,8 @@ class PhongKhamController extends APIController
             
         } catch (\Exception $ex) {
             return $this->respondInternalError($ex->getMessage());
+        } catch (\Throwable  $ex) {
+            return $this->respondInternalError($ex->getMessage());
         }
     }
   
@@ -155,59 +157,73 @@ class PhongKhamController extends APIController
     
     public function saveYLenh(Request $request)
     {
-        $input = $request->all();
-        
-        if($input['data']) {
-            $bool = $this->yLenhService->saveYLenh($input);
+        try 
+        {
+            $input = $request->all();
             
-            if($bool) {
-                $this->setStatusCode(201);
-            } else {
-                $this->setStatusCode(400);
-            }
-        
-            return $this->respond($bool);
-        } else {
-            $this->setStatusCode(400);
-            return $this->respond([]);
-        }
-    }
-    
-    public function saveThuocVatTu(Request $request)
-    {
-        $input = $request->all();
-        $result = [];
-        $flag = false;
-        
-        if($input['data']) {
-            foreach($input['data'] as $item) {
-                $quantity = $this->theKhoService->getTonKhaDungById($item['id'], $item['kho_id']);
-                if($quantity['so_luong_kha_dung'] < $item['so_luong']) {
-                    $flag = true;
-                    $result[] = [
-                        'id'            => $item['id'],
-                        'ten'           => $item['ten'],
-                        'so_luong'      => $quantity['so_luong_kha_dung'],
-                        'don_vi_tinh'   => $item['don_vi_tinh']
-                    ];
-                }
-            }
-            
-            if($flag) {
-                return $this->respond($result);
-            } else {
-                $bool = $this->yLenhService->saveThuocVatTu($input);
+            if($input['data']) {
+                // $input['dieu_tri_id'] = $phieuDieuTri->id;
+                $bool = $this->yLenhService->saveYLenh($input);
+                
                 if($bool) {
                     $this->setStatusCode(201);
                 } else {
                     $this->setStatusCode(400);
                 }
+            
+                return $this->respond($bool);
+            } else {
+                $this->setStatusCode(400);
                 return $this->respond([]);
             }
-        } else {
-            $this->setStatusCode(400);
-            return $this->respond([]);
+        } catch (\Exception $ex) {
+            return $this->respondInternalError($ex->getMessage());
+        } catch (\Throwable  $ex) {
+            return $this->respondInternalError($ex->getMessage());
         }
+    }
+    
+    public function saveThuocVatTu(Request $request)
+    {
+        try {
+            $input = $request->all();
+            $result = [];
+            $flag = false;
+            
+            if($input['data']) {
+                foreach($input['data'] as $item) {
+                    $quantity = $this->theKhoService->getTonKhaDungById($item['id'], $item['kho_id']);
+                    if($quantity['so_luong_kha_dung'] < $item['so_luong']) {
+                        $flag = true;
+                        $result[] = [
+                            'id'            => $item['id'],
+                            'ten'           => $item['ten'],
+                            'so_luong'      => $quantity['so_luong_kha_dung'],
+                            'don_vi_tinh'   => $item['don_vi_tinh']
+                        ];
+                    }
+                }
+                
+                if($flag) {
+                    return $this->respond($result);
+                } else {
+                    $bool = $this->yLenhService->saveThuocVatTu($input);
+                    if($bool) {
+                        $this->setStatusCode(201);
+                    } else {
+                        $this->setStatusCode(400);
+                    }
+                    return $this->respond([]);
+                }
+            } else {
+                $this->setStatusCode(400);
+                return $this->respond([]);
+            }    
+        } catch (\Exception $ex) {
+            return $this->respondInternalError($ex->getMessage());
+        } catch (\Throwable  $ex) {
+            return $this->respondInternalError($ex->getMessage());
+        } 
     }
     
     public function getLichSuYLenh(Request $request)
@@ -309,6 +325,8 @@ class PhongKhamController extends APIController
                 $this->setStatusCode(400);
             }
         } catch (\Exception $ex) {
+            return $this->respondInternalError($ex->getMessage());
+        } catch (\Throwable  $ex) {
             return $this->respondInternalError($ex->getMessage());
         }
     }

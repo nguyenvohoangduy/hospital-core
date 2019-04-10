@@ -18,8 +18,10 @@ use App\Repositories\DanhMuc\DanhMucDichVuRepository;
 use App\Repositories\Hsba\HsbaDonViRepository;
 use App\Repositories\DieuTri\DieuTriRepository;
 use App\Repositories\PhongGiuongChiTietRepository;
+use App\Repositories\BenhVienRepository;
 // Service
 use App\Services\VienPhiService;
+use App\Log\HanhChinhErrorLog;
 
 class HanhChinhService {
     //trạng thái hsba khoa phòng
@@ -51,6 +53,9 @@ class HanhChinhService {
     // Loai Benh An
     const LOAI_BENH_AN_NOI_TRU = 1;
     
+    // Folder Log
+    const HANH_CHINH = 'hanh-chinh';
+    
     public function __construct(
         HsbaKhoaPhongRepository $hsbaKhoaPhongRepository,
         HsbaRepository $hsbaRepository, 
@@ -66,7 +71,9 @@ class HanhChinhService {
         HsbaDonViRepository $hsbaDonViRepository,
         DieuTriRepository $dieuTriRepository,
         PhongGiuongChiTietRepository $phongGiuongChiTietRepository,
-        VienPhiService $vienPhiService
+        BenhVienRepository $benhVienRepository,
+        VienPhiService $vienPhiService,
+        HanhChinhErrorLog $errorLog
     )
     {
         $this->hsbaKhoaPhongRepository = $hsbaKhoaPhongRepository;
@@ -84,7 +91,9 @@ class HanhChinhService {
         $this->hsbaDonViRepository = $hsbaDonViRepository;
         $this->dieuTriRepository = $dieuTriRepository;
         $this->phongGiuongChiTietRepository = $phongGiuongChiTietRepository;
+        $this->benhVienRepository = $benhVienRepository;
         $this->vienPhiService = $vienPhiService;
+        $this->errorLog = $errorLog;
     }
     
     public function luuNhapKhoa(array $request)
@@ -138,8 +147,11 @@ class HanhChinhService {
                 
                 //9. Tạo y lệnh
                 //$this->createYLenh($request, $hsbaKp);
-            }
-            catch (\Exception $ex) {
+            } catch(\Throwable  $ex) {
+                $this->exceptionToLog($request, self::HANH_CHINH, $ex);
+                throw $ex;
+            } catch (\Exception $ex) {
+                $this->exceptionToLog($request, self::HANH_CHINH, $ex);
                 throw $ex;
             }
         });
@@ -298,5 +310,22 @@ class HanhChinhService {
     {
         $data = $this->hanhChinhRepository->getThxByKey($thxKey);
         return $data;
-    }   
+    }  
+    
+    private function getBenhVienThietLap($id) {
+        $data = $this->benhVienRepository->getBenhVienThietLap($id);
+        return $data;
+    }
+    
+    private function exceptionToLog($params, $folder, $ex) {
+        $bucketS3 = $this->getBenhVienThietLap($params['benh_vien_id'])['bucket'];
+        $this->errorLog->setBucketS3($bucketS3);
+        $this->errorLog->setFolder($folder);
+        $messageAttributes = [
+            'key'    => ['DataType' => "String",
+                'StringValue' => $params['ten_benh_nhan']
+            ],
+        ];
+        $this->errorLog->toLogQueue($params, $ex, $messageAttributes);
+    }
 }

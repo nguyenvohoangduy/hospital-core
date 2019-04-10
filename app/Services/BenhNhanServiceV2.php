@@ -41,6 +41,7 @@ use App\Helper\AwsS3;
 use Aws\Sqs\SqsClient;
 use Aws\Exception\AwsException;
 use App\Repositories\Sqs\Dkkb\InputLogRepository as InputLogSqsRepository;
+use App\Log\DangKyKhamBenhErrorLog;
 
 class BenhNhanServiceV2 {
     
@@ -72,11 +73,14 @@ class BenhNhanServiceV2 {
     const LOAI_GIOI_THIEU_TU_DEN = "1";
     const LOAI_GIOI_THIEU_KHAC = "2";
     
+    const TYPE_LOG_INPUT = 'input';
+    const TYPE_LOG_ERROR = 'error';
+    
     private $benhNhanKeys = [
         'benh_nhan_id', 'ho_va_ten', 'ngay_sinh', 'gioi_tinh_id'
         , 'so_nha', 'duong_thon', 'noi_lam_viec'
         , 'url_hinh_anh', 'dien_thoai_benh_nhan', 'email_benh_nhan', 'dia_chi_lien_he'
-        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id'
+        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id', 'ma_so_thue', 'so_cmnd', 'ma_tiem_chung'
     ];
     
     private $hsbaKeys = [
@@ -136,8 +140,9 @@ class BenhNhanServiceV2 {
         HanhChinhRepository $hanhChinhRepository,
         ChuyenVienRepository $chuyenVienRepository,
         BenhVienRepository $benhVienRepository,
-        InputLogSqsRepository $sqsRepo,
-        noiGioiThieuRepository $noiGioiThieuRepository
+        noiGioiThieuRepository $noiGioiThieuRepository,
+        InputLogSqsRepository $sqsRepository,
+        DangKyKhamBenhErrorLog $errorLog
     )
     {
         // Services
@@ -161,8 +166,9 @@ class BenhNhanServiceV2 {
         $this->hanhChinhRepository = $hanhChinhRepository;
         $this->chuyenVienRepository = $chuyenVienRepository;
         $this->benhVienRepository = $benhVienRepository;
-        $this->sqsRepo = $sqsRepo;
         $this->noiGioiThieuRepository = $noiGioiThieuRepository;
+        $this->sqsRepository = $sqsRepository;
+        $this->errorLog = $errorLog;
     }
     
     public function registerBenhNhan(Request $request)
@@ -213,7 +219,7 @@ class BenhNhanServiceV2 {
         $dieuTriParams = $request->only(...$this->dieuTriKeys);        
         $sttPhongKhamParams =  $request->only(...$this->sttPkKeys);
         $chuyenVienParams =  $request->only(...$this->chuyenVienKeys);
-        $result = DB::transaction(function () use ($scan, $benhNhanParams, $hsbaParams,$hsbaDvParams, $hsbaKpParams, $bhytParams, $dieuTriParams, $sttPhongKhamParams,$chuyenVienParams, $arrayRequest) {
+        $result = DB::transaction(function () use ($request, $scan, $benhNhanParams, $hsbaParams,$hsbaDvParams, $hsbaKpParams, $bhytParams, $dieuTriParams, $sttPhongKhamParams,$chuyenVienParams, $arrayRequest) {
             try {
                 // TODO - implement try catch log inside each function carefully
                 $this->createBhyt($bhytParams)
@@ -233,18 +239,19 @@ class BenhNhanServiceV2 {
                     ->createPhieuYLenh()
                     ->createYLenh()
                     ->pushToHsbaKpQueue()
-                    ->pushLogQueue($arrayRequest);
+                    ->pushLogQueue($arrayRequest, self::TYPE_LOG_INPUT);
                 
                 return $this->dataSttPk;
                 
-            } catch (\Exception $ex) {
-                var_dump($ex->getMessage());
-                echo "<br/>";
-                var_dump($ex->getFile());
-                echo "<br/>";
-                var_dump($ex->getLine());die;
+            } catch(\Throwable  $ex) {
+                //store log
+                $this->exceptionToLog($request, $ex);
                 throw $ex;
-            }
+            } catch (\Exception $ex) {
+                //store log
+                $this->exceptionToLog($request, $ex);
+                throw $ex;
+            } 
         });
         return $result;
     }
@@ -568,23 +575,12 @@ class BenhNhanServiceV2 {
         return $this;
     }
     
-    private function uploadInfoJson($arrayRequest) {
-        $dataBenhVienThietLap = $this->hsbaKhoaPhongService->getBenhVienThietLap($arrayRequest['benh_vien_id']);
-        $s3 = new AwsS3($dataBenhVienThietLap['bucket']);
-        $json_data = json_encode($arrayRequest);
-        file_put_contents('myfile.json', $json_data);
-        
-        $pathName = public_path('myfile.json');
-        $result = $s3->putObject('dang-ky-kham-benh/' . time() . '_myfile.json', $pathName, 'application/json');
-        unlink($pathName);
-    }
-    
     private function getMucHuong()
     {
         
     }
     
-    private function pushLogQueue($message) {
+    private function pushLogQueue($message, $type) {
         $bucketS3 = $this->getBucketS3ByBenhVienId($message['benh_vien_id']); 
         
         $messageAttributes = [
@@ -602,21 +598,36 @@ class BenhNhanServiceV2 {
                             ],
             'app_env'    => ['DataType' => "String",
                                 'StringValue' => env('APP_ENV')
+                            ],
+            'type_log'    => ['DataType' => "String",
+                                'StringValue' => $type
                             ]
         ];
         
         try {
-            // Push
-            $this->sqsRepo->push(
+        // Push
+            $this->sqsRepository->push(
                 $messageAttributes, $message
             );
         } catch ( \Exception $ex) {
-            echo $ex->getMessage();
+            throw $ex;
         }
     }
-    
+
     private function getBucketS3ByBenhVienId($benhVienId) {
         $data = $this->benhVienRepository->getBenhVienThietLap($benhVienId);
         return $data['bucket'];
+    }
+    
+    private function exceptionToLog($params, $ex) {
+        $bucketS3 = $this->getBucketS3ByBenhVienId($params['benh_vien_id']);
+        $this->errorLog->setBucketS3($bucketS3);
+        $this->errorLog->setFolder('dkkb');
+        $messageAttributes = [
+            'key'    => ['DataType' => "String",
+                'StringValue' => $params['ho_va_ten']
+            ],
+        ];
+        $this->errorLog->toLogQueue($params, $ex, $messageAttributes);
     }
 }

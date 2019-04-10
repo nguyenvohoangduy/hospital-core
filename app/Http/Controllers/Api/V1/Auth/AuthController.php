@@ -14,10 +14,19 @@ use App\Services\AuthGroupsService;
 use App\Services\AuthUsersGroupsService;
 use App\Services\AuthGroupsHasRolesService;
 use App\Services\KhoaService;
+use App\Services\AuthPermissionsService;
 
 class AuthController extends APIController
 {
-    public function __construct(AuthService $service,AuthGroupsService $authGroupsService,KhoaService $khoaService,AuthUsersGroupsService $authUsersGroupsService,AuthRolesService $authRolesService,AuthGroupsHasRolesService $authGroupsHasRolesService)
+    public function __construct(
+        AuthService $service,
+        AuthGroupsService $authGroupsService,
+        KhoaService $khoaService,
+        AuthUsersGroupsService $authUsersGroupsService,
+        AuthRolesService $authRolesService,
+        AuthGroupsHasRolesService $authGroupsHasRolesService,
+        AuthPermissionsService $authPermissionsService
+        )
     {
         $this->authService = $service;
         $this->authGroupsService = $authGroupsService;
@@ -25,6 +34,7 @@ class AuthController extends APIController
         $this->authUsersGroupsService = $authUsersGroupsService;
         $this->authRolesService = $authRolesService;
         $this->authGroupsHasRolesService = $authGroupsHasRolesService;
+        $this->authPermissionsService = $authPermissionsService;
     }
     public function register(RegisterFormRequest $request)
     {
@@ -246,5 +256,11 @@ class AuthController extends APIController
         }
         
         return $this->respond($data);
-    }    
+    }
+    
+    public function getAllPermission()
+    {
+        $data = $this->authPermissionsService->getAllPermission();
+        return $this->respond($data);
+    }     
 }

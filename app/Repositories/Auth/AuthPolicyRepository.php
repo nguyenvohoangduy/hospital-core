@@ -11,6 +11,10 @@ class AuthPolicyRepository extends BaseRepositoryV2
         return AuthPolicy::class;
     }
 
+    public function getByUri($uri): array {
+        return $this->model->where('uri',$uri)->first()->toArray();
+    }
+    
     public function getPartial($limit = 100, $page = 1, $keywords='', $serviceId='')
     {
         $offset = ($page - 1) * $limit;
@@ -87,5 +91,11 @@ class AuthPolicyRepository extends BaseRepositoryV2
             return true;
         else
             return false;
+    }
+    
+    public function getByServiceId($serviceId)
+    {
+        $data = $this->model->where('service_id',$serviceId)->get();
+        return $data;
     }    
 }
