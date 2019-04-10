@@ -8,6 +8,7 @@ use App\Repositories\Auth\AuthUsersGroupsRepository;
 use App\Repositories\Auth\AuthGroupsHasRolesRepository;
 use App\Repositories\Auth\AuthServiceRepository;
 use App\Repositories\Auth\AuthPolicyRepository;
+use App\Repositories\Auth\AuthPermissionsRepository;
 use App\Repositories\Auth\AuthGroupsHasPermissionsRepository;
 use App\Http\Resources\AuthResource;
 use Illuminate\Http\Request;
@@ -15,13 +16,17 @@ use Validator;
 
 class AuthService {
     
+    private $benhVienId = null;
+    private $khoaId = null;
+    private $maNhomPhong = null;
+    
     public function __construct(
         AuthUsersRepository $authUsersRepository, 
         AuthUsersGroupsRepository $authUsersGroupsRepository,
         AuthGroupsHasRolesRepository $authGroupsHasRolesRepository,
         AuthServiceRepository $authServiceRepository,
         AuthPolicyRepository $authPolicyRepository,
-        AuthGroupsHasPermissionsRepository $authGroupsHasPermissionsRepository
+        AuthPermissionsRepository $authPermissionsRepository
     )
     {
         $this->authUsersRepository = $authUsersRepository;
@@ -29,13 +34,29 @@ class AuthService {
         $this->authGroupsHasRolesRepository = $authGroupsHasRolesRepository;
         $this->authServiceRepository = $authServiceRepository;
         $this->authPolicyRepository = $authPolicyRepository;
+        $this->authPermissionsRepository = $authPermissionsRepository;
+    }
+    
+    public function setBenhVienId($benhVienId) {
+        $this->benhVienId = $benhVienId;
+        return $this;
+    }
+    
+    public function setKhoaId($khoaId) {
+        $this->khoaId = $khoaId;
+        return $this;
+    }
+    
+    public function setMaNhomPhong($maNhomPhong) {
+        $this->maNhomPhong = $maNhomPhong;
+        return $this;
     }
 
     public function getUserRolesByEmail($email)
     {
-        $id = $this->authUsersRepository->getIdbyEmail($email);
-        $idGroup = $this->authUsersGroupsRepository->getIdGroupbyId($id->id);
-        $roles = $this->authGroupsHasRolesRepository->getRolesbyIdGroup($idGroup);
+        $id = $this->authUsersRepository->getIdByEmail($email);
+        $idGroup = $this->authUsersGroupsRepository->getIdGroupById($id->id);
+        $roles = $this->authGroupsHasRolesRepository->getRolesByIdGroup($idGroup);
         $data = [
             'roles' => $roles,
             'idGroup' => $idGroup
@@ -72,15 +93,25 @@ class AuthService {
         return $data;
     }
     
-    public function Authorize(int $benhVienId, App\User $user, Illuminate\Routing\Router $route, array $policyIds, array $restriction = [] ) {
-        //get user in group
-        $permissionIds = $this->authPolicyRepository->getAllByHospitalAndPolicies($benhVienId, $policyIds);
-        $groupIds = $this->getGroupIdsByPermissionIds->getAuthGroupsById();
-        
+    public function authorize($userId, \Illuminate\Routing\Route $route, $policyId ):bool {
+        /*
+        select t1.* from auth_permissions t1 inner join auth_groups_has_permissions t2 on t1.id = t2.permission_id
+          where 
+            group_id in (select group_id from auth_users_groups where user_id=<user_id>)
+          and
+            policy_id = <policy_id>
+          and 
+            benh_vien_id = <benh_vien_id>
+          ...    
+        */
+        //var_dump($policyId);die();
+        $authPermission = $this->authPermissionsRepository->findPermission($this->benhVienId,$this->khoaId,$this->maNhomPhong,$userId,$route->uri(),$policyId);
+        return !empty($authPermission);
     }
     
-    public function matchPolicyByUri(Illuminate\Routing\Router $route):array {
-        return $this->authPolicyRepository->getAllByUri($route->uri());
+    public function matchPolicyByUri(\Illuminate\Routing\Route $route):array {
+        //var_dump($route->uri());die();
+        return $this->authPolicyRepository->getByUri($route->uri());
     }
     
 }

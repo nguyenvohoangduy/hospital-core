@@ -5,11 +5,20 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 use Closure;
-// Service 
-use App\Service\Auth\AuthService;
+// Service
+use App\Services\AuthService;
 
 class Authorization
 {
+    const HTTP_HEADER_BENH_VIEN_ID = 'X-RED-HID';
+    const HTTP_HEADER_KHOA_ID = 'X-RED-GID';
+    const HTTP_HEADER_MA_NHOM_PHONG = 'X-RED-DCODE';
+    
+    public function __construct(AuthService $authService)
+      {
+        $this->authService = $authService;
+      }
+      
     /**
      * Handle an incoming request.
      *
@@ -20,36 +29,30 @@ class Authorization
     public function handle($request, Closure $next)
     {
         $route = Route::getCurrentRoute();
-        $matchPolicyIds = $authService->matchPolicyByUri($route);
-        if (empty($matchPolicyIds)) {
+        $authService=$this->authService;
+        //print_r($matchPolicyId);die;
+        $matchPolicy = $this->authService->matchPolicyByUri($route);
+        //print_r($matchPolicy);die;
+        if (empty($matchPolicy)) {
             return $next($request);
         }
-        if (!Auth::user() || !$request->header('X-RED-HID') || !is_int($request->header('X-RED-HID')) ) {
-            return response('Unauthorized.', 401);
+        if (!Auth::user() || !$request->header(self::HTTP_HEADER_BENH_VIEN_ID)  ) {
+            return response('Unauthorized..', 401);
         } 
         else {
             $group = [];
-            $benhVienId = $request->header('X-RED-HID');
-            $benhVienId = $request->header('X-RED-HID');
-            $authService = new AuthService();
-            $authService->authorize($benhVienId, Auth::user(), $route, $matchPolicyIds);
+            $benhVienId = $request->header(self::HTTP_HEADER_BENH_VIEN_ID);
+            $khoaId = $request->header(self::HTTP_HEADER_KHOA_ID, null);
+            $maNhomPhong = $request->header(self::HTTP_HEADER_MA_NHOM_PHONG, null);
+            $matchPolicyId = $matchPolicy['id'];
+            $authService->setBenhVienId($benhVienId)
+                        ->setKhoaId($khoaId)
+                        ->setMaNhomPhong($maNhomPhong);
+            $isAuthorized= $authService->authorize(Auth::user()->ids, $route, $matchPolicyId);
             
-            /*
-            $routeCollection = Route::getRoutes();
-            $routesWithName  =[];
-            foreach ($routeCollection as $route) {
-                //$routesWithName[]= $route->getName();  
-                if($route->getName() != 'v1.' && $route->getName()!= NULL) {
-                    //echo $route->getName();
-                    $routesWithName[]= $route->getName();  
-                } 
-            }   
-            
-            var_dump($routesWithName);
-            //var_dump(get_class(Auth::user()));
-            $user = User::find(Auth::user()->id);
-            */
-            return $next($request);
+            if ($isAuthorized){
+                return $next($request);
+            }
         }
         return response('Unauthorized.', 401);
         

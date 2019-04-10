@@ -9,6 +9,9 @@ use Carbon\Carbon;
 
 class SttDonTiepRepository extends BaseRepositoryV2
 {
+    const TRANG_THAI_CHO_PHUC_VU = 1;
+    const TRANG_THAI_PHUC_VU = 2;
+    
     public function getModel()
     {
         return SttDonTiep::class;
@@ -65,7 +68,8 @@ class SttDonTiepRepository extends BaseRepositoryV2
         $where = [
             ['loai_stt', '=', $loaiStt],
             ['phong_id', '=', $phongId],
-            ['benh_vien_id', '=', $benhVienId]
+            ['benh_vien_id', '=', $benhVienId],
+            ['trang_thai', '=', self::TRANG_THAI_PHUC_VU]
         ];
         
         $result = $this->model->where($where)

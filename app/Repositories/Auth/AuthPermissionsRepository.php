@@ -11,6 +11,30 @@ class AuthPermissionsRepository extends BaseRepositoryV2
         return AuthPermissions::class;
     }
     
+    
+    public function findPermission( $benhVienId, $khoaId, $maNhomPhong, $userId, $uri, $policiId) {
+        $query = $this->model->leftJoin('auth_groups_has_permissions', 'auth_permissions.id', '=', 'auth_groups_has_permissions.permission_id');
+        $where = [
+                ['auth_permissions.policy_id', '=', $policiId],
+                ['auth_permissions.benh_vien_id', '=', $benhVienId]
+            ];
+        if ($khoaId === null) {
+            $query->whereNull('khoa');
+        } else {
+            $query->where('khoa',$khoaId);
+        }
+        if ($maNhomPhong === null) {
+            $query->whereNull('ma_nhom_phong');
+        } else {
+            $query->where('ma_nhom_phong', $maNhomPhong);
+        }  
+            
+        $permission = $query->where($where)->get()->toArray();// $query->where($where)->toSql();
+        
+        //var_dump($permission);die;
+        return $permission;
+    }
+    
     public function getAllByHospitalAndPolicies(int $benhVienId, array $policieIds):array{
         return $model->whereIn('policy_id',$policieIds)>where('benh_vien_id',$benhVienId)->get()->toArray();
     }
