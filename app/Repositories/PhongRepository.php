@@ -12,6 +12,8 @@ class PhongRepository extends BaseRepositoryV2
     const PHONG_HANH_CHINH = 1;
     const PHONG_NOI_TRU = 3;
     
+    const KHOA_KHAM_BENH_DON_TIEP = 'KKB_ĐT';
+    
     public function getModel()
     {
         return Phong::class;
@@ -99,4 +101,26 @@ class PhongRepository extends BaseRepositoryV2
         $data = $this->model->where('khoa_id',$khoaId)->distinct()->orderBy('ma_nhom')->get(['ma_nhom']);
         return $data;
     }    
+    
+    public function getKhoaPhongDonTiepByBenhVienId($benhVienId) {
+        $column = [
+            'phong.id',
+            'phong.khoa_id',
+            'phong.ten_phong',
+            'phong.ma_nhom',
+            'khoa.ten_khoa',
+            'phong.loai_phong',
+            'khoa.benh_vien_id'
+        ];
+        
+        $data = $this->model
+                        ->join('khoa', function($join) use ($benhVienId) {
+                            $join->on('khoa.id', '=', 'phong.khoa_id')
+                                ->where('khoa.benh_vien_id', '=', $benhVienId);
+                        })
+                        ->where('phong.ma_nhom', '=', self::KHOA_KHAM_BENH_DON_TIEP)
+                        ->orderBy('khoa.ten_khoa')
+                        ->get($column);
+        return $data;
+    }
 }

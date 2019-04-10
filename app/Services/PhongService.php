@@ -31,4 +31,10 @@ class PhongService {
         $data = $this->phongRepository->getMaNhomPhongByKhoaId($khoaId);
         return $data;
     }    
+    
+    public function getKhoaPhongDonTiepByBenhVienId($benhVienId)
+    {
+        $data = $this->phongRepository->getKhoaPhongDonTiepByBenhVienId($benhVienId);
+        return $data;
+    }    
 }

@@ -105,4 +105,22 @@ class AuthPermissionsRepository extends BaseRepositoryV2
         else
             return false;
     }     
+    
+    public function getAllPermissionAndServiceByUserId($listGroupId) {
+        $column = [
+            'auth_service.name as service_name',
+            'auth_service.display_name',
+        ];
+        
+        $data = $this->model
+            ->join('auth_groups_has_permissions as t1', function($join) use ($listGroupId) {
+                $join->on('t1.permission_id', '=', 'auth_permissions.id')
+                    ->whereIn('t1.group_id', $listGroupId);
+            })
+            ->leftJoin('auth_service', 'auth_service.id', '=', 'auth_permissions.service_id')
+            ->distinct()
+            ->get($column);
+            
+        return $data;
+    }
 }

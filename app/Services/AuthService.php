@@ -82,5 +82,4 @@ class AuthService {
     public function matchPolicyByUri(Illuminate\Routing\Router $route):array {
         return $this->authPolicyRepository->getAllByUri($route->uri());
     }
-    
 }

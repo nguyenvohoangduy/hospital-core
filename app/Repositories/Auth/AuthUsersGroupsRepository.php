@@ -26,7 +26,7 @@ class AuthUsersGroupsRepository extends BaseRepositoryV2
         }
     }
 
-     public function getKhoaPhongByUserId($id,$benhVienId)
+    public function getKhoaPhongByUserId($id,$benhVienId)
     {
         $column=['auth_groups.meta_data'];
         $dataSet = $this->model
@@ -95,5 +95,12 @@ class AuthUsersGroupsRepository extends BaseRepositoryV2
         return $result;
     }    
     
-    
+    public function getListGroupByUserId($id) {
+        $column=[
+            'group_id'
+        ];
+        
+        $result = $this->model->where('user_id', $id)->get($column)->toArray();
+        return $result;
+    }
 }
