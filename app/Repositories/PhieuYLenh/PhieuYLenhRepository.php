@@ -7,6 +7,8 @@ use App\Models\PhieuYLenh;
 
 class PhieuYLenhRepository extends BaseRepositoryV2
 {
+    const NGUNG_Y_LENH = 1;
+    
     public function getModel()
     {
         return PhieuYLenh::class;
@@ -34,5 +36,10 @@ class PhieuYLenhRepository extends BaseRepositoryV2
     {
         $data = $this->model->where('dieu_tri_id',$dieuTriId)->get();
         return $data;
-    }    
+    } 
+    
+    public function updateStatus($phieuYLenhId)
+    {
+        $this->model->where('id', $phieuYLenhId)->update(['trang_thai' => self::NGUNG_Y_LENH]);
+    }
 }

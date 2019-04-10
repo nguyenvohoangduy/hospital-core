@@ -19,4 +19,5 @@ class TheKhoService {
         $data = $this->theKhoRepository->getTonKhaDungById($id,$khoId);
         return $data;
     } 
+    
 }

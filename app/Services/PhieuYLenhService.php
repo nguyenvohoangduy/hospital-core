@@ -11,15 +11,16 @@ use App\Repositories\YLenh\YlenhRepository;
 use Illuminate\Http\Request;
 use Validator;
 use Carbon\Carbon;
+use DB;
 
 class PhieuYLenhService {
-  
-    public function __construct(PhieuYLenhRepository $phieuYLenhRepository,
-                                AuthUsersRepository $authUsersRepository,
-                                DieuTriRepository $dieuTriRepository,
-                                PhongRepository $phongRepository,
-                                YLenhRepository $yLenhRepository
-                                )
+    public function __construct
+    (   PhieuYLenhRepository $phieuYLenhRepository,
+        AuthUsersRepository $authUsersRepository,
+        DieuTriRepository $dieuTriRepository,
+        PhongRepository $phongRepository,
+        YLenhRepository $yLenhRepository
+    )
     {
         $this->phieuYLenhRepository = $phieuYLenhRepository;
         $this->authUsersRepository = $authUsersRepository;
@@ -42,7 +43,7 @@ class PhieuYLenhService {
             $inforDieuTri = $this->dieuTriRepository->getInforDieuTriById($itemResult['dieu_tri_id']);
             $inforPhong = $this ->phongRepository->getDataById($itemResult['phong_id']);
             $itemResult['auth_users_name'] = $inforUser->fullname;
-            $itemResult['thoi_gian_chi_dinh'] = $inforDieuTri->thoi_gian_chi_dinh;
+            // $itemResult['thoi_gian_chi_dinh'] = $inforDieuTri->thoi_gian_chi_dinh;
             $itemResult['phong'] = $inforPhong->ten_phong;
         }
         return $result;

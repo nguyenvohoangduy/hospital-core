@@ -10,6 +10,7 @@ use App\Repositories\YLenh\KetQuaYLenhRepository;
 use App\Repositories\Auth\AuthUsersRepository;
 use App\Repositories\DanhMuc\DanhMucDichVuRepository;
 use App\Repositories\VienPhi\VienPhiRepository;
+use App\Repositories\Kho\PhieuKhoRepository;
 use App\Services\DieuTriService;
 use App\Services\PhieuKhoService;
 use Illuminate\Http\Request;
@@ -21,6 +22,7 @@ class YLenhService {
     const PHIEU_DIEU_TRI = 3;
     const THUOC = 5;
     const LOAI_PHIEU_XUAT = 1;
+    const LOAI_PHIEU_NHAP = 0;
     
     public function __construct
     (
@@ -31,6 +33,7 @@ class YLenhService {
         AuthUsersRepository $authUsersRepository,
         DanhMucDichVuRepository $danhMucDichVuRepository,
         VienPhiRepository $vienPhiRepository,
+        PhieuKhoRepository $phieuKhoRepository,
         DieuTriService $dieuTriService,
         PhieuKhoService $phieuKhoService
     )
@@ -42,6 +45,7 @@ class YLenhService {
         $this->authUsersRepository=$authUsersRepository;
         $this->danhMucDichVuRepository=$danhMucDichVuRepository;
         $this->vienPhiRepository = $vienPhiRepository;
+        $this->phieuKhoRepository = $phieuKhoRepository;
         $this->dieuTriService = $dieuTriService;
         $this->phieuKhoService = $phieuKhoService;
     }
@@ -81,6 +85,7 @@ class YLenhService {
                             'loai_thanh_toan_cu'    => $input['loai_vien_phi'],
                             'loai_thanh_toan_moi'   => $input['loai_vien_phi'],
                             'ms_bhyt'               => $input['ms_bhyt'],
+                            'danh_muc_id'           => $value['id']
                         ];
                     }
                 }
@@ -141,7 +146,8 @@ class YLenhService {
                             'ms_bhyt'               => $input['ms_bhyt'],
                             'huong_dan_su_dung'     => count($huongDanSuDung) > 0 ? json_encode($huongDanSuDung) : null,
                             'don_vi_tinh'           => $value['don_vi_tinh'],
-                            'kho_id'                => $value['kho_id']
+                            'kho_id'                => $value['kho_id'],
+                            'danh_muc_id'           => $value['id']
                         ];
                     }
                 }
@@ -157,7 +163,60 @@ class YLenhService {
                 $phieuYeuCauParams['nguoi_lap_phieu_id'] = $input['auth_users_id'];
                 $phieuYeuCauParams['ngay_lap_phieu'] = Carbon::now()->toDateTimeString();
                 $phieuYeuCauParams['data_dich_vu'] = $input['data'];
+                $phieuYeuCauParams['phieu_y_lenh_id'] = $phieuYLenhId;
                 $this->phieuKhoService->createPhieuYeuCau($phieuYeuCauParams);
+                
+                return true;
+            } catch (\Exception $ex) {
+                throw $ex;
+            }
+        });
+        
+        return $result;
+    }
+    
+    public function traThuoc(array $input, $theKho)
+    {
+        $result = DB::transaction(function() use ($input, $theKho) {
+            try {
+                //update status of phieu_y_lenh
+                $this->phieuYLenhRepository->updateStatus($input['phieuYLenhId']);
+                
+                //update status of y_lenh
+                $this->yLenhRepository->updateStatus($input['phieuYLenhId']);
+                
+                $phieuKhoId = 0;
+                if($input['data']) {
+                    foreach($input['data'] as $index=>$value) {
+                        $theKhoId = 0;
+                        if($value['so_luong_tra'] > 0) {
+                           foreach($theKho as $item) {
+                               if($item['danh_muc_thuoc_vat_tu_id'] == $value['danh_muc_id']) {
+                                   $theKhoId = $item['the_kho_id'];
+                                   $phieuKhoId = $item['phieu_kho_id'];
+                                   break;
+                               }
+                           }
+                        } 
+                        
+                        $input['data'][$index]['the_kho_id'] = $theKhoId;
+                    }
+                }
+                
+                //get phieu kho by phieu_kho_id
+                $phieuKho = $this->phieuKhoRepository->getPhieuKhoById($phieuKhoId);
+                
+                //create phieu yeu cau tra
+                $phieuYeuCauParams = [];
+                $phieuYeuCauParams['phong_id'] = $phieuKho['phong_id'];
+                $phieuYeuCauParams['kho_id_xu_ly'] = $phieuKho['kho_id_xu_ly'];
+                $phieuYeuCauParams['ten_kho_xu_ly'] = $phieuKho['ten_kho_xu_ly'];
+                $phieuYeuCauParams['loai_phieu'] = self::LOAI_PHIEU_NHAP;
+                $phieuYeuCauParams['ghi_chu'] = 'Ngưng y lệnh, trả thuốc';
+                $phieuYeuCauParams['nguoi_lap_phieu_id'] = $input['auth_users_id'];
+                $phieuYeuCauParams['ngay_lap_phieu'] = Carbon::now()->toDateTimeString();
+                $phieuYeuCauParams['data_dich_vu'] = $input['data'];
+                $this->phieuKhoService->createPhieuYeuCauTra($phieuYeuCauParams);
                 
                 return true;
             } catch (\Exception $ex) {
@@ -246,7 +305,7 @@ class YLenhService {
         if(isset($input['kho_id_xu_ly']))
             $input = array_except($input, ['kho_id_xu_ly', 'ten_kho_xu_ly']);
         $phieuYLenhParams = $input;
-        $phieuYLenhParams = array_except($phieuYLenhParams, ['ten_benh_nhan', 'hsba_khoa_phong_id', 'data', 'doi_tuong_benh_nhan', 'muc_huong', 'loai_vien_phi', 'ms_bhyt']);
+        $phieuYLenhParams = array_except($phieuYLenhParams, ['ten_benh_nhan', 'hsba_khoa_phong_id', 'data', 'doi_tuong_benh_nhan', 'muc_huong', 'loai_vien_phi', 'ms_bhyt', 'benh_vien_id', 'danh_muc_id']);
         $phieuYLenhParams['loai_phieu_y_lenh'] = self::PHIEU_DIEU_TRI;
         $phieuYLenhParams['trang_thai'] = 0;
         $phieuYLenhParams['thoi_gian_chi_dinh'] = Carbon::now()->toDateTimeString();
