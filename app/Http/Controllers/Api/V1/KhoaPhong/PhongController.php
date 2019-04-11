@@ -107,10 +107,4 @@ class PhongController extends APIController
         return $this->respond($data);
     }
     
-    public function getAllKhoa()
-    {
-        $data = $this->phongService->getAllKhoa();
-        return $this->respond($data);
-    }
-    
 }

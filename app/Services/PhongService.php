@@ -84,9 +84,4 @@ class PhongService {
         return $data;
     }  
     
-    public function getAllKhoa()
-    {
-        $data = $this->khoaRepository->getAll();
-        return $data;
-    }  
 }

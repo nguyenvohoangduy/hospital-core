@@ -375,6 +375,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });    
     
     Route::group(['prefix' => 'khoa'], function () {
+        Route::get('getAll','KhoaPhong\KhoaController@getAll');
 		Route::get('getPartial','KhoaPhong\KhoaController@getPartial');
 		Route::post('create','KhoaPhong\KhoaController@create');
      	Route::post('update/{id}','KhoaPhong\KhoaController@update');
@@ -394,7 +395,6 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
  		Route::get('searchByKeywords/{keyWords}','KhoaPhong\PhongController@searchByKeywords');
  		Route::get('getAllByKhoaId/{khoaId}','KhoaPhong\PhongController@getAllByKhoaId');
  		Route::get('getAllByLoaiPhong/{loaiPhong}','KhoaPhong\PhongController@getAllByLoaiPhong');
- 		Route::get('getAllKhoa','KhoaPhong\PhongController@getAllKhoa');
     });
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {
