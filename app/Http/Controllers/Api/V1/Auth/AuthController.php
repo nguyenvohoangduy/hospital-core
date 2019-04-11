@@ -15,6 +15,7 @@ use App\Services\AuthUsersGroupsService;
 use App\Services\AuthGroupsHasRolesService;
 use App\Services\KhoaService;
 use App\Services\AuthPermissionsService;
+use App\Services\PhongService;
 
 class AuthController extends APIController
 {
@@ -22,6 +23,7 @@ class AuthController extends APIController
         AuthService $service,
         AuthGroupsService $authGroupsService,
         KhoaService $khoaService,
+        PhongService $phongService,
         AuthUsersGroupsService $authUsersGroupsService,
         AuthRolesService $authRolesService,
         AuthGroupsHasRolesService $authGroupsHasRolesService,
@@ -31,6 +33,7 @@ class AuthController extends APIController
         $this->authService = $service;
         $this->authGroupsService = $authGroupsService;
         $this->khoaService = $khoaService;
+        $this->phongService = $phongService;
         $this->authUsersGroupsService = $authUsersGroupsService;
         $this->authRolesService = $authRolesService;
         $this->authGroupsHasRolesService = $authGroupsHasRolesService;
@@ -250,6 +253,19 @@ class AuthController extends APIController
         
         if($isNumericId) {
             $data = $this->authService->getKhoaPhongId($id,$benhVienId);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
+    
+    public function getKhoaPhongDonTiepByBenhVienId($benhVienId) {
+        $isNumericId = is_numeric($benhVienId);
+        
+        if($isNumericId) {
+            $data = $this->phongService->getKhoaPhongDonTiepByBenhVienId($benhVienId);
         } else {
             $this->setStatusCode(400);
             $data = [];
