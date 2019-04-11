@@ -17,7 +17,11 @@ class KhoaService {
         $this->khoaRepository = $khoaRepository;
         $this->danhMucTongHopRepository = $danhMucTongHopRepository;
     }
-
+    public function getAll()
+    {
+        $data = $this->khoaRepository->getAll();
+        return $data;
+    }
     public function getListKhoa($loaiKhoa, $benhVienId)
     {
         $data = $this->khoaRepository->getListKhoa($loaiKhoa, $benhVienId);
