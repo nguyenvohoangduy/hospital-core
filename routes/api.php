@@ -162,6 +162,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::get('getAllColumnKhoaDanhMucTongHop','DanhMuc\DanhMucController@getAllColumnKhoaDanhMucTongHop');
 		Route::get('getDmthById/{dmthId}','DanhMuc\DanhMucController@getDmthById');
     	Route::get('getDanhMucTongHopTheoKhoa/{khoa}','DanhMuc\DanhMucController@getDanhMucTongHopTheoKhoa');
+    	Route::get('getAllByKhoa/{khoa}','DanhMuc\DanhMucController@getAllByKhoa');
     	Route::post('createDanhMucTongHop','DanhMuc\DanhMucController@createDanhMucTongHop');
     	Route::post('updateDanhMucTongHop/{dmthId}','DanhMuc\DanhMucController@updateDanhMucTongHop');
     	Route::delete('deleteDanhMucTongHop/{dmthId}','DanhMuc\DanhMucController@deleteDanhMucTongHop');
@@ -183,6 +184,11 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::post('createNoiGioiThieu','DanhMuc\DanhMucController@createNoiGioiThieu');
     	Route::post('updateNoiGioiThieu/{id}','DanhMuc\DanhMucController@updateNoiGioiThieu');
     	Route::delete('deleteNoiGioiThieu/{id}','DanhMuc\DanhMucController@deleteNoiGioiThieu');
+    	Route::get('getPartialDMTVatTu','DanhMuc\DanhMucController@getPartialDMTVatTu');
+		Route::post('createDMTVatTu','DanhMuc\DanhMucController@createDMTVatTu');
+     	Route::put('updateDMTVatTu/{id}','DanhMuc\DanhMucController@updateDMTVatTu');
+     	Route::delete('deleteDMTVatTu/{id}','DanhMuc\DanhMucController@deleteDMTVatTu');
+     	Route::get('getDMTVatTuById/{id}','DanhMuc\DanhMucController@getDMTVatTuById');
     });
     
     Route::group(['prefix' => 'nguoidung'], function () {
