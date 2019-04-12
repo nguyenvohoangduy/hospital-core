@@ -34,6 +34,12 @@ class DanhMucController extends APIController
         $this->noiGioiThieuService = $noiGioiThieuService;
     }
     
+    public function index(Request $request)
+    {
+        $this->setStatusCode(200);
+        return $this->respond([]);
+    }
+    
     public function getListDanhMucDichVu(Request $request)
     {
         $limit = $request->query('limit', 100);
@@ -60,6 +66,10 @@ class DanhMucController extends APIController
     
     public function createDanhMucDichVu(DanhMucDichVuFormRequest $request)
     {
+        if ($request->isMethod('get')) {
+            $this->setStatusCode(200);
+            return $this->respond([]);
+        }        
         $input = $request->all();
         
         $id = $this->dmdvService->createDanhMucDichVu($input);
@@ -75,6 +85,11 @@ class DanhMucController extends APIController
     public function updateDanhMucDichVu($dmdvId, DanhMucDichVuFormRequest $request)
     {
         try {
+            if ($request->isMethod('get')) {
+                $this->setStatusCode(200);
+                return $this->respond([]);
+            }            
+            
             $isNumericId = is_numeric($dmdvId);
             $input = $request->all();
             
@@ -164,6 +179,11 @@ class DanhMucController extends APIController
     }
     
     public function createDanhMucTongHop(DanhMucTongHopFormRequest $request) {
+        if ($request->isMethod('get')) {
+            $this->setStatusCode(200);
+            return $this->respond([]);
+        }        
+        
         $input = $request->all();
         
         $id = $this->dmthService->create($input);
@@ -179,6 +199,11 @@ class DanhMucController extends APIController
     public function updateDanhMucTongHop($dmthId, DanhMucTongHopFormRequest $request)
     {
         try {
+            if ($request->isMethod('get')) {
+                $this->setStatusCode(200);
+                return $this->respond([]);
+            }            
+            
             $isNumericId = is_numeric($dmthId);
             $input = $request->all();
             
@@ -255,6 +280,11 @@ class DanhMucController extends APIController
     }
     
     public function createDanhMucTrangThai(DanhMucTrangThaiFormRequest $request) {
+        if ($request->isMethod('get')) {
+            $this->setStatusCode(200);
+            return $this->respond([]);
+        }        
+        
         $input = $request->all();
         
         $id = $this->dmttService->create($input);
@@ -270,6 +300,11 @@ class DanhMucController extends APIController
     public function updateDanhMucTrangThai($dmttId, DanhMucTrangThaiFormRequest $request)
     {
         try {
+            if ($request->isMethod('get')) {
+                $this->setStatusCode(200);
+                return $this->respond([]);
+            }            
+            
             $isNumericId = is_numeric($dmttId);
             $input = $request->all();
             
@@ -350,6 +385,11 @@ class DanhMucController extends APIController
     }
     
     public function createNhomDanhMuc(Request $request) {
+        if ($request->isMethod('get')) {
+            $this->setStatusCode(200);
+            return $this->respond([]);
+        }        
+        
         $input = $request->all();
         
         $id = $this->nhomDanhMucService->createNhomDanhMuc($input);
@@ -365,6 +405,11 @@ class DanhMucController extends APIController
     public function updateNhomDanhMuc($id, Request $request)
     {
         try {
+            if ($request->isMethod('get')) {
+                $this->setStatusCode(200);
+                return $this->respond([]);
+            }            
+            
             $isNumericId = is_numeric($id);
             $input = $request->all();
             
@@ -395,6 +440,11 @@ class DanhMucController extends APIController
     }
     
     public function createNoiGioiThieu(NoiGioiThieuFormRequest $request) {
+        if ($request->isMethod('get')) {
+            $this->setStatusCode(200);
+            return $this->respond([]);
+        }        
+        
         $input = $request->all();
         
         $id = $this->noiGioiThieuService->create($input);
@@ -410,6 +460,11 @@ class DanhMucController extends APIController
     public function updateNoiGioiThieu($id, NoiGioiThieuFormRequest $request)
     {
         try {
+            if ($request->isMethod('get')) {
+                $this->setStatusCode(200);
+                return $this->respond([]);
+            }            
+            
             $isNumericId = is_numeric($id);
             $input = $request->all();
             if($isNumericId) {

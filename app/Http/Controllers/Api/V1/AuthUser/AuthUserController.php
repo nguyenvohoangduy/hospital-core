@@ -13,6 +13,12 @@ class AuthUserController extends APIController
     {
         $this->authUsersService = $authUsersService;
     }
+    
+    public function index(Request $request)
+    {
+        $this->setStatusCode(200);
+        return $this->respond([]);
+    }
 
     public function getListNguoiDung(Request $request)
     {
@@ -40,6 +46,11 @@ class AuthUserController extends APIController
     
     public function createAuthUsers(AuthUserFormRequest $request)
     {
+        if ($request->isMethod('get')) {
+            $this->setStatusCode(200);
+            return $this->respond([]);
+        }
+            
         $input = $request->all();
         
         $id = $this->authUsersService->createAuthUsers($input);
@@ -75,6 +86,11 @@ class AuthUserController extends APIController
     public function updateAuthUsers($id,UpdateAuthUsersFormRequest $request)
     {
         try {
+            if ($request->isMethod('get')) {
+                $this->setStatusCode(200);
+                return $this->respond([]);
+            }            
+            
             $isNumericId = is_numeric($id);
             $input = $request->all();
             
