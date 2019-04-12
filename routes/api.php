@@ -37,6 +37,88 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::post('patient/{id}', 'SamplePatientController@update');
     Route::delete('patient/{id}', 'SamplePatientController@delete');
     
+    // admin-service
+    Route::group(['prefix' => 'admin-service','as' => 'admin.' ], function () {
+        Route::get('danhMucIndex','DanhMuc\DanhMucController@index')->name('danh-muc.index');
+    	Route::get('createDanhMucDichVuIndex','DanhMuc\DanhMucController@createDanhMucDichVu')->name('danh-muc-dich-vu.create.index');
+    	Route::get('updateDanhMucDichVuIndex/{dmdvId}','DanhMuc\DanhMucController@updateDanhMucDichVu')->name('danh-muc-dich-vu.update.index');
+    	Route::post('createDanhMucDichVu','DanhMuc\DanhMucController@createDanhMucDichVu')->name('danh-muc-dich-vu.create');
+    	Route::post('updateDanhMucDichVu/{dmdvId}','DanhMuc\DanhMucController@updateDanhMucDichVu')->name('danh-muc-dich-vu.update');   	
+    	Route::delete('deleteDanhMucDichVu/{dmdvId}','DanhMuc\DanhMucController@deleteDanhMucDichVu')->name('danh-muc-dich-vu.delete');
+    	
+    	Route::get('createDanhMucTongHopIndex','DanhMuc\DanhMucController@createDanhMucTongHop')->name('danh-muc-tong-hop.create.index');
+    	Route::get('updateDanhMucTongHopIndex/{dmthId}','DanhMuc\DanhMucController@updateDanhMucTongHop')->name('danh-muc-tong-hop.update.index');  
+    	Route::post('createDanhMucTongHop','DanhMuc\DanhMucController@createDanhMucTongHop')->name('danh-muc-tong-hop.create');
+    	Route::post('updateDanhMucTongHop/{dmthId}','DanhMuc\DanhMucController@updateDanhMucTongHop')->name('danh-muc-tong-hop.update');  	
+    	Route::delete('deleteDanhMucTongHop/{dmthId}','DanhMuc\DanhMucController@deleteDanhMucTongHop')->name('danh-muc-tong-hop.delete');  
+    	
+    	Route::get('createDanhMucTrangThaiIndex','DanhMuc\DanhMucController@createDanhMucTrangThai')->name('danh-muc-trang-thai.create.index');
+    	Route::get('updateDanhMucTrangThaiIndex/{dmttId}','DanhMuc\DanhMucController@updateDanhMucTrangThai')->name('danh-muc-trang-thai.update.index');
+    	Route::post('createDanhMucTrangThai','DanhMuc\DanhMucController@createDanhMucTrangThai')->name('danh-muc-trang-thai.create');
+    	Route::post('updateDanhMucTrangThai/{dmttId}','DanhMuc\DanhMucController@updateDanhMucTrangThai')->name('danh-muc-trang-thai.update');   	
+    	Route::delete('deleteDanhMucTrangThai/{dmttId}','DanhMuc\DanhMucController@deleteDanhMucTrangThai')->name('danh-muc-trang-thai.delete');
+    	
+    	Route::get('createNhomDanhMucIndex','DanhMuc\DanhMucController@createNhomDanhMuc')->name('nhom-danh-muc.create.index');
+    	Route::get('updateNhomDanhMucIndex/{id}','DanhMuc\DanhMucController@updateNhomDanhMuc')->name('nhom-danh-muc.update.index');
+    	Route::post('createNhomDanhMuc','DanhMuc\DanhMucController@createNhomDanhMuc')->name('nhom-danh-muc.create');
+    	Route::post('updateNhomDanhMuc/{id}','DanhMuc\DanhMucController@updateNhomDanhMuc')->name('nhom-danh-muc.update'); 	
+    	
+    	Route::get('createNoiGioiThieuIndex','DanhMuc\DanhMucController@createNoiGioiThieu')->name('noi-gioi-thieu.create.index');
+    	Route::get('updateNoiGioiThieuIndex/{id}','DanhMuc\DanhMucController@updateNoiGioiThieu')->name('noi-gioi-thieu.update.index');
+    	Route::post('createNoiGioiThieu','DanhMuc\DanhMucController@createNoiGioiThieu')->name('noi-gioi-thieu.create');
+    	Route::post('updateNoiGioiThieu/{id}','DanhMuc\DanhMucController@updateNoiGioiThieu')->name('noi-gioi-thieu.update');   	
+    	Route::delete('deleteNoiGioiThieu/{id}','DanhMuc\DanhMucController@deleteNoiGioiThieu')->name('noi-gioi-thieu.delete'); 
+    	
+    	Route::get('authUsersIndex','AuthUser\AuthUserController@index')->name('auth-users.index');
+     	Route::get('createAuthUsersIndex','AuthUser\AuthUserController@createAuthUsers')->name('auth-users.create.index');
+     	Route::get('updateAuthUsersIndex/{id}','AuthUser\AuthUserController@updateAuthUsers')->name('auth-users.update.index');
+     	Route::post('createAuthUsers','AuthUser\AuthUserController@createAuthUsers')->name('auth-users.create');
+     	Route::post('updateAuthUsers/{id}','AuthUser\AuthUserController@updateAuthUsers')->name('auth-users.update');    	
+     	Route::delete('deleteAuthUsers/{id}','AuthUser\AuthUserController@deleteAuthUsers')->name('auth-users.delete');
+     	Route::post('resetPassword','AuthUser\AuthUserController@resetPasswordByUserId')->name('auth-users.reset-password');
+
+     	Route::get('authGroupsIndex','AuthController@index')->name('auth-groups.index');
+     	Route::get('createAuthGroupsIndex','AuthController@createAuthGroups')->name('auth-groups.create.index');
+     	Route::get('updateAuthGroupsIndex/{id}','AuthController@updateAuthGroups')->name('auth-groups.update.index');
+		Route::post('createAuthGroups','AuthController@createAuthGroups')->name('auth-groups.create');
+		Route::post('updateAuthGroups/{id}','AuthController@updateAuthGroups')->name('auth-groups.update');
+     	
+     	Route::get('benhVienIndex','BenhVien\BenhVienController@index')->name('benh-vien.index');
+        Route::get('createBenhVienIndex','BenhVien\BenhVienController@create')->name('benh-vien.create.index');
+        Route::get('updateBenhVienIndex/{id}','BenhVien\BenhVienController@update')->name('benh-vien.update.index');
+        Route::post('createBenhVien','BenhVien\BenhVienController@create')->name('benh-vien.create');
+        Route::put('updateBenhVien/{id}','BenhVien\BenhVienController@update')->name('benh-vien.update');        
+        Route::delete('deleteBenhVien/{id}','BenhVien\BenhVienController@delete')->name('benh-vien.delete');
+        
+        Route::get('policyIndex','Auth\PolicyController@index')->name('auth-policy.index');
+        Route::get('createPolicyIndex','Auth\PolicyController@create')->name('auth-policy.create.index');
+        Route::get('updatePolicyIndex/{id}','Auth\PolicyController@update')->name('auth-policy.update.index');
+		Route::post('createPolicy','Auth\PolicyController@create')->name('auth-policy.create');
+     	Route::post('updatePolicy/{id}','Auth\PolicyController@update')->name('auth-policy.update');      
+     	Route::delete('deletePolicy/{id}','Auth\PolicyController@delete');
+
+        Route::get('permissionIndex','Auth\PermissionController@index')->name('auth-permissions.index');
+        Route::get('createPermissionIndex','Auth\PermissionController@create')->name('auth-permissions.create.index');
+        Route::get('updatePermissionIndex/{id}','Auth\PermissionController@update')->name('auth-permissions.update.index');
+		Route::post('createPermission','Auth\PermissionController@create')->name('auth-permissions.create');
+     	Route::post('updatePermission/{id}','Auth\PermissionController@update')->name('auth-permissions.update');
+     	Route::post('checkData','Auth\PermissionController@checkData')->name('auth-permissions.check-data');
+        
+        Route::get('khoaIndex','KhoaPhong\KhoaController@index')->name('khoa.index');
+        Route::get('createKhoaIndex','KhoaPhong\KhoaController@create')->name('khoa.create.index');
+        Route::get('updateKhoaIndex/{id}','KhoaPhong\KhoaController@update')->name('khoa.update.index');
+		Route::post('createKhoa','KhoaPhong\KhoaController@create')->name('khoa.create');
+     	Route::post('updateKhoa/{id}','KhoaPhong\KhoaController@update')->name('khoa.update');        
+        Route::delete('delete/{id}','KhoaPhong\KhoaController@delete')->name('khoa.delete');
+        
+        Route::get('phongIndex','KhoaPhong\PhongController@index')->name('phong.index');
+        Route::get('createPhongIndex','KhoaPhong\PhongController@create')->name('phong.create.index');
+        Route::get('updatePhongIndex/{id}','KhoaPhong\PhongController@update')->name('phong.update.index');
+		Route::post('createPhong','KhoaPhong\PhongController@create')->name('phong.create');
+     	Route::post('updatePhong/{id}','KhoaPhong\PhongController@update')->name('phong.update');        
+        Route::delete('delete/{id}','KhoaPhong\PhongController@delete')->name('phong.delete');
+    });    
+    
     // don-tiep-service
     Route::group(['prefix' => 'don-tiep-service','as' => 'don-tiep.','middleware' => ['jwt.auth'] ], function () {
         Route::get('index','DonTiep\DonTiepController@index')->name('index');
@@ -85,6 +167,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('quaySo/{khuVucId}/{benhVienId}','UserSetting\UserSettingController@getListQuay');
         Route::get('getKhoaPhongByUserId/{userId}/{benhVienId}','AuthController@getKhoaPhongByUserId');
         Route::get('getKhoaPhongDonTiepByBenhVienId/{benhVienId}','AuthController@getKhoaPhongDonTiepByBenhVienId');
+        Route::get('getListPhongByUserId/{userId}/{benhVienId}','AuthController@getListPhongByUserId');
         Route::get('getKhoaByBenhVienId/{benhVienId}','UserSetting\UserSettingController@getKhoaByBenhVienId');
     });
     
@@ -137,6 +220,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 		Route::get('getDetailHsbaPhongKham/{hsbaId}/{phongId}','PhongKham\PhongKhamController@getDetailHsbaPhongKham');
         Route::get('countItemYLenh/{hsbaId}','PhongKham\PhongKhamController@countItemYLenh');
         Route::get('countItemThuocVatTu/{hsbaId}','PhongKham\PhongKhamController@countItemThuocVatTu');
+        Route::get('countItemTheKho/{phieuYLenhId}','PhongKham\PhongKhamController@countItemTheKho');
         Route::get('searchIcd10Code/{icd10Code}','PhongKham\PhongKhamController@searchIcd10Code');
         Route::get('searchIcd10Text/{icd10Text}','PhongKham\PhongKhamController@searchIcd10Text');
         Route::get('getListHsbaPhongKham/{hsbaId}','PhongKham\PhongKhamController@getListHsbaPhongKham');
@@ -261,6 +345,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::post('luuNhapKhoa','NoiTru\NoiTruController@luuNhapKhoa');
         Route::get('list/{benhVienId}','NoiTru\NoiTruController@getListPhongNoiTru');
         Route::get('getByHsbaId/{hsbaId}/{phongId}/{benhVienId}','NoiTru\NoiTruController@getByHsbaId');
+        Route::post('traThuoc','NoiTru\NoiTruController@traThuoc');
     });
     
     Route::group(['prefix' => 'hsbadv'], function () {
@@ -290,6 +375,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
  		//Route::get('getListThuocVatTu/{keyWords}','Kho\KhoController@getListThuocVatTu');
  		Route::get('getAllThuocVatTu','Kho\KhoController@getAllThuocVatTu');
  		Route::get('searchThuocVatTuByKeywords/{keyWords}','Kho\KhoController@searchThuocVatTuByKeywords');
+ 		Route::get('getNhapTuNccByBenhVienId/{benhVienId}','Kho\KhoController@getNhapTuNccByBenhVienId');
     });
     
     Route::group(['prefix' => 'donvitinh'], function () {

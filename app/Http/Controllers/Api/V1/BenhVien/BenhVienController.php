@@ -15,6 +15,12 @@ class BenhVienController extends APIController {
         $this->benhVienService = $benhVienService;
     }
     
+    public function index(Request $request)
+    {
+        $this->setStatusCode(200);
+        return $this->respond([]);
+    }
+    
     public function getPartial(Request $request)
     {
         $limit = $request->query('limit', 100);
@@ -41,6 +47,11 @@ class BenhVienController extends APIController {
     
     public function create(BenhVienFormRequest $request)
     {
+        if ($request->isMethod('get')) {
+            $this->setStatusCode(200);
+            return $this->respond([]);
+        }
+        
         $input = $request->all();
         
         $id = $this->benhVienService->create($input);
@@ -56,6 +67,11 @@ class BenhVienController extends APIController {
     public function update($id, BenhVienFormRequest $request)
     {
         try {
+            if ($request->isMethod('get')) {
+                $this->setStatusCode(200);
+                return $this->respond([]);
+            }            
+            
             $isNumericId = is_numeric($id);
             $input = $request->all();
             

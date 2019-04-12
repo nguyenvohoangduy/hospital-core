@@ -16,6 +16,7 @@ class YLenhRepository extends BaseRepositoryV2
     const Y_LENH_CODE_VAT_TU = 6;
     const Y_LENH_CODE_CAN_LAM_SANG = [2, 3, 4];
     const Y_LENH_CODE_THUOC_VAT_TU = [5, 6];
+    const NGUNG_Y_LENH = 1;
     
     const Y_LENH_TEXT_YEU_CAU_KHAM = 'YÊU CẦU KHÁM';
     const Y_LENH_TEXT_XET_NGHIEM = 'XÉT NGHIỆM';
@@ -515,5 +516,10 @@ class YLenhRepository extends BaseRepositoryV2
             ->whereIn('id',$arrayYLenhId)
             ->get();
 		return $data;
-    }    
+    }  
+    
+    public function updateStatus($phieuYLenhId)
+    {
+        $this->model->where('phieu_y_lenh_id', $phieuYLenhId)->update(['trang_thai' => self::NGUNG_Y_LENH]);
+    }
 }

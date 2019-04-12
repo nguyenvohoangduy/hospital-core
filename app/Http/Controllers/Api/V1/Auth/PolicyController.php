@@ -16,6 +16,12 @@ class PolicyController extends APIController
         $this->authService = $authService;
     }
     
+    public function index(Request $request)
+    {
+        $this->setStatusCode(200);
+        return $this->respond([]);
+    }    
+    
     public function getPartial(Request $request)
     {
         $limit = $request->query('limit', 100);
@@ -28,6 +34,11 @@ class PolicyController extends APIController
     
     public function create(CreatePolicyFormRequest $request)
     {
+        if ($request->isMethod('get')) {
+            $this->setStatusCode(200);
+            return $this->respond([]);
+        }        
+        
         $input = $request->all();
         
         $id = $this->authPolicyService->create($input);
@@ -43,6 +54,11 @@ class PolicyController extends APIController
     public function update($id,UpdatePolicyFormRequest $request)
     {
         try {
+            if ($request->isMethod('get')) {
+                $this->setStatusCode(200);
+                return $this->respond([]);
+            }            
+            
             $isNumericId = is_numeric($id);
             $input = $request->all();
             

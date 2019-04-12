@@ -47,7 +47,9 @@ class AuthUsersService
     
     public function updateAuthUsers($id, array $input)
     {
-        $this->authUsersRepository->updateAuthUsers($id, $input);
+        $authUserParams = $input;
+        unset($authUserParams['dataSelected']);
+        $this->authUsersRepository->updateAuthUsers($id, $authUserParams);
         $this->authUsersGroupsRepository->updateAuthUsersGroups($id, $input['dataSelected']);
     }    
     

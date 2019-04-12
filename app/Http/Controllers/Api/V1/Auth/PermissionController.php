@@ -17,6 +17,12 @@ class PermissionController extends APIController
         $this->phongService = $phongService;
     }
     
+    public function index(Request $request)
+    {
+        $this->setStatusCode(200);
+        return $this->respond([]);
+    }    
+    
     public function getPartial(Request $request)
     {
         $limit = $request->query('limit', 100);
@@ -29,6 +35,11 @@ class PermissionController extends APIController
     
     public function create(CreatePermissionsFormRequest $request)
     {
+        if ($request->isMethod('get')) {
+            $this->setStatusCode(200);
+            return $this->respond([]);
+        }        
+        
         $input = $request->all();
         
         $id = $this->authPermissionsService->create($input);
@@ -44,6 +55,11 @@ class PermissionController extends APIController
     public function update($id,UpdatePermissionsFormRequest $request)
     {
         try {
+            if ($request->isMethod('get')) {
+                $this->setStatusCode(200);
+                return $this->respond([]);
+            }            
+            
             $isNumericId = is_numeric($id);
             $input = $request->all();
             
@@ -82,6 +98,11 @@ class PermissionController extends APIController
     }
     
     public function checkData(Request $request) {
+        if ($request->isMethod('get')) {
+            $this->setStatusCode(200);
+            return $this->respond([]);
+        }        
+        
         $input = $request->all();
         $status = $this->authPermissionsService->checkData($input);
         return $this->respond($status);

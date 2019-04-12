@@ -5,4 +5,7 @@ ALTER TABLE chi_tiet_phieu_kho ADD COLUMN don_vi_nhap varchar(50);
 ALTER TABLE chi_tiet_phieu_kho ADD COLUMN he_so_quy_doi integer;
 ALTER TABLE chi_tiet_phieu_kho ADD COLUMN don_vi_co_ban varchar(50);
 ALTER TABLE chi_tiet_phieu_kho RENAME COLUMN chi_dinh_id TO phieu_y_lenh_id;
+ALTER TABLE chi_tiet_phieu_kho ADD COLUMN sl_tra_nguyen integer;
+ALTER TABLE chi_tiet_phieu_kho ADD COLUMN sl_tra_le_1 integer;
+ALTER TABLE chi_tiet_phieu_kho ADD COLUMN sl_tra_le_2 integer;
 END TRANSACTION;

@@ -26,6 +26,7 @@ class PhieuKhoService {
     const DA_NHAP_STATUS=32;
     const DA_DUYET_YEU_CAU_STATUS=2;
     const YEU_CAU_NHAP_STATUS=42;
+    const YEU_CAU_TRA_STATUS=43;
     
     const LOAI_PHIEU_NHAP = 0;
     const LOAI_PHIEU_XUAT = 1;
@@ -230,25 +231,73 @@ class PhieuKhoService {
                 $theKhoParams['danh_muc_thuoc_vat_tu_id']=$item['id'];
                 $theKhoParams['so_luong']=$item['so_luong'];
  
-                $theKho = $this->theKhoRepository->updateTheKho($theKhoParams);
+                $result = $this->theKhoRepository->updateTheKho($theKhoParams);
                 
                 //update so_luong_kha_dung in table gioi_han
-                $theKhoParams['sl_kha_dung'] = $theKho['sl_kha_dung'];
+                $theKhoParams['sl_kha_dung'] = $result['sl_kha_dung'];
                 $this->gioiHanRepository->updateSoLuongKhaDung($theKhoParams);
                 
                 //update so_luong_kha_dung in elasticsearch
                 $this->danhMucThuocVatTuService->updateSoLuongKhaDungById($theKhoParams);
                 
-                if($theKho) {
+                if($result) {
                     $chiTietPhieuKhoParams = [];
                     $chiTietPhieuKhoParams['phieu_kho_id']=$phieuKhoId;
                     $chiTietPhieuKhoParams['danh_muc_thuoc_vat_tu_id']=$item['id'];
-                    $chiTietPhieuKhoParams['the_kho_id']=$theKho['id'];
+                    $chiTietPhieuKhoParams['the_kho_id'] = $result['the_kho_id']; 
                     $chiTietPhieuKhoParams['so_luong_yeu_cau']=$item['so_luong'];
                     $chiTietPhieuKhoParams['trang_thai'] = self::THUOC_VAT_TU_KHONG_DUYET; 
+                    $chiTietPhieuKhoParams['phieu_y_lenh_id']=$input['phieu_y_lenh_id'] ?? null;
+                    $chiTietPhieuKhoParams['don_vi_co_ban']=$item['don_vi_tinh'] ?? null;
                     $this->chiTietPhieuKhoRepository->createChiTietPhieuKho($chiTietPhieuKhoParams); 
                 }
             }
+        });
+    }
+    
+    public function createPhieuYeuCauTra(array $input)
+    {
+        DB::transaction(function () use ($input) {
+            $maPhieu = $this->phieuKhoRepository->getMaPhieu();
+            
+            $phieuKhoParams = [];
+            $phieuKhoParams['phong_id']=$input['phong_id'] ?? null;
+            $phieuKhoParams['kho_id']=$input['kho_id'] ?? null;
+            $phieuKhoParams['kho_id_xu_ly']=$input['kho_id_xu_ly'];
+            $phieuKhoParams['ten_kho_xu_ly']=$input['ten_kho_xu_ly'];
+            $phieuKhoParams['loai_phieu']=$input['loai_phieu'];
+            $phieuKhoParams['trang_thai']=self::YEU_CAU_TRA_STATUS;
+            $phieuKhoParams['dien_giai']=$input['ghi_chu'];
+            $phieuKhoParams['nhan_vien_yeu_cau']=$input['nguoi_lap_phieu_id'];
+            $phieuKhoParams['thoi_gian_yeu_cau']=$input['ngay_lap_phieu'];
+            $phieuKhoParams['ma_phieu']=$maPhieu;
+            
+            $phieuKhoId = $this->phieuKhoRepository->createPhieuKho($phieuKhoParams);
+            $chiTietPhieuKhoParams = [];
+            
+            foreach($input['data_dich_vu'] as $item) {
+                $theKhoParams = [];
+                $theKhoParams['kho_id']=$input['kho_id_xu_ly'];
+                $theKhoParams['danh_muc_thuoc_vat_tu_id']=$item['danh_muc_id'];
+                $theKhoParams['so_luong']=$item['so_luong_tra'];
+ 
+                if($item['so_luong_tra'] > 0) {
+                    $chiTietPhieuKhoParams[] = [
+                        'phieu_kho_id'              => $phieuKhoId,
+                        'danh_muc_thuoc_vat_tu_id'  => $item['danh_muc_id'],
+                        'the_kho_id'                => $item['the_kho_id'],
+                        'so_luong_yeu_cau'          => $item['so_luong_tra'],
+                        'trang_thai'                => self::THUOC_VAT_TU_KHONG_DUYET,
+                        'don_vi_co_ban'             => $item['don_vi_tinh'],
+                        'sl_tra_nguyen'             => $item['arrQty'][0],
+                        'sl_tra_le_1'               => $item['arrQty'][1],
+                        'sl_tra_le_2'               => $item['arrQty'][2],
+                    ];
+                }
+            }
+            
+            if(count($chiTietPhieuKhoParams) > 0)
+                $this->chiTietPhieuKhoRepository->saveChiTietPhieuKho($chiTietPhieuKhoParams);
         });
     }
     
@@ -346,7 +395,6 @@ class PhieuKhoService {
                             }
                         }
                         
-                        
                         $arrTheKho[] = [
                             'id'                => $itemDataTheKho['id'],
                             'sl_ton_kho'        => $soLuongTonKho,
@@ -382,34 +430,69 @@ class PhieuKhoService {
             $phieuKhoParams['nhan_vien_duyet']=$nhanVienDuyetId;
             $phieuKhoParams['thoi_gian_yeu_cau']=Carbon::now();
             $phieuKhoParams['thoi_gian_duyet']=Carbon::now();
-            $phieuKhoParams['phieu_kho_yeu_cau_id']=$data['phieu_kho_yeu_cau_id'];
+            if($data['trang_thai'] == self::YEU_CAU_NHAP_STATUS)
+                $phieuKhoParams['phieu_kho_yeu_cau_id'] = $data['phieu_kho_yeu_cau_id'];
+            if($data['trang_thai'] == self::YEU_CAU_TRA_STATUS)
+                $phieuKhoParams['phieu_kho_yeu_cau_id'] = $phieuKhoId;
             $phieuKhoParams['ma_phieu']=$maPhieu;
             
             $this->phieuKhoRepository->updateTrangThaiPhieuKho($phieuKhoId,self::DA_NHAP_STATUS);
             $this->phieuKhoRepository->createPhieuKho($phieuKhoParams);
             
-            $chiTietPhieuKhoData = $this->chiTietPhieuKhoRepository->getByPhieuKhoId($data['phieu_kho_yeu_cau_id']);
-            
-            //$gioiHanParams = [];
-            foreach($chiTietPhieuKhoData as $item) {
-                if($item['trang_thai']==self::THUOC_VAT_TU_DUOC_DUYET) {
+            if($data['trang_thai'] == self::YEU_CAU_NHAP_STATUS) {
+                $chiTietPhieuKhoData = $this->chiTietPhieuKhoRepository->getByPhieuKhoId($data['phieu_kho_yeu_cau_id']);
+                
+                foreach($chiTietPhieuKhoData as $item) {
+                    if($item['trang_thai']==self::THUOC_VAT_TU_DUOC_DUYET) {
+                        $theKhoParams = [];
+                        $theKhoParams['kho_id'] = $data['kho_id_xu_ly'];
+                        $theKhoParams['danh_muc_thuoc_vat_tu_id'] = $item['danh_muc_thuoc_vat_tu_id'];
+                        $theKhoParams['sl_dau_ky'] = $item['so_luong_yeu_cau'];
+                        $theKhoParams['sl_kha_dung'] = $item['so_luong_yeu_cau'];
+                        $theKhoParams['sl_ton_kho_chan'] = floor($item['so_luong_yeu_cau']);
+                        
+                        $this->theKhoRepository->createTheKho($theKhoParams);
+                    }
+                }
+            } else if($data['trang_thai'] == self::YEU_CAU_TRA_STATUS) {
+                $chiTietPhieuKhoData = $this->chiTietPhieuKhoRepository->getByPhieuKhoId($phieuKhoId);
+                
+                foreach($chiTietPhieuKhoData as $item) {
+                    $theKho = $this->theKhoRepository->getById($item['the_kho_id']);
+                    
+                    $soLuongKhaDung = $theKho['sl_kha_dung'] + $item['so_luong_yeu_cau'];
+                    $soLuongTonKho = $theKho['sl_ton_kho'] + $item['so_luong_yeu_cau'];
+                    $soLuongTonKhoChan = $theKho['sl_ton_kho_chan'] + $item['sl_tra_nguyen'];
+                    $soLuongTonKhoLe1 = $theKho['sl_ton_kho_le_1'] + $item['sl_tra_le_1'];
+                    $soLuongTonKhoLe2 = $theKho['sl_ton_kho_le_2'] + $item['sl_tra_le_2'];
+                    $soLuongNhapChan = floor($soLuongTonKhoChan / $theKho['he_so_quy_doi']);
+                    $soLuongNhapLe = $soLuongTonKho - ($soLuongNhapChan * $theKho['he_so_quy_doi']);
+                    
+                    $arrTheKho = [
+                        'id'                => $item['the_kho_id'],
+                        'sl_ton_kho'        => $soLuongTonKho,
+                        'sl_ton_kho_chan'   => $soLuongTonKhoChan,
+                        'sl_ton_kho_le_1'   => $soLuongTonKhoLe1,
+                        'sl_ton_kho_le_2'   => $soLuongTonKhoLe2,
+                        'sl_nhap_chan'      => $soLuongNhapChan,
+                        'sl_nhap_le'        => $soLuongNhapLe
+                    ];
+                    
+                    $this->theKhoRepository->updateSoLuongTon($arrTheKho);
+                    $this->theKhoRepository->updateSoLuongKhaDung($item['the_kho_id'], $soLuongKhaDung);
+                    
+                    $slKhaDung = $this->theKhoRepository->getTonKhaDungById($item['danh_muc_thuoc_vat_tu_id'], $theKho['kho_id']);
                     $theKhoParams = [];
-                    $theKhoParams['kho_id'] = $data['kho_id_xu_ly'];
-                    $theKhoParams['danh_muc_thuoc_vat_tu_id'] = $item['danh_muc_thuoc_vat_tu_id'];
-                    $theKhoParams['sl_dau_ky'] = $item['so_luong_yeu_cau'];
-                    $theKhoParams['sl_kha_dung'] = $item['so_luong_yeu_cau'];
-                    $theKhoParams['sl_ton_kho_chan'] = floor($item['so_luong_yeu_cau']);
-                    //$theKhoParams['sl_ton_kho_le'] = $item['so_luong_yeu_cau']-floor($item['so_luong_yeu_cau']);
+                    $theKhoParams['kho_id'] = $theKho['kho_id'];
+                    $theKhoParams['danh_muc_thuoc_vat_tu_id'] = $theKho['danh_muc_thuoc_vat_tu_id'];
+                    $theKhoParams['sl_kha_dung'] = $slKhaDung['so_luong_kha_dung'];
+                    //update so_luong_kha_dung in table gioi_han
+                    $this->gioiHanRepository->updateSoLuongKhaDung($theKhoParams);
                     
-                    $this->theKhoRepository->createTheKho($theKhoParams);
-                    
-                    // $gioiHanParams[] = [
-                    //     'kho_id' => $data['kho_id_xu_ly'],
-                    //     'danh_muc_thuoc_vat_tu_id' => $item['danh_muc_thuoc_vat_tu_id']
-                    //     ];
+                    //update so_luong_kha_dung in elasticsearch
+                    $this->danhMucThuocVatTuService->updateSoLuongKhaDungById($theKhoParams);
                 }
             }
-
         });
     }
     
@@ -424,4 +507,5 @@ class PhieuKhoService {
             ];
         return $data;
     }
+    
 }
