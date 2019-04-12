@@ -119,4 +119,10 @@ class KhoController extends APIController
         $data = $this->khoService->getKhoByListId($arrListId);
         return $this->respond($data);
     }
+    
+    public function getNhapTuNccByBenhVienId($benhVienId)
+    {
+        $data = $this->khoService->getNhapTuNccByBenhVienId($benhVienId);
+        return $this->respond($data);
+    }    
 }

@@ -23,7 +23,7 @@ class KhoRepository extends BaseRepositoryV2
 
         $model = $this->model->where([
             ['benh_vien_id','=',$benhVienId],
-            ['nhap_tu_ncc', '=', self::NHAP_TU_NHA_CUNG_CAP]
+            //['nhap_tu_ncc', '=', self::NHAP_TU_NHA_CUNG_CAP]
         ]);
       
         if($keyWords!=""){
@@ -108,4 +108,14 @@ class KhoRepository extends BaseRepositoryV2
         $data = $this->model->whereIn('id', $listId)->get();
         return $data;
     }
+    
+    public function getNhapTuNccByBenhVienId($benhVienId)
+    {
+        $where=  [
+            ['nhap_tu_ncc', '=', self::NHAP_TU_NHA_CUNG_CAP],
+            ['benh_vien_id', '=', $benhVienId]
+            ];
+        $data = $this->model->where($where)->get();
+        return $data;
+    }    
 }

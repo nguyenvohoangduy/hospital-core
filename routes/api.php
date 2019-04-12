@@ -290,6 +290,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
  		//Route::get('getListThuocVatTu/{keyWords}','Kho\KhoController@getListThuocVatTu');
  		Route::get('getAllThuocVatTu','Kho\KhoController@getAllThuocVatTu');
  		Route::get('searchThuocVatTuByKeywords/{keyWords}','Kho\KhoController@searchThuocVatTuByKeywords');
+ 		Route::get('getNhapTuNccByBenhVienId/{benhVienId}','Kho\KhoController@getNhapTuNccByBenhVienId');
     });
     
     Route::group(['prefix' => 'donvitinh'], function () {
