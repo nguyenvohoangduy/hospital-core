@@ -145,10 +145,4 @@ class AuthUsersRepository extends BaseRepositoryV2
         $loginDate = date('m/d/Y h:i:s a', time());
         $this->model->where('email',$email)->update(['login_at' => $loginDate]);
     }
-    public function getAll(){
-        $data = DB::table('auth_users')
-                  ->orderBy('id', 'desc')
-                  ->get();
-        return $data;
-    }
 }

@@ -402,22 +402,22 @@ class DanhMucThuocVatTuService
     
     public function createDMTVatTu(array $input)
     {
-        $id = $this->repository->createDMTVatTu($input);
+        $id = $this->repository->create($input);
         return $id;
     } 
     
     public function updateDMTVatTu($id, array $input)
     {
-        $this->repository->updateDMTVatTu($id, $input);
+        $this->repository->update($id, $input);
     }
     
     public function deleteDMTVatTu($id)
     {
-        $this->repository->deleteDMTVatTu($id);
+        $this->repository->delete($id);
     }
     public function getDMTVatTuById($id)
     {
-        $data = $this->repository->getDMTVatTuById($id);
+        $data = $this->repository->getById($id);
         return $data;
     }
 }
