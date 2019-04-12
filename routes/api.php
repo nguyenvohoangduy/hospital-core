@@ -84,6 +84,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('khuVuc/{loai}/{benhVienId}','UserSetting\UserSettingController@getListKhuVuc');
         Route::get('quaySo/{khuVucId}/{benhVienId}','UserSetting\UserSettingController@getListQuay');
         Route::get('getKhoaPhongByUserId/{userId}/{benhVienId}','AuthController@getKhoaPhongByUserId');
+        Route::get('getKhoaPhongDonTiepByBenhVienId/{benhVienId}','AuthController@getKhoaPhongDonTiepByBenhVienId');
         Route::get('getKhoaByBenhVienId/{benhVienId}','UserSetting\UserSettingController@getKhoaByBenhVienId');
     });
     
@@ -372,9 +373,11 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::get('getKhoaByLoaiKhoaBenhVienId/{loaiKhoa}/{benhVienId}','Auth\PermissionController@getKhoaByLoaiKhoaBenhVienId');
      	Route::get('getMaNhomPhongByKhoaId/{khoaId}','Auth\PermissionController@getMaNhomPhongByKhoaId');
      	Route::post('checkData','Auth\PermissionController@checkData');
+     	Route::get('getAllPermissionAndServiceByUserId/{userId}','Auth\PermissionController@getAllPermissionAndServiceByUserId');
     });    
     
     Route::group(['prefix' => 'khoa'], function () {
+        Route::get('getAll','KhoaPhong\KhoaController@getAll');
 		Route::get('getPartial','KhoaPhong\KhoaController@getPartial');
 		Route::post('create','KhoaPhong\KhoaController@create');
      	Route::post('update/{id}','KhoaPhong\KhoaController@update');
@@ -394,7 +397,6 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
  		Route::get('searchByKeywords/{keyWords}','KhoaPhong\PhongController@searchByKeywords');
  		Route::get('getAllByKhoaId/{khoaId}','KhoaPhong\PhongController@getAllByKhoaId');
  		Route::get('getAllByLoaiPhong/{loaiPhong}','KhoaPhong\PhongController@getAllByLoaiPhong');
- 		Route::get('getAllKhoa','KhoaPhong\PhongController@getAllKhoa');
     });
     
     Route::group(['prefix' => 'auth', 'middleware' => 'jwt.auth'], function () {

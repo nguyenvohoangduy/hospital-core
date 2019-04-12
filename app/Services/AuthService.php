@@ -113,5 +113,4 @@ class AuthService {
         //var_dump($route->uri());die();
         return $this->authPolicyRepository->getByUri($route->uri());
     }
-    
 }

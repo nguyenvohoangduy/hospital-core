@@ -21,8 +21,10 @@ class HsbaService
     public function getHsbaByBenhNhanId($benhNhanId)
     {
         $data = $this->hsbaRepository->getHsbaByBenhNhanId($benhNhanId);
-         
-        return new HsbaResource($data);
+        if($data)
+            return new HsbaResource($data);
+        else
+            return [];
     }
     
     public function getHsbaByHsbaId($hsbaId)

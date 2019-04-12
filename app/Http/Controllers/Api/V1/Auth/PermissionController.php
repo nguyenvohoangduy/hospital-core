@@ -86,4 +86,9 @@ class PermissionController extends APIController
         $status = $this->authPermissionsService->checkData($input);
         return $this->respond($status);
     }    
+    
+    public function getAllPermissionAndServiceByUserId($userId) {
+        $data = $this->authPermissionsService->getAllPermissionAndServiceByUserId($userId);
+        return $this->respond($data);
+    }
 }
