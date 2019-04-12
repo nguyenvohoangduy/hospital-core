@@ -7,9 +7,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class AuthUsers extends Authenticatable
 {
-    use Notifiable;
-    protected $table='auth_users';
-    protected $primaryKey='id';    
-    protected $fillable = ['id', 'name', 'email','password','remember_token','created_at','updated_at','fullname','userstatus','khoa','chuc_vu'];
+    // use Notifiable;
+    
+    protected $table = 'auth_users';
+
+    protected $primaryKey = 'id';
+
+    protected $guarded = ['id'];
+
+    public $timestamps = false;    
 
 }

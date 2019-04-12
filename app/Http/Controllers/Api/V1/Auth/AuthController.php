@@ -39,6 +39,13 @@ class AuthController extends APIController
         $this->authGroupsHasRolesService = $authGroupsHasRolesService;
         $this->authPermissionsService = $authPermissionsService;
     }
+    
+    public function index(Request $request)
+    {
+        $this->setStatusCode(200);
+        return $this->respond([]);
+    }    
+    
     public function register(RegisterFormRequest $request)
     {
         
@@ -146,6 +153,11 @@ class AuthController extends APIController
     
     public function createAuthGroups(Request $request)
     {
+        if ($request->isMethod('get')) {
+            $this->setStatusCode(200);
+            return $this->respond([]);
+        }        
+        
         $input = $request->all();
         
         $id = $this->authGroupsService->createAuthGroups($input);
@@ -175,6 +187,11 @@ class AuthController extends APIController
     public function updateAuthGroups($id,Request $request)
     {
         try {
+            if ($request->isMethod('get')) {
+                $this->setStatusCode(200);
+                return $this->respond([]);
+            }            
+            
             $isNumericId = is_numeric($id);
             $input = $request->all();
             

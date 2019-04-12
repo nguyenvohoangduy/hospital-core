@@ -20,6 +20,12 @@ class PhongController extends APIController
         $this->phongService = $phongService;
     }
     
+    public function index(Request $request)
+    {
+        $this->setStatusCode(200);
+        return $this->respond([]);
+    } 
+    
     public function getPartial(Request $request)
     {
         $limit = $request->query('limit', 100);
@@ -33,6 +39,11 @@ class PhongController extends APIController
     
     public function create(PhongFormRequest $request)
     {
+        if ($request->isMethod('get')) {
+            $this->setStatusCode(200);
+            return $this->respond([]);
+        }        
+        
         $input = $request->all();
         
         $id = $this->phongService->create($input);
@@ -48,6 +59,11 @@ class PhongController extends APIController
     public function update($id, PhongFormRequest $request)
     {
         try {
+            if ($request->isMethod('get')) {
+                $this->setStatusCode(200);
+                return $this->respond([]);
+            }            
+            
             $isNumericId = is_numeric($id);
             $input = $request->all();
             

@@ -19,6 +19,13 @@ class KhoaController extends APIController
     {
         $this->khoaService = $khoaService;
     }
+
+    public function index(Request $request)
+    {
+        $this->setStatusCode(200);
+        return $this->respond([]);
+    }
+
     public function getAll()
     {
         $data = $this->khoaService->getAll();
@@ -38,6 +45,11 @@ class KhoaController extends APIController
     
     public function create(KhoaFormRequest $request)
     {
+        if ($request->isMethod('get')) {
+            $this->setStatusCode(200);
+            return $this->respond([]);
+        }        
+        
         $input = $request->all();
         
         $id = $this->khoaService->create($input);
@@ -53,6 +65,11 @@ class KhoaController extends APIController
     public function update($id, KhoaFormRequest $request)
     {
         try {
+            if ($request->isMethod('get')) {
+                $this->setStatusCode(200);
+                return $this->respond([]);
+            }            
+            
             $isNumericId = is_numeric($id);
             $input = $request->all();
             
