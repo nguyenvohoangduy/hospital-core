@@ -201,4 +201,90 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
                     
         return $result;
     } 
+    // quanlydanhmucthuocvattu
+    public function getPartialDMTVatTu($limit = 100, $page = 1, $keyWords ='')
+    {
+        $offset = ($page - 1) * $limit;
+        $model = $this->model;
+        
+        if($keyWords!=""){
+            $model = $model->where(function($queryAdv) use ($keyWords) {
+                $upperCase = mb_convert_case($keyWords, MB_CASE_UPPER, "UTF-8");
+                $lowerCase = mb_convert_case($keyWords, MB_CASE_LOWER, "UTF-8");
+                $titleCase = mb_convert_case($keyWords, MB_CASE_TITLE, "UTF-8");
+                $ucfirst = ucfirst($keyWords);
+                
+                $queryAdv->where('danh_muc_thuoc_vat_tu.ten', 'like', '%'.$upperCase.'%')
+                        ->orWhere('danh_muc_thuoc_vat_tu.ten', 'like', '%'.$lowerCase.'%')
+                        ->orWhere('danh_muc_thuoc_vat_tu.ten', 'like', '%'.$titleCase.'%')
+                        ->orWhere('danh_muc_thuoc_vat_tu.ten', 'like', '%'.$keyWords.'%')
+                        ->orWhere('danh_muc_thuoc_vat_tu.ten', 'like', '%'.$ucfirst.'%');
+            });
+        }
+        
+        $column = [
+            'danh_muc_thuoc_vat_tu.*',
+            'nhom_danh_muc.ten_danh_muc as ten_danh_muc',
+            'don_vi_tinh.ten as ten_don_vi_tinh',
+            'hoat_chat.ten as ten_hoat_chat'
+        ];
+            
+        $totalRecord = $model->count();
+        if($totalRecord) {
+            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
+          
+            $data = $model
+                        ->leftJoin('nhom_danh_muc','nhom_danh_muc.id','=','danh_muc_thuoc_vat_tu.nhom_danh_muc_id')
+                        ->leftJoin('don_vi_tinh','don_vi_tinh.id','=','danh_muc_thuoc_vat_tu.don_vi_tinh_id')
+                        ->leftJoin('hoat_chat','hoat_chat.id','=','danh_muc_thuoc_vat_tu.hoat_chat_id')
+                        ->orderBy('danh_muc_thuoc_vat_tu.id', 'DESC')
+                        ->offset($offset)
+                        ->limit($limit)
+                        ->get($column);
+        } else {
+            $totalPage = 0;
+            $data = [];
+            $page = 0;
+            $totalRecord = 0;
+        }
+          
+        $result = [
+            'data'          => $data,
+            'page'          => $page,
+            'totalPage'     => $totalPage,
+            'totalRecord'   => $totalRecord
+        ];
+      
+        return $result;
+    }
+    
+    public function create(array $input)
+    {
+        $id = $this->model->create($input)->id;
+        return $id;
+    }
+    
+    public function update($id, array $input)
+    {
+        $result = $this->find($id);
+        if ($result) {
+            $result->update($input);
+        }
+    }
+    
+    public function delete($id)
+    {
+        $result = $this->find($id);
+        if ($result) {
+            $result->destroy($id);
+        }
+    }
+    public function getById($id)
+    {
+        $data = $this->model
+                    ->where('id', $id)
+                    ->first();
+        return $data;
+    }
+  
 }

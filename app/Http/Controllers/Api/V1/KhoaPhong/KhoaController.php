@@ -19,6 +19,11 @@ class KhoaController extends APIController
     {
         $this->khoaService = $khoaService;
     }
+    public function getAll()
+    {
+        $data = $this->khoaService->getAll();
+        return $this->respond($data);
+    }
     
     public function getPartial(Request $request)
     {

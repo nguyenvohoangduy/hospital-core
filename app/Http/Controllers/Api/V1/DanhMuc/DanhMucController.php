@@ -13,6 +13,7 @@ use App\Http\Requests\DanhMucDichVuFormRequest;
 use App\Http\Requests\DanhMucTongHopFormRequest;
 use App\Http\Requests\DanhMucTrangThaiFormRequest;
 use App\Http\Requests\NoiGioiThieuFormRequest;
+use App\Http\Requests\DanhMucThuocVatTuFormRequest;
 
 class DanhMucController extends APIController
 {
@@ -434,5 +435,76 @@ class DanhMucController extends APIController
         }
         
         return $this->respond([]);        
+    }
+    // quanlydanhmucthuocvattu
+    public function getPartialDMTVatTu(Request $request)
+    {
+        $limit = $request->query('limit', 100);
+        $page = $request->query('page', 1);
+        $keyWords = $request->query('keyWords', '');
+        
+        $data = $this->dmtvtService->getPartialDMTVatTu($limit,$page,$keyWords);
+        return $this->respond($data);
+    }
+    
+    public function createDMTVatTu(DanhMucThuocVatTuFormRequest $request)
+    {
+        $input = $request->all();
+        $id = $this->dmtvtService->createDMTVatTu($input);
+        if($id) {
+            $this->setStatusCode(201);
+        } else {
+            $this->setStatusCode(400);
+        }
+        
+        return $this->respond([]);
+    }
+    
+    public function updateDMTVatTu($id, DanhMucThuocVatTuFormRequest $request)
+    {
+        try {
+            $isNumericId = is_numeric($id);
+            $input = $request->all();
+            
+            if($isNumericId) {
+                $this->dmtvtService->updateDMTVatTu($id, $input);
+            } else {
+                $this->setStatusCode(400);
+            }
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+    
+    public function deleteDMTVatTu($id)
+    {
+        $isNumericId = is_numeric($id);
+        
+        if($isNumericId) {
+            $this->dmtvtService->deleteDMTVatTu($id);
+            $this->setStatusCode(204);
+        } else {
+            $this->setStatusCode(400);
+        }
+        
+        return $this->respond([]);        
+    }
+    public function getDMTVatTuById($id)
+    {
+        $isNumericId = is_numeric($id);
+        
+        if($isNumericId) {
+            $data = $this->dmtvtService->getDMTVatTuById($id);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
+    public function getAllByKhoa($khoa)
+    {
+        $data = $this->dmthService->getAllByKhoa($khoa);
+        return $this->respond($data);
     }
 }

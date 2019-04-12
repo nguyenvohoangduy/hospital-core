@@ -3,7 +3,11 @@
 namespace App\Services;
 
 use App\Repositories\DanhMuc\DanhMucThuocVatTuRepository;
+use App\Repositories\DanhMuc\NhomDanhMucRepository;
 use App\Repositories\HoatChatRepository;
+use App\Repositories\DonViTinhRepository;
+use App\Repositories\DanhMuc\DanhMucTongHopRepository;
+use App\Repositories\Auth\AuthUsersRepository;
 
 use Illuminate\Http\Request;
 use App\Helper\Util;
@@ -15,10 +19,20 @@ class DanhMucThuocVatTuService
     const MOT_PHAN_TU = 0.25;
     const THUOC_DANG_VIEN = 'Viên';
     
-    public function __construct(DanhMucThuocVatTuRepository $repository,HoatChatRepository $hoatChatRepository)
-    {
+    public function __construct(
+        DanhMucThuocVatTuRepository $repository,
+        HoatChatRepository $hoatChatRepository,
+        NhomDanhMucRepository $nhomdanhmucRepository,
+        DonViTinhRepository $donvitinhRepository,
+        DanhMucTongHopRepository $danhmucTongHopRepository,
+        AuthUsersRepository $authUsersRepository
+    ){
         $this->repository = $repository;
-        $this->hoatChatRepository = $hoatChatRepository;
+        $this->hoatChatRepository = $hoatChatRepository;  
+        $this->nhomdanhmucRepository = $nhomdanhmucRepository;
+        $this->donvitinhRepository = $donvitinhRepository;
+        $this->danhmucTongHopRepository = $danhmucTongHopRepository;
+        $this->authUsersRepository = $authUsersRepository;
     }
     
     // public function getListDanhMucThuocVatTu($limit, $page)
@@ -378,5 +392,32 @@ class DanhMucThuocVatTuService
             ]
         ];
         $response = Elasticsearch::update($params); 
+    }
+    // quanlydanhmucthuocvattu
+    public function getPartialDMTVatTu($limit, $page, $keyWords)
+    {
+        $data = $this->repository->getPartialDMTVatTu($limit, $page, $keyWords);
+        return $data;
+    }
+    
+    public function createDMTVatTu(array $input)
+    {
+        $id = $this->repository->create($input);
+        return $id;
+    } 
+    
+    public function updateDMTVatTu($id, array $input)
+    {
+        $this->repository->update($id, $input);
+    }
+    
+    public function deleteDMTVatTu($id)
+    {
+        $this->repository->delete($id);
+    }
+    public function getDMTVatTuById($id)
+    {
+        $data = $this->repository->getById($id);
+        return $data;
     }
 }
