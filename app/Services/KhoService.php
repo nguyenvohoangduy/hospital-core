@@ -16,7 +16,7 @@ class KhoService {
         $data = $this->khoRepository->getListKho($limit, $page, $keyWords, $benhVienId);
         if(!empty($data['data'])){
             foreach($data['data'] as $item){
-                $benhVien = $this->benhVienRepository->getById($item->benh_vien_id);
+                $benhVien = $this->benhVienRepository->find($item->benh_vien_id);
                 $item['ten_benh_vien']=$benhVien['ten'];
             }
         }
