@@ -7,16 +7,23 @@ use App\Http\Resources\PhongResource;
 use App\Repositories\PhongRepository;
 use App\Repositories\DanhMuc\DanhMucTongHopRepository;
 use App\Repositories\KhoaRepository;
+use App\Services\AuthPermissionsService;
 
 use Illuminate\Http\Request;
 use Validator;
 
 class PhongService {
-    public function __construct(PhongRepository $phongRepository,DanhMucTongHopRepository $danhMucTongHopRepository,KhoaRepository $khoaRepository)
+    public function __construct(
+        PhongRepository $phongRepository, 
+        DanhMucTongHopRepository $danhMucTongHopRepository, 
+        KhoaRepository $khoaRepository,
+        AuthPermissionsService $authPermissionsService
+    )
     {
         $this->phongRepository = $phongRepository;
         $this->danhMucTongHopRepository = $danhMucTongHopRepository;
         $this->khoaRepository = $khoaRepository;
+        $this->authPermissionsService = $authPermissionsService;
     }
 
     public function getListPhong($loaiPhong,$khoaId)
@@ -90,4 +97,20 @@ class PhongService {
         return $data;
     }  
     
+    public function getAllKhoa()
+    {
+        $data = $this->khoaRepository->getAll();
+        return $data;
+    }  
+    
+    public function getListPhongByUserId($benhVienId, $userId) {
+        $listMaNhomPhong = $this->authPermissionsService->getMaNhomPhongByUserId($userId);
+        $result = [];
+        foreach($listMaNhomPhong as $item) {
+            $item['ma_nhom_phong'] = json_decode($item['ma_nhom_phong'], true);
+            $result = array_merge($result, $item['ma_nhom_phong']);
+        }
+        $data = $this->phongRepository->getListPhongByMaNhomPhong($benhVienId, $result);
+        return $data;
+    }
 }

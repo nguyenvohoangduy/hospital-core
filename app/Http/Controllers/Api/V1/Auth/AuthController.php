@@ -279,4 +279,17 @@ class AuthController extends APIController
         $data = $this->authPermissionsService->getAllPermission();
         return $this->respond($data);
     }     
+    
+    public function getListPhongByUserId($userId, $benhVienId) {
+        $isNumericId = is_numeric($userId);
+        
+        if($isNumericId) {
+            $data = $this->phongService->getListPhongByUserId($benhVienId, $userId);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
 }
