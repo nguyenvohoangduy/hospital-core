@@ -258,13 +258,13 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
         return $result;
     }
     
-    public function createDMTVatTu(array $input)
+    public function create(array $input)
     {
         $id = $this->model->create($input)->id;
         return $id;
     }
     
-    public function updateDMTVatTu($id, array $input)
+    public function update($id, array $input)
     {
         $result = $this->find($id);
         if ($result) {
@@ -272,14 +272,14 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
         }
     }
     
-    public function deleteDMTVatTu($id)
+    public function delete($id)
     {
         $result = $this->find($id);
         if ($result) {
             $result->destroy($id);
         }
     }
-    public function getDMTVatTuById($id)
+    public function getById($id)
     {
         $data = $this->model
                     ->where('id', $id)
