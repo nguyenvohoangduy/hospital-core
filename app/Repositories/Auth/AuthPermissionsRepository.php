@@ -6,6 +6,9 @@ use App\Models\Auth\AuthPermissions;
 
 class AuthPermissionsRepository extends BaseRepositoryV2
 {
+    const SERVICE_PHONG_KHAM = 2;
+    const KEY_PHONG_KHAM_INDEX = 'phong-kham.index';
+    
     public function getModel()
     {
         return AuthPermissions::class;
@@ -143,6 +146,23 @@ class AuthPermissionsRepository extends BaseRepositoryV2
             })
             ->leftJoin('auth_service', 'auth_service.id', '=', 'auth_permissions.service_id')
             ->distinct()
+            ->get($column);
+            
+        return $data;
+    }
+    
+    public function getMaNhomPhongByUserId($listGroupId) {
+        $column = [
+            'auth_permissions.ma_nhom_phong',
+        ];
+        
+        $data = $this->model
+            ->join('auth_groups_has_permissions as t1', function($join) use ($listGroupId) {
+                $join->on('t1.permission_id', '=', 'auth_permissions.id')
+                    ->whereIn('t1.group_id', $listGroupId);
+            })
+            ->where('auth_permissions.service_id', self::SERVICE_PHONG_KHAM)
+            ->where('auth_permissions.key', self::KEY_PHONG_KHAM_INDEX)
             ->get($column);
             
         return $data;
