@@ -5,17 +5,23 @@ use Illuminate\Http\Request;
 use App\Services\HsbaDonViService;
 use App\Services\PhieuChamSocService;
 use App\Services\VienPhiService;
+use App\Services\YLenhService;
+use App\Services\ChiTietPhieuKhoService;
 use App\Http\Controllers\Api\V1\APIController;
 use Carbon\Carbon;
 
 class NoiTruController extends APIController {
     public function __construct(
         HsbaDonViService $hsbaDonViService,
-        VienPhiService $vienPhiService
+        VienPhiService $vienPhiService,
+        YLenhService $yLenhService,
+        ChiTietPhieuKhoService $chiTietPhieuKhoService
     )
     {
         $this->hsbaDonViService = $hsbaDonViService;
         $this->vienPhiService = $vienPhiService;
+        $this->yLenhService = $yLenhService;
+        $this->chiTietPhieuKhoService = $chiTietPhieuKhoService;
     }
     
     public function getListPhongNoiTru($benhVienId, Request $request)
@@ -75,8 +81,16 @@ class NoiTruController extends APIController {
         }
     }
     
-    public function index(Request $request)
+    public function traThuoc(Request $request)
     {
-        return response(200);
+        $input = $request->all();
+        if(is_numeric($input['phieuYLenhId'])) {
+            $data = $this->chiTietPhieuKhoService->getByPhieuYLenhId($input['phieuYLenhId']);
+            $bool = $this->yLenhService->traThuoc($input, $data);
+            return $this->respond($bool);
+        } else {
+            $this->setStatusCode(400);
+            return $this->respond(false);
+        }
     }     
 }

@@ -16,6 +16,7 @@ use App\Services\DanhMucDichVuService;
 use App\Services\DanhMucThuocVatTuService;
 use App\Services\MauHoiBenhService;
 use App\Services\TheKhoService;
+use App\Services\ChiTietPhieuKhoService;
 use Validator;
 use App\Http\Requests\UploadFileFormRequest;
 use App\Http\Requests\MauHoiBenhFormRequest;
@@ -36,7 +37,8 @@ class PhongKhamController extends APIController
         DanhMucDichVuService $dmdvService,
         DanhMucThuocVatTuService $dmTvtService,
         MauHoiBenhService $mauHoiBenhService,
-        TheKhoService $theKhoService
+        TheKhoService $theKhoService,
+        ChiTietPhieuKhoService $chiTietPhieuKhoService
     )
     {
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
@@ -52,6 +54,7 @@ class PhongKhamController extends APIController
         $this->dmTvtService = $dmTvtService;
         $this->mauHoiBenhService = $mauHoiBenhService;
         $this->theKhoService = $theKhoService;
+        $this->chiTietPhieuKhoService = $chiTietPhieuKhoService;
     }
     
     public function update($hsbaDonViId, Request $request)
@@ -157,7 +160,6 @@ class PhongKhamController extends APIController
         try 
         {
             $input = $request->all();
-            // $phieuDieuTri = $this->dieuTriService->getPhieuDieuTri($input);
             
             if($input['data']) {
                 // $input['dieu_tri_id'] = $phieuDieuTri->id;
@@ -363,6 +365,20 @@ class PhongKhamController extends APIController
            
         if($isNumeric) {
             $data = $this->yLenhService->countItemThuocVatTu($hsbaId);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+            
+        return $this->respond($data);
+    }
+    
+    public function countItemTheKho($phieuYLenhId)
+    {
+        $isNumeric = is_numeric($phieuYLenhId);
+           
+        if($isNumeric) {
+            $data = $this->chiTietPhieuKhoService->countItemTheKho($phieuYLenhId);
         } else {
             $this->setStatusCode(400);
             $data = [];

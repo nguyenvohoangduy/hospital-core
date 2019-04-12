@@ -35,7 +35,6 @@ class TheKhoRepository extends BaseRepositoryV2
         $data = $this->model
             ->where('danh_muc_thuoc_vat_tu_id',$id)
             ->where('kho_id',$khoId)
-            // ->select(DB::raw('(sl_ton_kho_chan+sl_ton_kho_le_1+sl_ton_kho_le_2) AS sl_ton_kho'),'sl_kha_dung')
             ->get();
         $slKhaDung = 0;
         $slTonKho = 0;
@@ -55,20 +54,44 @@ class TheKhoRepository extends BaseRepositoryV2
     {
         $where = [
             ['danh_muc_thuoc_vat_tu_id','=',$input['danh_muc_thuoc_vat_tu_id']],
-            ['kho_id','=',$input['kho_id']]
-            ];
-        $find = $this->model
+            ['kho_id','=',$input['kho_id']],
+            ['sl_kha_dung', '>', 0]
+        ];
+        
+        $data = $this->model
                      ->where($where)
                      ->orderBy('ma_con','ASC')
-                     ->first();
-        if($find) {
-            $newKhaDung = $find['sl_kha_dung']-$input['so_luong'];
-            $this->model->where('id',$find['id'])->update(['sl_kha_dung' => $newKhaDung]);
-            $find['sl_kha_dung'] = $newKhaDung;
-            return $find;
+                     ->get();
+                     
+        $soLuongYeuCau = $input['so_luong'];
+        $newKhaDung = 0;
+        $arr = [];
+        $result = [];
+        
+        if($data) {
+            foreach($data as $item) {
+                if($soLuongYeuCau > 0 && $item['sl_kha_dung'] > 0) {
+                    $chenhLech = $item['sl_kha_dung'] - $soLuongYeuCau;
+                    if($chenhLech < 0) {
+                        $soLuongKhaDung = 0;
+                        $soLuongYeuCau = $chenhLech * (-1);
+                    } else {
+                        $soLuongKhaDung = $chenhLech;
+                        $soLuongYeuCau = 0;
+                    }
+                    
+                    $this->model->where('id', $item['id'])->update(['sl_kha_dung' => $soLuongKhaDung]);
+                    $newKhaDung += $soLuongKhaDung;
+                    $result['the_kho_id'] = $item['id'];
+                } else {
+                    $newKhaDung += $item['sl_kha_dung'];
+                }
+            }
+            
+            $result['sl_kha_dung'] = $newKhaDung;
         }
-        else
-            return null;
+        
+        return $result;
     }
     
     public function getTheKho($khoId,$arrDmtvt)
@@ -98,4 +121,33 @@ class TheKhoRepository extends BaseRepositoryV2
                     ]);
     }
     
+    public function updateSoLuongKhaDung($id, $soLuongKhaDung)
+    {
+        $this->model->where('id',$id)
+                    ->update([
+                        'sl_kha_dung'   =>  $soLuongKhaDung
+                    ]);
+    }
+    
+    public function getTheKhoById(array $input)
+    {
+        $where = [
+            ['danh_muc_thuoc_vat_tu_id','=',$input['danh_muc_thuoc_vat_tu_id']],
+            ['kho_id','=',$input['kho_id']],
+            ['sl_ton_kho', '>', 0]
+        ];
+        
+        $data = $this->model
+                     ->where($where)
+                     ->orderBy('ma_con','ASC')
+                     ->get();
+                     
+        return $data;
+    }
+ 
+    public function getById($id)   
+    {
+        $data = $this->model->findOrFail($id);
+        return $data;
+    }
 }
