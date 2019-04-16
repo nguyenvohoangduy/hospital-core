@@ -48,7 +48,8 @@ class HsbaResource extends Resource
             'dtcbh_luyke6thang'         => $this->dtcbh_luyke6thang,
             'ma_so_thue'                => $this->ma_so_thue,
             'so_cmnd'                   => $this->so_cmnd,
-            'ma_tiem_chung'             => $this->ma_tiem_chung
+            'ma_tiem_chung'             => $this->ma_tiem_chung,
+            'url_hinh_anh'              => $this->url_hinh_anh,
         ];
     }
 }
