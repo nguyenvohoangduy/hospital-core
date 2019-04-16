@@ -42,6 +42,7 @@ use Aws\Sqs\SqsClient;
 use Aws\Exception\AwsException;
 use App\Repositories\Sqs\Dkkb\InputLogRepository as InputLogSqsRepository;
 use App\Log\DangKyKhamBenhErrorLog;
+use Aws\S3\S3Client;
 
 class BenhNhanServiceV2 {
     
@@ -80,7 +81,7 @@ class BenhNhanServiceV2 {
         'benh_nhan_id', 'ho_va_ten', 'ngay_sinh', 'gioi_tinh_id'
         , 'so_nha', 'duong_thon', 'noi_lam_viec'
         , 'url_hinh_anh', 'dien_thoai_benh_nhan', 'email_benh_nhan', 'dia_chi_lien_he'
-        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id', 'ma_so_thue', 'so_cmnd', 'ma_tiem_chung'
+        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id', 'ma_so_thue', 'so_cmnd', 'ma_tiem_chung', 'hinh_benh_nhan', 'benh_vien_id'
     ];
     
     private $hsbaKeys = [
@@ -271,6 +272,13 @@ class BenhNhanServiceV2 {
     private function checkOrCreateBenhNhan($scan,$params) {
         $tenBenhNhanInHoa = mb_convert_case($params['ho_va_ten'], MB_CASE_UPPER, "UTF-8");
         $dataBenhNhan = $params;
+        
+        $hinh_benh_nhan = $dataBenhNhan['hinh_benh_nhan'];
+        unset($dataBenhNhan['hinh_benh_nhan']);
+        if (empty($dataBenhNhan['benh_vien_id'])) $dataBenhNhan['benh_vien_id'] = 1;
+            $dataBenhVienThietLap = $this->benhVienRepository->getBenhVienThietLap($dataBenhNhan['benh_vien_id']);
+        unset($dataBenhNhan['benh_vien_id']);
+            
         $dataBenhNhan['ho_va_ten'] = $tenBenhNhanInHoa;
         $dataBenhNhan['nghe_nghiep_id'] = ($this->dataNgheNghiep['gia_tri'])??null;
         $dataBenhNhan['dan_toc_id'] = $this->dataDanToc['gia_tri']??null;
@@ -285,6 +293,34 @@ class BenhNhanServiceV2 {
             $dataBenhNhan['id'] =  $this->benhNhanRepository->createDataBenhNhan($dataBenhNhan);
         }
         $this->dataBenhNhan = $dataBenhNhan;
+        if($hinh_benh_nhan) {
+            $s3 = new AwsS3($dataBenhVienThietLap['bucket']);
+            $image_parts = explode(";base64,", $hinh_benh_nhan);
+            $dataHinhAnh = [];
+            if(count($image_parts)>1)
+            {
+                $image_type_aux = explode("image/", $image_parts[0]);
+                $image_type = $image_type_aux[1];
+                $image_base64 = base64_decode($image_parts[1], true);
+            
+                $filePath = 'storage/dang-ky-kham-benh/' . env('APP_ENV') . '/' . date("Y/m/d") . '/' . $dataBenhNhan['id'] . '.' . $image_type;
+                
+                $result = $s3->putObjectBase64($filePath, $image_base64, "image/".$image_type);
+                $url_hinh_anh = 'https://s3-'. env('S3_REGION') .'.amazonaws.com/' .$dataBenhVienThietLap['bucket']. '/' . $filePath;
+                
+                $dataHinhAnh["url_hinh_anh"] = $url_hinh_anh;
+            }
+            else 
+            {
+                $dataHinhAnh["url_hinh_anh"] = $hinh_benh_nhan;
+            }
+            $this->benhNhanRepository->update($dataBenhNhan['id'], $dataHinhAnh);
+            //define('UPLOAD_DIR', "./images");
+            //$file = UPLOAD_DIR . uniqid() . '.png';
+            //$file = UPLOAD_DIR . '.png';
+            //file_put_contents($file, $image_base64);
+            
+        }
         return $this;
     }
     
