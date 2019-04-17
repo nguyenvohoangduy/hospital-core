@@ -73,27 +73,32 @@ return [
             'sslmode' => 'prefer',
             'timezone' => config('app.timezone'),
         ],
-        
-        'pgsql_staging' => [
-            'read' => [
-                'host' => env('DB_HOST_STAGING', '127.0.0.1'),
-            ],
-            'write' => [
-                'host' => env('DB_HOST_STAGING', '127.0.0.1')
-            ],
+        'pgsql_db1' => [
             'driver' => 'pgsql',
-            //'host' => env('DB_HOST', '127.0.0.1'),
-            'port' => env('DB_PORT', '5432'),
-            'database' => env('DB_DATABASE', 'forge'),
-            'username' => env('DB_USERNAME', 'forge'),
-            'password' => env('DB_PASSWORD', ''),
+            'host' => '',
+            'port' => '5432',
+            'database' => '',
+            'username' => '',
+            'password' => '',
             'charset' => 'utf8',
             'prefix' => '',
             'schema' => 'public',
             'sslmode' => 'prefer',
             'timezone' => config('app.timezone'),
         ],
-        
+        'pgsql_db2' => [
+            'driver' => 'pgsql',
+            'host' => '',
+            'port' => '5432',
+            'database' => '',
+            'username' => '',
+            'password' => '',
+            'charset' => 'utf8',
+            'prefix' => '',
+            'schema' => 'public',
+            'sslmode' => 'prefer',
+            'timezone' => config('app.timezone'),
+        ],
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'host' => env('DB_HOST', 'localhost'),

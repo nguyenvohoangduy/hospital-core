@@ -13,12 +13,8 @@ class DBSChemaCompare extends Command
      *
      * @var string
      */
-    // protected $signature = 'db_schema_compare {db_host1=env(DB_HOST)} {db_name1=env(DB_DATABASE)} {db_user1=env(DB_USERNAME)} {db_pass1=env(DB_PASSWORD)} {db_host2=env(DB_HOST_STAGING)} {db_name2=env(DB_DATABASE_STAGING)} {db_user2=env(DB_USERNAME_STAGING)} {db_pass2=env(DB_PASSWORD_STAGING)}';
-    // {--db_host2=*} {--db_name2=*} {--db_user2=*} {--db_pass2=*}
-    
-    protected $signature = 'db_schema_compare';
-  
-    
+    protected $signature = 'db_schema_compare {db_host1} {db_name1} {db_user1} {db_pass1} {db_host2} {db_name2} {db_user2} {db_pass2}';
+
     /**
      * The console command description.
      *
@@ -44,10 +40,33 @@ class DBSChemaCompare extends Command
      */
     public function handle()
     {
-     
-         $table = $this->dbSChemaCompareService->getAllTablesDevelop();
-          print_r($table);
-          
-        
+        $database1 = [
+            'host'      => $this->argument('db_host1'),
+            'driver'    => 'pgsql',
+            'port'      => '5432',
+            'database'  => $this->argument('db_name1'),
+            'username'  => $this->argument('db_user1'),
+            'password'  => $this->argument('db_pass1'),
+            'charset'   => 'utf8',
+            'prefix'    => '',
+            'schema'    => 'public',
+            'sslmode'   => 'prefer',
+        ];
+        $database2 = [
+            'host'      => $this->argument('db_host2'),
+            'driver'    => 'pgsql',
+            'port'      => '5432',
+            'database'  => $this->argument('db_name2'),
+            'username'  => $this->argument('db_user2'),
+            'password'  => $this->argument('db_pass2'),
+            'charset'   => 'utf8',
+            'prefix'    => '',
+            'schema'    => 'public',
+            'sslmode'   => 'prefer',
+        ];
+        if($database1 && $database2){
+            $table = $this->dbSChemaCompareService->getAllTablesDevelop($database1,$database2);
+            print_r($table);
+        }
     }
 }
