@@ -65,13 +65,13 @@ class AuthPermissionsService {
         return $data;
     }
     
-    public function getMaNhomPhongByUserId($userId) {
+    public function getMaNhomPhongByUserId($userId, $typeService) {
         $listGroupId = $this->authUsersGroupsRepository->getListGroupByUserId($userId);
         $listGroup = [];
         foreach($listGroupId as $item) {
             $listGroup[] = $item['group_id'];
         }
-        $data = $this->authPermissionsRepository->getMaNhomPhongByUserId($listGroup);
+        $data = $this->authPermissionsRepository->getMaNhomPhongByUserId($listGroup, $typeService);
         return $data;
     }
 }
