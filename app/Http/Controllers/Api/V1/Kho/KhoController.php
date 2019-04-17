@@ -4,15 +4,22 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Api\V1\APIController;
 use App\Services\KhoService;
 use App\Services\DanhMucThuocVatTuService;
+use App\Services\ElasticSearchService;
 use App\Http\Requests\CreateKhoFormRequest;
 use App\Http\Requests\UpdateKhoFormRequest;
 
 class KhoController extends APIController
 {
-    public function __construct(KhoService $khoService,DanhMucThuocVatTuService $danhMucThuocVatTuService)
+    public function __construct
+    (
+        KhoService $khoService,
+        DanhMucThuocVatTuService $danhMucThuocVatTuService,
+        ElasticSearchService $elasticSearchService
+    )
     {
         $this->khoService = $khoService;
         $this->danhMucThuocVatTuService = $danhMucThuocVatTuService;
+        $this->elasticSearchService = $elasticSearchService;
     }
     public function getListKho(Request $request)
     {
@@ -30,6 +37,7 @@ class KhoController extends APIController
         
         $id = $this->khoService->createKho($input);
         if($id) {
+            $this->elasticSearchService->createIndex($id);
             $this->setStatusCode(201);
         } else {
             $this->setStatusCode(400);
@@ -46,6 +54,10 @@ class KhoController extends APIController
             
             if($isNumericId) {
                 $this->khoService->updateKho($id, $input);
+                $notExistIndex = $this->elasticSearchService->isExistIndex($id);
+                if($notExistIndex) {
+                    $this->elasticSearchService->createIndex($id);
+                }
             } else {
                 $this->setStatusCode(400);
             }
@@ -82,21 +94,15 @@ class KhoController extends APIController
         return $this->respond($data);
     }
     
-    // public function getListThuocVatTu($keyWords)
-    // {
-    //     $data = $this->danhMucThuocVatTuService->getListByKeywords($keyWords);
-    //     return $this->respond($data);
-    // }
-    
     public function getAllThuocVatTu()
     {
         $data = $this->danhMucThuocVatTuService->getAllThuocVatTu();
         return $this->respond($data);
     }
     
-    public function searchThuocVatTuByKeywords($keyWords)
+    public function searchThuocVatTuByKeywords($keywords)
     {
-        $data = $this->danhMucThuocVatTuService->searchThuocVatTuByKeywords($keyWords);
+        $data = $this->elasticSearchService->searchThuocVatTuByKeywords($keywords);
         return $this->respond($data);
     }
     
@@ -109,7 +115,7 @@ class KhoController extends APIController
     public function searchThuocVatTuByListId(Request $request)
     {
         $listId = $request->query('listId');
-        $data = $this->danhMucThuocVatTuService->searchThuocVatTuByListId($listId);
+        $data = $this->elasticSearchService->searchThuocVatTuByListId($listId);
         return $this->respond($data);
     } 
     

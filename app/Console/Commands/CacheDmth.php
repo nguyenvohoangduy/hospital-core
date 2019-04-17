@@ -41,9 +41,6 @@ class CacheDmth extends Command
      */
     public function handle()
     {
-        //$data = $this->danhMucThuocVatTuService->pushToRedis();
-        // $this->danhMucThuocVatTuService->pushToElasticSearch();
-    
         $this->danhmucTongHopService->pushToRedis();
     }
 }
