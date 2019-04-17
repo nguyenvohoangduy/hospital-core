@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use App\Repositories\BaseRepositoryV2;
 use App\Models\DonViTinh;
+use App\Helper\Util;
 
 class DonViTinhRepository extends BaseRepositoryV2
 {
@@ -21,7 +22,6 @@ class DonViTinhRepository extends BaseRepositoryV2
 
     public function getPartial($limit = 100, $page = 1, $keyword = '')
     {
-        $offset = ($page - 1) * $limit;
         $query = $this->model;
         
         if($keyword != '') {
@@ -38,30 +38,9 @@ class DonViTinhRepository extends BaseRepositoryV2
                         ->orWhere('ten', 'like', '%'.$ucfirst.'%');
             });
         }
+        $query = $query->orderBy('ten', 'asc');
         
-        $totalRecord = $query->count();
-        if($totalRecord) {
-            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
-            
-            $data = $query->orderBy('ten', 'asc')
-                        ->offset($offset)
-                        ->limit($limit)
-                        ->get();
-        } else {
-            $totalPage = 0;
-            $data = [];
-            $page = 0;
-            $totalRecord = 0;
-        }
-            
-        $result = [
-            'data'          => $data,
-            'page'          => $page,
-            'totalPage'     => $totalPage,
-            'totalRecord'   => $totalRecord
-        ];
-        
-        return $result;
+        return Util::getPartial($query,$limit,$page);
     }
     
     public function getDonViCoBan()

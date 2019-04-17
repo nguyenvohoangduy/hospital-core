@@ -5,6 +5,7 @@ use App\Models\BenhVien;
 use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\Config;
 use Exception;
+use App\Helper\Util;
 
 class BenhVienRepository extends BaseRepositoryV2
 {
@@ -22,37 +23,15 @@ class BenhVienRepository extends BaseRepositoryV2
     }
     
     public function getPartial($limit = 100, $page = 1, $name = NULL) {
-        $offset = ($page - 1) * $limit;
         $query = $this->model->where('id', '>', 0);
         
         if($name != NULL) {
             $query->where('ten', 'like', '%' . $dienGiai . '%');
         }
         
-        $totalRecord = $query->count();
+        $query = $query->orderBy('id', 'desc');
         
-        if($totalRecord) {
-            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
-            
-            $data = $query->orderBy('id', 'desc')
-                        ->offset($offset)
-                        ->limit($limit)
-                        ->get();
-        } else {
-            $totalPage = 0;
-            $data = [];
-            $page = 0;
-            $totalRecord = 0;
-        }
-        
-        $result = [
-            'data'          => $data,
-            'page'          => $page,
-            'totalPage'     => $totalPage,
-            'totalRecord'   => $totalRecord
-        ];
-        
-        return $result;
+        return Util::getPartial($query,$limit,$page);
     }
     
     public function create(array $input)

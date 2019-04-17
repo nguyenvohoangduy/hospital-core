@@ -1,5 +1,6 @@
 <?php
 namespace App\Repositories;
+use App\Helper\Util;
 
 use DB;
 use App\Models\Icd10;
@@ -14,8 +15,6 @@ class Icd10Repository extends BaseRepositoryV2
     
     public function getListIcd10($limit = 100, $page = 1, $keyword = '')
     {
-        $offset = ($page - 1) * $limit;
-        
         $query = $this->model;
         
         if($keyword != '') {
@@ -36,30 +35,9 @@ class Icd10Repository extends BaseRepositoryV2
                         ->orWhere('icd10code', 'like', '%'.$keyword.'%');
             });
         }
+        $query = $query->orderBy('icd10id', 'asc');
         
-        $totalRecord = $query->count();
-        if($totalRecord) {
-            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
-            
-            $data = $query->orderBy('icd10id', 'asc')
-                        ->offset($offset)
-                        ->limit($limit)
-                        ->get();
-        } else {
-            $totalPage = 0;
-            $data = [];
-            $page = 0;
-            $totalRecord = 0;
-        }
-            
-        $result = [
-            'data'          => $data,
-            'page'          => $page,
-            'totalPage'     => $totalPage,
-            'totalRecord'   => $totalRecord
-        ];
-        
-        return $result;
+        return Util::getPartial($query,$limit,$page);
     }
     
     public function getIcd10ByCode($icd10code)
