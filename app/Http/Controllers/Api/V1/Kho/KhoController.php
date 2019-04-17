@@ -4,7 +4,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Api\V1\APIController;
 use App\Services\KhoService;
 use App\Services\DanhMucThuocVatTuService;
-use App\Services\ElasticSearchService;
 use App\Http\Requests\CreateKhoFormRequest;
 use App\Http\Requests\UpdateKhoFormRequest;
 
@@ -13,13 +12,11 @@ class KhoController extends APIController
     public function __construct
     (
         KhoService $khoService,
-        DanhMucThuocVatTuService $danhMucThuocVatTuService,
-        ElasticSearchService $elasticSearchService
+        DanhMucThuocVatTuService $danhMucThuocVatTuService
     )
     {
         $this->khoService = $khoService;
         $this->danhMucThuocVatTuService = $danhMucThuocVatTuService;
-        $this->elasticSearchService = $elasticSearchService;
     }
     public function getListKho(Request $request)
     {
@@ -37,7 +34,6 @@ class KhoController extends APIController
         
         $id = $this->khoService->createKho($input);
         if($id) {
-            $this->elasticSearchService->createIndex($id);
             $this->setStatusCode(201);
         } else {
             $this->setStatusCode(400);
@@ -54,10 +50,6 @@ class KhoController extends APIController
             
             if($isNumericId) {
                 $this->khoService->updateKho($id, $input);
-                $notExistIndex = $this->elasticSearchService->isExistIndex($id);
-                if($notExistIndex) {
-                    $this->elasticSearchService->createIndex($id);
-                }
             } else {
                 $this->setStatusCode(400);
             }
@@ -102,7 +94,7 @@ class KhoController extends APIController
     
     public function searchThuocVatTuByKeywords($keywords)
     {
-        $data = $this->elasticSearchService->searchThuocVatTuByKeywords($keywords);
+        $data = $this->khoService->searchThuocVatTuByKeywords($keywords);
         return $this->respond($data);
     }
     
@@ -111,13 +103,6 @@ class KhoController extends APIController
         $data = $this->khoService->getAllKhoByBenhVienId($benhVienid);
         return $this->respond($data);
     }
-    
-    public function searchThuocVatTuByListId(Request $request)
-    {
-        $listId = $request->query('listId');
-        $data = $this->elasticSearchService->searchThuocVatTuByListId($listId);
-        return $this->respond($data);
-    } 
     
     public function getKhoByListId($listId)
     {

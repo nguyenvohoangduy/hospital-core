@@ -1,10 +1,10 @@
 <?php
-namespace App\Services;
+namespace App\Repositories\ElasticSearch;
 
 use App\Repositories\DanhMuc\DanhMucThuocVatTuRepository;
 use Cviebrock\LaravelElasticsearch\Facade as Elasticsearch;
 
-class ElasticSearchService
+class DmtvtKho
 {
     const MOT_NUA = 0.5;
     const MOT_PHAN_TU = 0.25;

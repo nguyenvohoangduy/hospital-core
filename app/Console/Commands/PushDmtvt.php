@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Services\ElasticSearchService;
+use App\Repositories\ElasticSearch\DmtvtKho;
 
 class PushDmtvt extends Command
 {
@@ -28,10 +28,10 @@ class PushDmtvt extends Command
      *
      * @return void
      */
-    public function __construct(ElasticSearchService $elasticSearchService)
+    public function __construct(DmtvtKho $dmtvtKho)
     {
         parent::__construct();
-        $this->elasticSearchService = $elasticSearchService;
+        $this->dmtvtKho = $dmtvtKho;
     }
 
     /**
@@ -41,6 +41,6 @@ class PushDmtvt extends Command
      */
     public function handle()
     {
-        $this->elasticSearchService->pushDmtvt();
+        $this->dmtvtKho->pushDmtvt();
     }
 }

@@ -5,8 +5,8 @@ use App\Http\Resources\PddtResource;
 use App\Repositories\PhacDoDieuTriRepository;
 use App\Repositories\DanhMuc\DanhMucDichVuRepository;
 use App\Repositories\HoatChatRepository;
+use App\Repositories\ElasticSearch\DmtvtKho;
 use App\Services\DanhMucThuocVatTuService;
-use App\Services\ElasticSearchService;
 
 class PhacDoDieuTriService
 {
@@ -20,14 +20,14 @@ class PhacDoDieuTriService
         DanhMucDichVuRepository $dmdvRepository,
         HoatChatRepository $hoatChatRepository,
         DanhMucThuocVatTuService $danhMucThuocVatTuService,
-        ElasticSearchService $elasticSearchService
+        DmtvtKho $dmtvtKho
     )
     {
         $this->pddtRepository = $pddtRepository;
         $this->dmdvRepository = $dmdvRepository;
         $this->hoatChatRepository = $hoatChatRepository;
         $this->danhMucThuocVatTuService = $danhMucThuocVatTuService;
-        $this->elasticSearchService = $elasticSearchService;
+        $this->dmtvtKho = $dmtvtKho;
     }
     
     public function createPhacDoDieuTri(array $input)
@@ -46,7 +46,7 @@ class PhacDoDieuTriService
         }
         
         if($result['listIdTvt']) {
-            $data['thuocVatTu'] = $this->elasticSearchService->searchThuocVatTuByListId(self::INDEX_DMTVT, $result['listIdTvt']);
+            $data['thuocVatTu'] = $this->dmtvtKho->searchThuocVatTuByListId(self::INDEX_DMTVT, $result['listIdTvt']);
             $data['list'] = $result['list'];
         }
         

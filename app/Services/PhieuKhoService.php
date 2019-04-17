@@ -8,6 +8,7 @@ use App\Repositories\Kho\ChiTietPhieuKhoRepository;
 use App\Repositories\Kho\GioiHanRepository;
 use App\Repositories\Kho\KhoRepository;
 use App\Repositories\DanhMuc\DanhMucThuocVatTuRepository;
+use App\Repositories\ElasticSearch\DmtvtKho;
 use App\Services\DanhMucThuocVatTuService;
 use Cviebrock\LaravelElasticsearch\Facade as Elasticsearch;
 use Illuminate\Http\Request;
@@ -41,7 +42,8 @@ class PhieuKhoService {
         KhoRepository $khoRepository,
         GioiHanRepository $gioiHanRepository,
         DanhMucThuocVatTuRepository $danhMucThuocVatTuRepository,
-        DanhMucThuocVatTuService $danhMucThuocVatTuService
+        DanhMucThuocVatTuService $danhMucThuocVatTuService,
+        DmtvtKho $dmtvtKho
     )
     {
         $this->phieuKhoRepository = $phieuKhoRepository;
@@ -51,6 +53,7 @@ class PhieuKhoService {
         $this->gioiHanRepository = $gioiHanRepository;
         $this->danhMucThuocVatTuRepository = $danhMucThuocVatTuRepository;
         $this->danhMucThuocVatTuService = $danhMucThuocVatTuService;
+        $this->dmtvtKho = $dmtvtKho;
     }
     
     public function createPhieuKho(array $input)
@@ -145,7 +148,7 @@ class PhieuKhoService {
                 $this->gioiHanRepository->updateSoLuongKhaDung($theKhoParams);
                 
                 //update so_luong_kha_dung in elasticsearch
-                $this->elasticSearchService->updateSoLuongKhaDungById($theKhoParams);
+                $this->dmtvtKho->updateSoLuongKhaDungById($theKhoParams);
                 
                 if($result) {
                     $chiTietPhieuKhoParams = [];
@@ -397,7 +400,7 @@ class PhieuKhoService {
                     $this->gioiHanRepository->updateSoLuongKhaDung($theKhoParams);
                     
                     //update so_luong_kha_dung in elasticsearch
-                    $this->elasticSearchService->updateSoLuongKhaDungById($theKhoParams);
+                    $this->dmtvtKho->updateSoLuongKhaDungById($theKhoParams);
                 }
             }
         });
