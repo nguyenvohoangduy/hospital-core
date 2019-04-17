@@ -3,6 +3,7 @@ namespace App\Repositories;
 use DB;
 use App\Repositories\BaseRepositoryV2;
 use App\Models\DanhMucTongHop;
+use App\Helper\Util;
 
 class DanhMucTongHopRepository extends BaseRepositoryV2
 {
@@ -113,15 +114,11 @@ class DanhMucTongHopRepository extends BaseRepositoryV2
     }
     
     public function getListDanhMucTongHopTheoKhoa($khoa, $limit = 100, $page = 1) {
-        $offset = ($page - 1) * $limit;
         
-        $data = $this->model
+        $query = $this->model
                 ->where('khoa', $khoa)
-                ->orderBy('id', 'desc')
-                ->offset($offset)
-                ->limit($limit)
-                ->get();
-        return $data;
+                ->orderBy('id', 'desc');
+        return Util::getPartial($query,$limit,$page);
     }
     
     public function createDanhMucTongHop(array $input)

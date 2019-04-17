@@ -1,5 +1,6 @@
 <?php
 namespace App\Repositories;
+use App\Helper\Util;
 
 use DB;
 use App\Models\Khoa;
@@ -99,8 +100,6 @@ class KhoaRepository extends BaseRepositoryV2
     
     public function getPartial($limit = 100, $page = 1, $keyWords ='', $benhVienId)
     {
-        $offset = ($page - 1) * $limit;
-
         $model = $this->model->where('benh_vien_id','=',$benhVienId);
       
         if($keyWords!=""){
@@ -128,35 +127,15 @@ class KhoaRepository extends BaseRepositoryV2
             'benh_vien.ten as ten_benh_vien'
             ];
           
-        $totalRecord = $model->count();
-        if($totalRecord) {
-            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
-          
             $data = $model
                         ->leftJoin('danh_muc_tong_hop', function($join) {
                                 $join->on(DB::raw('cast(danh_muc_tong_hop.gia_tri as integer)'), '=', 'khoa.loai_khoa')
                                     ->where('danh_muc_tong_hop.khoa', '=', 'loai_khoa');
                         })
                         ->leftJoin('benh_vien','benh_vien.id','=','khoa.benh_vien_id')
-                        ->orderBy('khoa.id', 'desc')
-                        ->offset($offset)
-                        ->limit($limit)
-                        ->get($column);
-        } else {
-            $totalPage = 0;
-            $data = [];
-            $page = 0;
-            $totalRecord = 0;
-        }
-          
-        $result = [
-            'data'          => $data,
-            'page'          => $page,
-            'totalPage'     => $totalPage,
-            'totalRecord'   => $totalRecord
-        ];
-      
-        return $result;
+                        ->orderBy('khoa.id', 'desc');
+        
+        return Util::getPartial($data,$limit,$page,$column);
     }
     
     public function create(array $input)

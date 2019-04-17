@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use App\Repositories\BaseRepositoryV2;
 use App\Models\PhongBenh;
+use App\Helper\Util;
 
 class PhongBenhRepository extends BaseRepositoryV2
 {
@@ -23,36 +24,14 @@ class PhongBenhRepository extends BaseRepositoryV2
             'danh_muc_dich_vu.ten as ten_loai_phong'
         ];
         
-        $offset = ($page - 1) * $limit;
-    
         $model = $this->model;
-        
-        $totalRecord = $model->count();
-        if($totalRecord) {
-            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
-            $data = $model
+        $data = $model
                         ->leftJoin('khoa', 'khoa.id', '=', 'phong_benh.khoa_id')
                         ->leftJoin('danh_muc_dich_vu', 'danh_muc_dich_vu.id', '=', 'phong_benh.loai_phong')
                         ->where('phong_benh.ten', 'like', '%' . $keyWords . '%')
-                        ->orderBy('id', 'desc')
-                        ->offset($offset)
-                        ->limit($limit)
-                        ->get($column);
-        } else {
-            $totalPage = 0;
-            $data = [];
-            $page = 0;
-            $totalRecord = 0;
-        }
-            
-        $result = [
-            'data'          => $data,
-            'page'          => $page,
-            'totalPage'     => $totalPage,
-            'totalRecord'   => $totalRecord
-        ];
+                        ->orderBy('id', 'desc');
         
-        return $result;
+        return Util::getPartial($data,$limit,$page,$column);
     }
     
     public function getById($id)
