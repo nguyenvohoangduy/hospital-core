@@ -7,7 +7,7 @@ use Validator;
 use DB;
 use Schema;
 
-class DBSChemaCompareService {
+class DbSchemaCompareService {
     
     public function getAllTablesDevelop($database1,$database2) {
         // config database1

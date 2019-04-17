@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Services\DBSChemaCompareService;
+use App\Services\DbSchemaCompareService;
 
 
-class DBSChemaCompare extends Command
+class DbSchemaCompare extends Command
 {
     /**
      * The name and signature of the console command.
@@ -27,10 +27,10 @@ class DBSChemaCompare extends Command
      *
      * @return void
      */
-    public function __construct(DBSChemaCompareService $dbSChemaCompareService)
+    public function __construct(DbSchemaCompareService $dbSchemaCompareService)
     {
         parent::__construct();
-        $this->dbSChemaCompareService = $dbSChemaCompareService;
+        $this->dbSchemaCompareService = $dbSchemaCompareService;
     }
 
     /**
@@ -42,30 +42,18 @@ class DBSChemaCompare extends Command
     {
         $database1 = [
             'host'      => $this->argument('db_host1'),
-            'driver'    => 'pgsql',
-            'port'      => '5432',
             'database'  => $this->argument('db_name1'),
             'username'  => $this->argument('db_user1'),
             'password'  => $this->argument('db_pass1'),
-            'charset'   => 'utf8',
-            'prefix'    => '',
-            'schema'    => 'public',
-            'sslmode'   => 'prefer',
         ];
         $database2 = [
             'host'      => $this->argument('db_host2'),
-            'driver'    => 'pgsql',
-            'port'      => '5432',
             'database'  => $this->argument('db_name2'),
             'username'  => $this->argument('db_user2'),
             'password'  => $this->argument('db_pass2'),
-            'charset'   => 'utf8',
-            'prefix'    => '',
-            'schema'    => 'public',
-            'sslmode'   => 'prefer',
         ];
         if($database1 && $database2){
-            $table = $this->dbSChemaCompareService->getAllTablesDevelop($database1,$database2);
+            $table = $this->dbSchemaCompareService->getAllTablesDevelop($database1,$database2);
             print_r($table);
         }
     }
