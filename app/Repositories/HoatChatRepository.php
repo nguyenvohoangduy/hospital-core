@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use App\Repositories\BaseRepositoryV2;
 use App\Models\HoatChat;
+use App\Helper\Util;
 
 class HoatChatRepository extends BaseRepositoryV2
 {
@@ -31,8 +32,6 @@ class HoatChatRepository extends BaseRepositoryV2
     
     public function getPartial($limit = 100, $page = 1, $keyWords ='')
     {
-        $offset = ($page - 1) * $limit;
-        
         $model = $this->model;
         
         if($keyWords!=""){
@@ -52,31 +51,9 @@ class HoatChatRepository extends BaseRepositoryV2
                     
             });
         }
+        $query = $model->orderBy('ten', 'ASC');
         
-        $totalRecord = $model->count();
-        if($totalRecord) {
-            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
-          
-            $data = $model
-                        ->orderBy('ten', 'ASC')
-                        ->offset($offset)
-                        ->limit($limit)
-                        ->get();
-        } else {
-            $totalPage = 0;
-            $data = [];
-            $page = 0;
-            $totalRecord = 0;
-        }
-          
-        $result = [
-            'data'          => $data,
-            'page'          => $page,
-            'totalPage'     => $totalPage,
-            'totalRecord'   => $totalRecord
-        ];
-      
-        return $result;
+        return Util::getPartial($query,$limit,$page);
     }
     
     public function create(array $input)

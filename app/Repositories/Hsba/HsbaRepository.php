@@ -250,7 +250,8 @@ class HsbaRepository extends BaseRepositoryV2
             'bhyt.dtcbh_luyke6thang',
             'benh_nhan.ma_so_thue',
             'benh_nhan.so_cmnd',
-            'benh_nhan.ma_tiem_chung'
+            'benh_nhan.ma_tiem_chung',
+            'benh_nhan.url_hinh_anh'
         ];
         
         $result = $this->model->where('hsba.benh_nhan_id', $benhNhanId)
