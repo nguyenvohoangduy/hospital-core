@@ -7,7 +7,12 @@ use App\Models\Auth\AuthPermissions;
 class AuthPermissionsRepository extends BaseRepositoryV2
 {
     const SERVICE_PHONG_KHAM = 2;
+    const SERVICE_NOI_TRU = 3;
+    const SERVICE_THUOC_VAT_TU = 4;
+    
     const KEY_PHONG_KHAM_INDEX = 'phong-kham.index';
+    const KEY_NOI_TRU_INDEX = 'noi-tru.index';
+    const KEY_THUOC_VAT_TU_INDEX = 'thuoc-vat-tu.index';
     
     public function getModel()
     {
@@ -151,7 +156,27 @@ class AuthPermissionsRepository extends BaseRepositoryV2
         return $data;
     }
     
-    public function getMaNhomPhongByUserId($listGroupId) {
+    public function getMaNhomPhongByUserId($listGroupId, $typeService) {
+        $where = [];
+        if ($typeService == self::SERVICE_PHONG_KHAM) {
+            $where = [
+                ['auth_permissions.service_id', '=', $typeService],
+                ['auth_permissions.key', '=', self::KEY_PHONG_KHAM_INDEX]
+            ];
+        }
+        else if ($typeService == self::SERVICE_NOI_TRU) {
+            $where = [
+                ['auth_permissions.service_id', '=', $typeService],
+                ['auth_permissions.key', '=', self::KEY_NOI_TRU_INDEX]
+            ];
+        }
+        else if ($typeService == self::SERVICE_THUOC_VAT_TU) {
+            $where = [
+                ['auth_permissions.service_id', '=', $typeService],
+                ['auth_permissions.key', '=', self::KEY_THUOC_VAT_TU_INDEX]
+            ];
+        }
+        
         $column = [
             'auth_permissions.ma_nhom_phong',
         ];
@@ -161,8 +186,7 @@ class AuthPermissionsRepository extends BaseRepositoryV2
                 $join->on('t1.permission_id', '=', 'auth_permissions.id')
                     ->whereIn('t1.group_id', $listGroupId);
             })
-            ->where('auth_permissions.service_id', self::SERVICE_PHONG_KHAM)
-            ->where('auth_permissions.key', self::KEY_PHONG_KHAM_INDEX)
+            ->where($where)
             ->get($column);
             
         return $data;

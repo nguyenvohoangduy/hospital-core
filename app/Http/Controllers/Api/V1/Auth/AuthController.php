@@ -297,11 +297,11 @@ class AuthController extends APIController
         return $this->respond($data);
     }     
     
-    public function getListPhongByUserId($userId, $benhVienId) {
+    public function getListPhongByUserId($userId, $benhVienId, $typeService) {
         $isNumericId = is_numeric($userId);
         
         if($isNumericId) {
-            $data = $this->phongService->getListPhongByUserId($benhVienId, $userId);
+            $data = $this->phongService->getListPhongByUserId($benhVienId, $userId, $typeService);
         } else {
             $this->setStatusCode(400);
             $data = [];
