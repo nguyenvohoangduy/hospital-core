@@ -64,6 +64,7 @@ class SoPhieuThuRepository extends BaseRepositoryV2
         $result = $this->model
                         ->where('auth_users_id', $auth_users_id)
                         ->where('trang_thai', 0)
+                        ->whereRaw('tong_so_phieu > so_phieu_su_dung')
                         ->orderBy('id')
                         ->first(); 
         return $result;

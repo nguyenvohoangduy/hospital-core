@@ -314,6 +314,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('getListPhieuThuBySoPhieuThuId/{soPhieuThuId}','PhieuThu\PhieuThuController@getListPhieuThuBySoPhieuThuId');
         Route::get('getListPhieuThuByHsbaId/{hsbaId}','PhieuThu\PhieuThuController@getListPhieuThuByHsbaId');
         Route::post('createPhieuThu','PhieuThu\PhieuThuController@createPhieuThu');
+        Route::get('getSoPhieuThuByAuthUserIdAndTrangThai/{userId}','PhieuThu\PhieuThuController@getSoPhieuThuByAuthUserIdAndTrangThai');
     });
     
     Route::group(['prefix' => 'phacdodieutri'], function () {
