@@ -1,9 +1,12 @@
 <?php
 namespace App\Repositories\Kho;
+
 use DB;
 use App\Repositories\BaseRepositoryV2;
 use App\Models\Kho;
 use Carbon\Carbon;
+use App\Helper\Util;
+
 class KhoRepository extends BaseRepositoryV2
 {
     const NHAP_TU_NHA_CUNG_CAP = 1;
@@ -19,8 +22,6 @@ class KhoRepository extends BaseRepositoryV2
     
     public function getListKho($limit = 100, $page = 1, $keyWords ='', $benhVienId)
     {
-        $offset = ($page - 1) * $limit;
-
         $model = $this->model->where([
             ['benh_vien_id','=',$benhVienId],
             //['nhap_tu_ncc', '=', self::NHAP_TU_NHA_CUNG_CAP]
@@ -31,29 +32,9 @@ class KhoRepository extends BaseRepositoryV2
                 ->orWhereRaw('LOWER(ky_hieu) LIKE ? ',['%'.strtolower($keyWords).'%']);
         }
           
-        $totalRecord = $model->count();
-        if($totalRecord) {
-            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
-          
-            $data = $model->orderBy('id', 'desc')
-                        ->offset($offset)
-                        ->limit($limit)
-                        ->get();
-        } else {
-            $totalPage = 0;
-            $data = [];
-            $page = 0;
-            $totalRecord = 0;
-        }
-          
-        $result = [
-            'data'          => $data,
-            'page'          => $page,
-            'totalPage'     => $totalPage,
-            'totalRecord'   => $totalRecord
-        ];
-      
-        return $result;
+        $data = $model->orderBy('id', 'desc');
+        
+        return Util::getPartial($data,$limit,$page);
     }
     
     public function createKho(array $input)
@@ -117,5 +98,5 @@ class KhoRepository extends BaseRepositoryV2
             ];
         $data = $this->model->where($where)->get();
         return $data;
-    }    
+    }  
 }

@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Services\DanhMucThuocVatTuService;
+use App\Repositories\ElasticSearch\DmtvtKho;
 
 class PushDmtvt extends Command
 {
@@ -28,10 +28,10 @@ class PushDmtvt extends Command
      *
      * @return void
      */
-    public function __construct(DanhMucThuocVatTuService $danhMucThuocVatTuService)
+    public function __construct(DmtvtKho $dmtvtKho)
     {
         parent::__construct();
-        $this->danhMucThuocVatTuService = $danhMucThuocVatTuService;
+        $this->dmtvtKho = $dmtvtKho;
     }
 
     /**
@@ -41,7 +41,6 @@ class PushDmtvt extends Command
      */
     public function handle()
     {
-        //$data = $this->danhMucThuocVatTuService->pushToRedis();
-        $this->danhMucThuocVatTuService->pushToElasticSearch();
+        $this->dmtvtKho->pushDmtvt();
     }
 }
