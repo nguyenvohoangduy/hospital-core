@@ -138,56 +138,14 @@ class AuthPermissionsRepository extends BaseRepositoryV2
             return false;
     }     
     
-    public function getAllPermissionAndServiceByUserId($listGroupId) {
-        $column = [
-            'auth_service.name as service_name',
-            'auth_service.display_name',
-        ];
-        
+    public function getAllPermissionByUserId($listGroupId) {
         $data = $this->model
             ->join('auth_groups_has_permissions as t1', function($join) use ($listGroupId) {
                 $join->on('t1.permission_id', '=', 'auth_permissions.id')
                     ->whereIn('t1.group_id', $listGroupId);
             })
             ->leftJoin('auth_service', 'auth_service.id', '=', 'auth_permissions.service_id')
-            ->distinct()
-            ->get($column);
-            
-        return $data;
-    }
-    
-    public function getMaNhomPhongByUserId($listGroupId, $typeService) {
-        $where = [];
-        if ($typeService == self::SERVICE_PHONG_KHAM) {
-            $where = [
-                ['auth_permissions.service_id', '=', $typeService],
-                ['auth_permissions.key', '=', self::KEY_PHONG_KHAM_INDEX]
-            ];
-        }
-        else if ($typeService == self::SERVICE_NOI_TRU) {
-            $where = [
-                ['auth_permissions.service_id', '=', $typeService],
-                ['auth_permissions.key', '=', self::KEY_NOI_TRU_INDEX]
-            ];
-        }
-        else if ($typeService == self::SERVICE_THUOC_VAT_TU) {
-            $where = [
-                ['auth_permissions.service_id', '=', $typeService],
-                ['auth_permissions.key', '=', self::KEY_THUOC_VAT_TU_INDEX]
-            ];
-        }
-        
-        $column = [
-            'auth_permissions.ma_nhom_phong',
-        ];
-        
-        $data = $this->model
-            ->join('auth_groups_has_permissions as t1', function($join) use ($listGroupId) {
-                $join->on('t1.permission_id', '=', 'auth_permissions.id')
-                    ->whereIn('t1.group_id', $listGroupId);
-            })
-            ->where($where)
-            ->get($column);
+            ->get();
             
         return $data;
     }
