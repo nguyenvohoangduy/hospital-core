@@ -8,6 +8,7 @@ use App\Repositories\Kho\ChiTietPhieuKhoRepository;
 use App\Repositories\Kho\GioiHanRepository;
 use App\Repositories\Kho\KhoRepository;
 use App\Repositories\DanhMuc\DanhMucThuocVatTuRepository;
+use App\Repositories\ElasticSearch\DmtvtKho;
 use App\Services\DanhMucThuocVatTuService;
 use Cviebrock\LaravelElasticsearch\Facade as Elasticsearch;
 use Illuminate\Http\Request;
@@ -41,7 +42,8 @@ class PhieuKhoService {
         KhoRepository $khoRepository,
         GioiHanRepository $gioiHanRepository,
         DanhMucThuocVatTuRepository $danhMucThuocVatTuRepository,
-        DanhMucThuocVatTuService $danhMucThuocVatTuService
+        DanhMucThuocVatTuService $danhMucThuocVatTuService,
+        DmtvtKho $dmtvtKho
     )
     {
         $this->phieuKhoRepository = $phieuKhoRepository;
@@ -51,6 +53,7 @@ class PhieuKhoService {
         $this->gioiHanRepository = $gioiHanRepository;
         $this->danhMucThuocVatTuRepository = $danhMucThuocVatTuRepository;
         $this->danhMucThuocVatTuService = $danhMucThuocVatTuService;
+        $this->dmtvtKho = $dmtvtKho;
     }
     
     public function createPhieuKho(array $input)
@@ -110,100 +113,7 @@ class PhieuKhoService {
                 $chiTietPhieuKhoParams['don_vi_co_ban'] = $item['don_vi_co_ban'];
                 $this->chiTietPhieuKhoRepository->createChiTietPhieuKho($chiTietPhieuKhoParams);
             }
-            
-            // $dmtvtEs = $this->searchThuocVatTuByListId($listId);
-            // $listIdEs = [];
-            // foreach($dmtvtEs as $item) {
-            //     if($item['kho_id']!=$input['kho_id']) {
-            //         $listIdEs[]=$item['id'];
-            //     }
-            // };
-            
-            // if(!empty($listId) && !empty($listIdEs)) {
-            //     //$idDmtvtChuaTonTai = array_diff($listId,array_unique($listIdEs));
-            //     $idDmtvtChuaTonTai = array_unique($listIdEs);
-            //     if(!empty($idDmtvtChuaTonTai)) {
-            //         echo "here";
-            //         $dmtvtData = $this->danhMucThuocVatTuRepository->getByListId($idDmtvtChuaTonTai);
-            //         foreach($idDmtvtChuaTonTai as $item) {
-            //             $gioiHanParams = [];
-            //             $gioiHanParams['kho_id'] = $input['kho_id'];
-            //             $gioiHanParams['danh_muc_thuoc_vat_tu_id'] = $item['id'];
-            //             $this->gioiHanRepository->createGioiHan($gioiHanParams); 
-            //         }
-            //         $this->pushToElasticSearch($dmtvtData);
-            //     }
-            // }
-            
         });
-    }
-    
-    public function searchThuocVatTuByListId(array $listId)
-    {
-        $params = [
-            'index' => 'dmtvt',
-            'type' => 'doc',
-            'body' => [
-                'from' => 0,
-                'size' => 1000,
-                'query' => [
-                    'terms' => [
-                        '_id' => $listId
-                    ]
-                ]
-            ]
-        ];
-        $response = Elasticsearch::search($params);   
-        
-        $result=[];
-        foreach($response['hits']['hits'] as $item) {
-            $result[] = $item['_source'];
-        };
-        
-        return $result;         
-    }
-    
-    public function pushToElasticSearch($dmtvtData) 
-    {
-        foreach($dmtvtData as $item) {
-            $params = [
-                            'body' => [
-                                'id'                    => $item->id,
-                                'nhom_danh_muc_id'      => $item->nhom_danh_muc_id,
-                                'ten'                   => $item->ten,
-                                'ten_khong_dau'         => Util::convertViToEn(strtolower($item->ten)),
-                                'ten_bhyt'              => $item->ten_bhyt,
-                                'ten_nuoc_ngoai'        => $item->ten_nuoc_ngoai,
-                                'ma'                    => $item->ma,
-                                'ma_bhyt'               => $item->ma_bhyt,
-                                'don_vi_tinh_id'        => $item->don_vi_tinh_id,
-                                'don_vi_tinh'           => $item->don_vi_tinh,
-                                'stt'                   => $item->stt,
-                                'nhan_vien_tao'         => $item->nhan_vien_tao,
-                                'nhan_vien_cap_nhat'    => $item->nhan_vien_cap_nhat,
-                                'thoi_gian_tao'         => $item->thoi_gian_tao,
-                                'thoi_gian_cap_nhat'    => $item->thoi_gian_cap_nhat,
-                                'hoat_chat_id'          => $item->hoat_chat_id,
-                                'hoat_chat'             => $item->hoat_chat,
-                                'biet_duoc_id'          => $item->biet_duoc_id,
-                                'nong_do'               => $item->nong_do,
-                                'duong_dung'            => $item->duong_dung,
-                                'dong_goi'              => $item->dong_goi,
-                                'hang_san_xuat'         => $item->hang_san_xuat,
-                                'nuoc_san_xuat'         => $item->nuoc_san_xuat,
-                                'trang_thai'            => $item->trang_thai,
-                                'kho_id'                => $item->kho_id,
-                                'loai_nhom'             => $item->loai_nhom,
-                                'gia'                   => $item->gia,
-                                'gia_bhyt'              => $item->gia_bhyt,
-                                'gia_nuoc_ngoai'        => $item->gia_nuoc_ngoai
-                            ],
-                            'index' => 'dmtvt',
-                            'type' => 'doc',
-                            'id' => $item->id
-                        ];
-            $return = Elasticsearch::index($params); 
-        }
     }
     
     public function createPhieuYeuCau(array $input)
@@ -238,7 +148,7 @@ class PhieuKhoService {
                 $this->gioiHanRepository->updateSoLuongKhaDung($theKhoParams);
                 
                 //update so_luong_kha_dung in elasticsearch
-                $this->danhMucThuocVatTuService->updateSoLuongKhaDungById($theKhoParams);
+                $this->dmtvtKho->updateSoLuongKhaDungById($theKhoParams);
                 
                 if($result) {
                     $chiTietPhieuKhoParams = [];
@@ -490,7 +400,7 @@ class PhieuKhoService {
                     $this->gioiHanRepository->updateSoLuongKhaDung($theKhoParams);
                     
                     //update so_luong_kha_dung in elasticsearch
-                    $this->danhMucThuocVatTuService->updateSoLuongKhaDungById($theKhoParams);
+                    $this->dmtvtKho->updateSoLuongKhaDungById($theKhoParams);
                 }
             }
         });

@@ -17,6 +17,7 @@ use App\Services\DanhMucThuocVatTuService;
 use App\Services\MauHoiBenhService;
 use App\Services\TheKhoService;
 use App\Services\ChiTietPhieuKhoService;
+use App\Services\KhoService;
 use Validator;
 use App\Http\Requests\UploadFileFormRequest;
 use App\Http\Requests\MauHoiBenhFormRequest;
@@ -38,7 +39,8 @@ class PhongKhamController extends APIController
         DanhMucThuocVatTuService $dmTvtService,
         MauHoiBenhService $mauHoiBenhService,
         TheKhoService $theKhoService,
-        ChiTietPhieuKhoService $chiTietPhieuKhoService
+        ChiTietPhieuKhoService $chiTietPhieuKhoService,
+        KhoService $khoService
     )
     {
         $this->hsbaKhoaPhongService = $hsbaKhoaPhongService;
@@ -55,6 +57,7 @@ class PhongKhamController extends APIController
         $this->mauHoiBenhService = $mauHoiBenhService;
         $this->theKhoService = $theKhoService;
         $this->chiTietPhieuKhoService = $chiTietPhieuKhoService;
+        $this->khoService = $khoService;
     }
     
     public function update($hsbaDonViId, Request $request)
@@ -454,7 +457,7 @@ class PhongKhamController extends APIController
     public function searchThuocVatTuByTenVaHoatChat($keyword)
     {
         if($keyword) {
-            $data = $this->dmTvtService->searchThuocVatTuByTenVaHoatChat($keyword);
+            $data = $this->khoService->searchThuocVatTuByTenVaHoatChat($keyword);
         } else {
             $this->setStatusCode(400);
             $data = [];
@@ -498,7 +501,7 @@ class PhongKhamController extends APIController
     public function searchThuocVatTuByKhoId($khoId, $keyword)
     {
         if($keyword) {
-            $data = $this->dmTvtService->searchThuocVatTuByKhoId($khoId, $keyword);
+            $data = $this->khoService->searchThuocVatTuByKhoId($khoId, $keyword);
         } else {
             $this->setStatusCode(400);
             $data = [];

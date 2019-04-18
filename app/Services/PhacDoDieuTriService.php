@@ -5,6 +5,7 @@ use App\Http\Resources\PddtResource;
 use App\Repositories\PhacDoDieuTriRepository;
 use App\Repositories\DanhMuc\DanhMucDichVuRepository;
 use App\Repositories\HoatChatRepository;
+use App\Repositories\ElasticSearch\DmtvtKho;
 use App\Services\DanhMucThuocVatTuService;
 
 class PhacDoDieuTriService
@@ -18,13 +19,15 @@ class PhacDoDieuTriService
         PhacDoDieuTriRepository $pddtRepository, 
         DanhMucDichVuRepository $dmdvRepository,
         HoatChatRepository $hoatChatRepository,
-        DanhMucThuocVatTuService $danhMucThuocVatTuService
+        DanhMucThuocVatTuService $danhMucThuocVatTuService,
+        DmtvtKho $dmtvtKho
     )
     {
         $this->pddtRepository = $pddtRepository;
         $this->dmdvRepository = $dmdvRepository;
         $this->hoatChatRepository = $hoatChatRepository;
         $this->danhMucThuocVatTuService = $danhMucThuocVatTuService;
+        $this->dmtvtKho = $dmtvtKho;
     }
     
     public function createPhacDoDieuTri(array $input)
@@ -43,7 +46,7 @@ class PhacDoDieuTriService
         }
         
         if($result['listIdTvt']) {
-            $data['thuocVatTu'] = $this->danhMucThuocVatTuService->searchThuocVatTuByListId(self::INDEX_DMTVT, $result['listIdTvt']);
+            $data['thuocVatTu'] = $this->dmtvtKho->searchThuocVatTuByListId(self::INDEX_DMTVT, $result['listIdTvt']);
             $data['list'] = $result['list'];
         }
         
@@ -59,7 +62,6 @@ class PhacDoDieuTriService
                 $data['hoatChat'] = [];
             } else {
                 $data['yLenh'] = [];
-                // $data['thuocVatTu'] = $this->danhMucThuocVatTuService->searchThuocVatTuByListId(self::INDEX_DMTVT, $result['listId']);
                 $data['hoatChat'] = $this->hoatChatRepository->getByListId($result['listId']);
             }
             
@@ -88,8 +90,6 @@ class PhacDoDieuTriService
             }
                 
             if($result['listIdHc']) {
-                // $data['thuocVatTu'] = $this->danhMucThuocVatTuService->searchThuocVatTuByListId(self::INDEX_DMTVT, $result['listIdTvt']);
-                // $data['soLuongKhaDung'] = $this->danhMucThuocVatTuService->searchThuocVatTuByListId(self::INDEX_SL_KHA_DUNG_TVT, $result['listIdTvt']); 
                 $data['hoatChat'] = $this->hoatChatRepository->getByListId($result['listIdHc']);
             } else {
                 $data['hoatChat'] = [];
