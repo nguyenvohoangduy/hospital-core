@@ -1,10 +1,12 @@
 <?php
 namespace App\Repositories\Kho;
+
 use DB;
 use App\Repositories\BaseRepositoryV2;
 use App\Models\Kho;
 use Carbon\Carbon;
 use App\Helper\Util;
+
 class KhoRepository extends BaseRepositoryV2
 {
     const NHAP_TU_NHA_CUNG_CAP = 1;
@@ -96,5 +98,5 @@ class KhoRepository extends BaseRepositoryV2
             ];
         $data = $this->model->where($where)->get();
         return $data;
-    }    
+    }  
 }
