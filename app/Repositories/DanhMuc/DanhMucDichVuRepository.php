@@ -6,6 +6,7 @@ use App\Repositories\BaseRepositoryV2;
 use App\Models\DanhMucDichVu;
 use App\Http\Resources\HsbaResource;
 use Carbon\Carbon;
+use App\Helper\Util;
 
 class DanhMucDichVuRepository extends BaseRepositoryV2
 {
@@ -48,8 +49,6 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
     
     public function getListDanhMucDichVu($limit = 100, $page = 1, $loaiNhom = 0)
     {
-        $offset = ($page - 1) * $limit;
-        
         $column = [
             'danh_muc_dich_vu.id',
             'ten_nhom',
@@ -81,29 +80,9 @@ class DanhMucDichVuRepository extends BaseRepositoryV2
             $query = $query->where('loai_nhom', '=', $loaiNhom);
         }
             
-        $totalRecord = $query->count();
-        if($totalRecord) {
-            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
-            
-            $data = $query->orderBy('id', 'desc')
-                        ->offset($offset)
-                        ->limit($limit)
-                        ->get($column);
-        } else {
-            $totalPage = 0;
-            $data = [];
-            $page = 0;
-            $totalRecord = 0;
-        }
-            
-        $result = [
-            'data'          => $data,
-            'page'          => $page,
-            'totalPage'     => $totalPage,
-            'totalRecord'   => $totalRecord
-        ];
+        $data = $query->orderBy('id', 'desc');
         
-        return $result;
+        return Util::getPartial($data,$limit,$page,$column);
     }
     
     public function createDanhMucDichVu(array $input)

@@ -43,4 +43,11 @@ class SoPhieuThuService {
     {
         $this->soPhieuThuRepository->deleteSoPhieuThu($id);
     }
+    
+    public function getSoPhieuThuByAuthUserIdAndTrangThai($userId)
+    {
+        $data = $this->soPhieuThuRepository->getSoPhieuThuByAuthUserIdAndTrangThai($userId);
+        
+        return $data;
+    }
 }

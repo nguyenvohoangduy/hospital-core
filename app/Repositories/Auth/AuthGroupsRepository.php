@@ -4,6 +4,7 @@ use DB;
 use App\Repositories\BaseRepositoryV2;
 use App\Models\Auth\AuthGroups;
 use Carbon\Carbon;
+use App\Helper\Util;
 
 class AuthGroupsRepository extends BaseRepositoryV2
 {
@@ -14,7 +15,6 @@ class AuthGroupsRepository extends BaseRepositoryV2
     
     public function getListAuthGroups($limit = 100, $page = 1, $keyWords ='',$benhVienId)
     {
-        $offset = ($page - 1) * $limit;
         $column = [
             'id',
             'name',
@@ -27,29 +27,9 @@ class AuthGroupsRepository extends BaseRepositoryV2
                  ->orWhere([['description', 'like', '%' . $keyWords . '%']]);
         }
 
-        $totalRecord = $model->count();
-        if($totalRecord) {
-            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
-            
-            $data = $model->orderBy('id', 'asc')
-                        ->offset($offset)
-                        ->limit($limit)
-                        ->get($column);
-        } else {
-            $totalPage = 0;
-            $data = [];
-            $page = 0;
-            $totalRecord = 0;
-        }
-            
-        $result = [
-            'data'          => $data,
-            'page'          => $page,
-            'totalPage'     => $totalPage,
-            'totalRecord'   => $totalRecord
-        ];
+        $data = $model->orderBy('id', 'asc');
         
-        return $result;
+        return Util::getPartial($data,$limit,$page,$column);
     }
     
     public function getByListId($limit = 100,$page =1,$id)

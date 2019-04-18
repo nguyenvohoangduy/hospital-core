@@ -6,6 +6,7 @@ use App\Repositories\BaseRepositoryV2;
 use App\Models\DanhMucThuocVatTu;
 use App\Http\Resources\HsbaResource;
 use Carbon\Carbon;
+use App\Helper\Util;
 
 class DanhMucThuocVatTuRepository extends BaseRepositoryV2
 {
@@ -204,7 +205,6 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
     // quanlydanhmucthuocvattu
     public function getPartialDMTVatTu($limit = 100, $page = 1, $keyWords ='')
     {
-        $offset = ($page - 1) * $limit;
         $model = $this->model;
         
         if($keyWords!=""){
@@ -229,33 +229,13 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
             'hoat_chat.ten as ten_hoat_chat'
         ];
             
-        $totalRecord = $model->count();
-        if($totalRecord) {
-            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
-          
-            $data = $model
+        $data = $model
                         ->leftJoin('nhom_danh_muc','nhom_danh_muc.id','=','danh_muc_thuoc_vat_tu.nhom_danh_muc_id')
                         ->leftJoin('don_vi_tinh','don_vi_tinh.id','=','danh_muc_thuoc_vat_tu.don_vi_tinh_id')
                         ->leftJoin('hoat_chat','hoat_chat.id','=','danh_muc_thuoc_vat_tu.hoat_chat_id')
-                        ->orderBy('danh_muc_thuoc_vat_tu.id', 'DESC')
-                        ->offset($offset)
-                        ->limit($limit)
-                        ->get($column);
-        } else {
-            $totalPage = 0;
-            $data = [];
-            $page = 0;
-            $totalRecord = 0;
-        }
-          
-        $result = [
-            'data'          => $data,
-            'page'          => $page,
-            'totalPage'     => $totalPage,
-            'totalRecord'   => $totalRecord
-        ];
-      
-        return $result;
+                        ->orderBy('danh_muc_thuoc_vat_tu.id', 'DESC');
+        
+        return Util::getPartial($data,$limit,$page,$column);
     }
     
     public function create(array $input)

@@ -3,6 +3,7 @@ namespace App\Repositories\DanhMuc;
 use DB;
 use App\Repositories\BaseRepositoryV2;
 use App\Models\DanhMucTrangThai;
+use App\Helper\Util;
 
 class DanhMucTrangThaiRepository extends BaseRepositoryV2
 {
@@ -19,7 +20,6 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
     }
 
     public function getPartial($limit = 100, $page = 1, $dienGiai = NULL, $khoa = NULL) {
-        $offset = ($page - 1) * $limit;
         $query = $this->model->where('id', '>', 0);
         
         if($dienGiai != NULL) {
@@ -30,30 +30,9 @@ class DanhMucTrangThaiRepository extends BaseRepositoryV2
             $query->where('khoa', $khoa);
         }        
         
-        $totalRecord = $query->count();
+        $data = $query->orderBy('id', 'desc');
         
-        if($totalRecord) {
-            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
-            
-            $data = $query->orderBy('id', 'desc')
-                        ->offset($offset)
-                        ->limit($limit)
-                        ->get();
-        } else {
-            $totalPage = 0;
-            $data = [];
-            $page = 0;
-            $totalRecord = 0;
-        }
-        
-        $result = [
-            'data'          => $data,
-            'page'          => $page,
-            'totalPage'     => $totalPage,
-            'totalRecord'   => $totalRecord
-        ];
-        
-        return $result;
+        return Util::getPartial($data,$limit,$page);
     }
     
     public function create(array $input)

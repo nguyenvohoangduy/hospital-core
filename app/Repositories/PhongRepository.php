@@ -4,6 +4,7 @@ namespace App\Repositories;
 use DB;
 use App\Models\Phong;
 use App\Repositories\BaseRepositoryV2;
+use App\Helper\Util;
 
 class PhongRepository extends BaseRepositoryV2
 {
@@ -148,8 +149,6 @@ class PhongRepository extends BaseRepositoryV2
   
     public function getPartial($limit = 100, $page = 1, $keyWords ='')
     {
-        $offset = ($page - 1) * $limit;
-
         // $model = $this->model->where('khoa_id','=',$khoaId);
         $model = $this->model;
         
@@ -176,36 +175,16 @@ class PhongRepository extends BaseRepositoryV2
             'danh_muc_tong_hop.dien_giai as ten_loai_phong',
             'khoa.ten_khoa as ten_khoa'
         ];
-            
-        $totalRecord = $model->count();
-        if($totalRecord) {
-            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
-          
-            $data = $model
+        
+        $data = $model
                         ->leftJoin('danh_muc_tong_hop', function($join) {
                                 $join->on(DB::raw('cast(danh_muc_tong_hop.gia_tri as integer)'), '=', 'phong.loai_phong')
                                     ->where('danh_muc_tong_hop.khoa', '=', 'loai_phong');
                         })
                         ->leftJoin('khoa','khoa.id','=','phong.khoa_id')
-                        ->orderBy('phong.id', 'desc')
-                        ->offset($offset)
-                        ->limit($limit)
-                        ->get($column);
-        } else {
-            $totalPage = 0;
-            $data = [];
-            $page = 0;
-            $totalRecord = 0;
-        }
-          
-        $result = [
-            'data'          => $data,
-            'page'          => $page,
-            'totalPage'     => $totalPage,
-            'totalRecord'   => $totalRecord
-        ];
-      
-        return $result;
+                        ->orderBy('phong.id', 'desc');
+        
+        return Util::getPartial($data,$limit,$page,$column);
     }
     
     public function create(array $input)

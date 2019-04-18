@@ -40,4 +40,13 @@ class AwsS3
         	'ContentType' => $mimeType
         ]);
     }
+    
+    public function putObjectBase64($key, $pathName, $mimeType) {
+        $this->_s3->putObject([
+        	'Bucket' => $this->_bucket,
+        	'Key'    => $key,
+        	'Body' => $pathName,
+        	'ContentType' => $mimeType
+        ]);
+    }
 }

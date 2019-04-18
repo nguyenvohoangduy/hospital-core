@@ -103,8 +103,8 @@ class PhongService {
         return $data;
     }  
     
-    public function getListPhongByUserId($benhVienId, $userId) {
-        $listMaNhomPhong = $this->authPermissionsService->getMaNhomPhongByUserId($userId);
+    public function getListPhongByUserId($benhVienId, $userId, $typeService) {
+        $listMaNhomPhong = $this->authPermissionsService->getMaNhomPhongByUserId($userId, $typeService);
         $result = [];
         foreach($listMaNhomPhong as $item) {
             $item['ma_nhom_phong'] = json_decode($item['ma_nhom_phong'], true);
