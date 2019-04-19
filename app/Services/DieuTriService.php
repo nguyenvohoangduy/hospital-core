@@ -330,7 +330,8 @@ class DieuTriService
         $input['hinh_thuc_ra_vien'] = $hinh_thuc_ra_vien;
         $input['thoi_gian_ra_vien'] = Carbon::now()->toDateTimeString();
         $input = array_except($input, ['hsba_don_vi_id', 'ten_benh_nhan', 'nam_sinh',
-                                        'xu_tri', 'giai_phau_benh', 'loai_stt', 'gioi_tinh_id', 'stt_don_tiep_id', 'ms_bhyt', 'khoa_id']);
+                                        'xu_tri', 'giai_phau_benh', 'loai_stt', 'gioi_tinh_id', 
+                                        'stt_don_tiep_id', 'ms_bhyt', 'khoa_id', 'cdrv_kt_icd10_code', 'cdrv_kt_icd10_text']);
         $this->hsbaDonViRepository->update($hsbaDv, $input);
     }
     
@@ -366,8 +367,7 @@ class DieuTriService
                         break;
                 }
                 $request['thoi_gian_ra_vien'] = Carbon::now()->toDateTimeString();
-                $this->updateHsbaDonViByXuTri($hsbaDv['id'], $request, self::TT_KET_THUC_DIEU_TRI, $hinh_thuc_ra_vien);
-                
+                $this->updateHsbaDonViByXuTri($request['hsba_don_vi_id'], $request, self::TT_KET_THUC_DIEU_TRI, $hinh_thuc_ra_vien);
                 //cập nhật hsba
                 $hsbaParams = null;
                 $hsbaParams['cdrv_icd10_code'] = $request['cdrv_icd10_code'] ? $request['cdrv_icd10_code'] : $hsbaDv['cdrv_icd10_code'];
@@ -379,7 +379,6 @@ class DieuTriService
                 $hsbaParams['ket_qua_dieu_tri'] = $request['ket_qua_dieu_tri'];
                 $hsbaParams['ngay_ra_vien'] = Carbon::now()->toDateTimeString();
                 $this->hsbaRepository->updateHsba($hsbaDv['hsba_id'], $hsbaParams);
-                
                 //cập nhật viện phí
                 $vienPhiParams = null;
                 $vienPhiParams['trang_thai'] = self::VP_TRANG_THAI;
