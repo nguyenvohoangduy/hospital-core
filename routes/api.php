@@ -122,7 +122,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });    
     
     // don-tiep-service
-    Route::group(['prefix' => 'don-tiep-service','as' => 'don-tiep.','middleware' => ['jwt.auth'] ], function () {
+    Route::group(['prefix' => 'don-tiep-service','as' => 'don-tiep.', 'middleware' => ['jwt.auth', 'authorization'] ], function () {
         Route::get('index','DonTiep\DonTiepController@index')->name('index');
         
         //Route::get('register-index','DonTiep\DonTiepController@registerIndex')->name('dang-ky-kham-benh.index');
@@ -133,7 +133,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });
     
     // phong-kham-service
-    Route::group(['prefix' => 'phong-kham-service','as' => 'phong-kham.' ], function () {
+    Route::group(['prefix' => 'phong-kham-service','as' => 'phong-kham.', 'middleware' => ['jwt.auth', 'authorization'] ], function () {
         Route::get('index','PhongKham\PhongKhamController@index')->name('index');
     }); 
     
