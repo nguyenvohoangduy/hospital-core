@@ -323,7 +323,7 @@ class YLenhService {
         if(isset($input['kho_id_xu_ly']))
             $input = array_except($input, ['kho_id_xu_ly', 'ten_kho_xu_ly']);
         $phieuYLenhParams = $input;
-        $phieuYLenhParams = array_except($phieuYLenhParams, ['ten_benh_nhan', 'hsba_khoa_phong_id', 'data', 'doi_tuong_benh_nhan', 'muc_huong', 'loai_vien_phi', 'ms_bhyt', 'benh_vien_id', 'danh_muc_id']);
+        $phieuYLenhParams = array_except($phieuYLenhParams, ['ten_benh_nhan', 'hsba_don_vi_id', 'data', 'doi_tuong_benh_nhan', 'muc_huong', 'loai_vien_phi', 'ms_bhyt', 'benh_vien_id', 'danh_muc_id']);
         $phieuYLenhParams['loai_phieu_y_lenh'] = self::PHIEU_DIEU_TRI;
         $phieuYLenhParams['trang_thai'] = 0;
         $phieuYLenhParams['thoi_gian_chi_dinh'] = Carbon::now()->toDateTimeString();
