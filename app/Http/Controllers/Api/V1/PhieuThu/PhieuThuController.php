@@ -108,4 +108,15 @@ class PhieuThuController extends APIController {
             return $this->respond([]);
         }
     }
+    
+    public function getSoPhieuThuByAuthUserIdAndTrangThai($userId) {
+        $isNumericId = is_numeric($userId);
+        if($isNumericId) {
+            $data = $this->soPhieuThuService->getSoPhieuThuByAuthUserIdAndTrangThai($userId);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        return $this->respond($data);
+    }
 }

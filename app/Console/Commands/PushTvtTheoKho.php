@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Services\DanhMucThuocVatTuService;
+use App\Repositories\ElasticSearch\DmtvtKho;
 
 class pushTvtTheoKho extends Command
 {
@@ -26,10 +26,10 @@ class pushTvtTheoKho extends Command
      *
      * @return void
      */
-    public function __construct(DanhMucThuocVatTuService $danhMucThuocVatTuService)
+    public function __construct(DmtvtKho $dmtvtKho)
     {
         parent::__construct();
-        $this->danhMucThuocVatTuService = $danhMucThuocVatTuService;
+        $this->dmtvtKho = $dmtvtKho;
     }
 
     /**
@@ -41,7 +41,7 @@ class pushTvtTheoKho extends Command
     {
         $khoId = $this->argument('khoId');
         if($khoId)
-            $this->danhMucThuocVatTuService->pushTvtByKhoToElasticSearch($khoId);
+            $this->dmtvtKho->createIndex($khoId);
         else
             $this->error('Missing params: khoId');
     }

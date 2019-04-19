@@ -3,6 +3,7 @@ namespace App\Repositories\ElasticSearch;
 
 use App\Repositories\DanhMuc\DanhMucThuocVatTuRepository;
 use Cviebrock\LaravelElasticsearch\Facade as Elasticsearch;
+use App\Helper\Util;
 
 class DmtvtKho
 {
@@ -56,7 +57,7 @@ class DmtvtKho
         $this->pushTvtByKhoId($khoId);
     }
     
-    private function pushTvtByKhoId($khoId)
+    public function pushTvtByKhoId($khoId)
     {
         $data = $this->dmtvtRepository->getThuocVatTuByKhoId($khoId);
         

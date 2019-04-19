@@ -37,6 +37,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::post('patient/{id}', 'SamplePatientController@update');
     Route::delete('patient/{id}', 'SamplePatientController@delete');
     
+    Route::get('test', 'SamplePatientController@test');
+    
     // admin-service
     Route::group(['prefix' => 'admin-service','as' => 'admin.' ], function () {
         Route::get('danhMucIndex','DanhMuc\DanhMucController@index')->name('danh-muc.index');
@@ -314,6 +316,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('getListPhieuThuBySoPhieuThuId/{soPhieuThuId}','PhieuThu\PhieuThuController@getListPhieuThuBySoPhieuThuId');
         Route::get('getListPhieuThuByHsbaId/{hsbaId}','PhieuThu\PhieuThuController@getListPhieuThuByHsbaId');
         Route::post('createPhieuThu','PhieuThu\PhieuThuController@createPhieuThu');
+        Route::get('getSoPhieuThuByAuthUserIdAndTrangThai/{userId}','PhieuThu\PhieuThuController@getSoPhieuThuByAuthUserIdAndTrangThai');
     });
     
     Route::group(['prefix' => 'phacdodieutri'], function () {
