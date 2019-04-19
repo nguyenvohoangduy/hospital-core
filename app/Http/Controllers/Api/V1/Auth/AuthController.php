@@ -58,14 +58,10 @@ class AuthController extends APIController
             'status' => 'success',
             'data' => $user
         ], 201);
-
-   
-        
-        
     }
+    
     public function login(Request $request)
     {
-        
         $credentials = $request->only('email', 'password');
         
         if (!$token = JWTAuth::attempt($credentials)) {
@@ -78,8 +74,9 @@ class AuthController extends APIController
         $this->authService->updateLastVisit($request->email);
         $data = $this->authService->getUserRolesByEmail($request->email);
         $userName = $this->authService->getUserNameByEmail($request->email);
+        $listPermission = $this->authPermissionsService->getAllPermissionByUserId($userName->id);
         $extraPayload = array(
-            'roles' => $data['roles'],
+            'permission' => $listPermission,
             'groupId'  => $data['idGroup'],
             'userName' => $userName->fullname,
             'userId'   => $userName->id,
@@ -297,11 +294,10 @@ class AuthController extends APIController
         return $this->respond($data);
     }     
     
-    public function getListPhongByUserId($userId, $benhVienId, $typeService) {
-        $isNumericId = is_numeric($userId);
-        
+    public function getListPhongByMaNhomPhong($benhVienId, $listMaNhomPhong) {
+        $isNumericId = is_numeric($benhVienId);
         if($isNumericId) {
-            $data = $this->phongService->getListPhongByUserId($benhVienId, $userId, $typeService);
+            $data = $this->phongService->getListPhongByMaNhomPhong($benhVienId, $listMaNhomPhong);
         } else {
             $this->setStatusCode(400);
             $data = [];
