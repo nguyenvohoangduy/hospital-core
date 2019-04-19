@@ -90,7 +90,7 @@ class BenhNhanServiceV2 {
         , 'so_nha', 'duong_thon', 'noi_lam_viec'
         , 'url_hinh_anh', 'dien_thoai_benh_nhan', 'email_benh_nhan', 'dia_chi_lien_he'
         , 'ms_bhyt', 'benh_vien_id'
-        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id', 'noi_gioi_thieu_id', 'noi_gioi_thieu_khac', 'loai_gioi_thieu'
+        , 'tinh_thanh_pho_id' , 'quan_huyen_id' , 'phuong_xa_id', 'noi_gioi_thieu_id', 'noi_gioi_thieu_khac', 'loai_gioi_thieu', 'ma_cskcbbd'
     ];
     
     private $hsbaKpKeys = [

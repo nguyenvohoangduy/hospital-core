@@ -113,4 +113,10 @@ class PhongService {
         $data = $this->phongRepository->getListPhongByMaNhomPhong($benhVienId, $result);
         return $data;
     }
+    
+    public function getListPhongByMaNhomPhong($benhVienId, $listMaNhomPhong) {
+        $listMaNhomPhong = json_decode($listMaNhomPhong, true);
+        $data = $this->phongRepository->getListPhongByMaNhomPhong($benhVienId, $listMaNhomPhong);
+        return $data;
+    }
 }
