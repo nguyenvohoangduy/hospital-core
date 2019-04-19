@@ -20,26 +20,27 @@ class AuthPermissionsRepository extends BaseRepositoryV2
     }
     
     
-    public function findPermission( $benhVienId, $khoaId, $maNhomPhong, $userId, $uri, $policiId) {
-        $query = $this->model->leftJoin('auth_groups_has_permissions', 'auth_permissions.id', '=', 'auth_groups_has_permissions.permission_id');
+    public function findPermission( $benhVienId, $khoaId, $maNhomPhong, $listGroupId, $uri, $policyId) {
         $where = [
-                ['auth_permissions.policy_id', '=', $policiId],
-                ['auth_permissions.benh_vien_id', '=', $benhVienId]
-            ];
-        if ($khoaId === null) {
-            $query->whereNull('khoa');
-        } else {
-            $query->where('khoa',$khoaId);
-        }
-        if ($maNhomPhong === null) {
-            $query->whereNull('ma_nhom_phong');
-        } else {
-            $query->where('ma_nhom_phong', $maNhomPhong);
-        }  
-            
-        $permission = $query->where($where)->get()->toArray();// $query->where($where)->toSql();
+            ['auth_permissions.policy_id', '=', $policyId],
+            ['auth_permissions.benh_vien_id', '=', $benhVienId]
+        ];
         
-        //var_dump($permission);die;
+        $model = $this->model->where($where);
+        
+        if (!is_null($khoaId)) {
+            $model->where('khoa', $khoaId);
+        }
+        
+        if (!is_null($maNhomPhong)) {
+            $model->where('ma_nhom_phong', 'like', '%' . $maNhomPhong . '%');
+        }
+        
+        $permission = $model->join('auth_groups_has_permissions as t1', function($join) use ($listGroupId) {
+                $join->on('t1.permission_id', '=', 'auth_permissions.id')
+                    ->whereIn('t1.group_id', $listGroupId);
+        })->get()->toArray();
+
         return $permission;
     }
     
