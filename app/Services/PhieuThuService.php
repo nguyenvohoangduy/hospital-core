@@ -11,7 +11,6 @@ use App\Repositories\Hsba\HsbaDonViRepository;
 use DB;
 
 class PhieuThuService {
-    const DA_NOP_TIEN = 3;
     const PHIEU_THU = 'phieu-thu';
     const DA_THANH_TOAN = 1;
     
@@ -48,7 +47,6 @@ class PhieuThuService {
                 $this->yLenhRepository->updatePhieuThuIdByHsbaId($input['hsba_id'], $dataYLenh);
                 
                 //Update trạng thái hsba
-                $params['trang_thai'] = self::DA_NOP_TIEN;
                 $params['trang_thai_thanh_toan'] = self::DA_THANH_TOAN;
                 $this->hsbaDonViRepository->update($input['hsba_don_vi_id'], $params);
                 return $id;
