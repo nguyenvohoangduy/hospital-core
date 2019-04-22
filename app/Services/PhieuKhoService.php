@@ -114,7 +114,7 @@ class PhieuKhoService {
                 $this->chiTietPhieuKhoRepository->createChiTietPhieuKho($chiTietPhieuKhoParams);
                 
                 //update so_luong_kha_dung in table gioi_han
-                $thuocVatTu = $this->gioi_han->getByThuocVatTuId($item['id'], $input['kho_id']);
+                $thuocVatTu = $this->gioiHanRepository->getByThuocVatTuId($item['id'], $input['kho_id']);
                 if($thuocVatTu)
                     $soLuongKhaDung = $thuocVatTu['sl_kha_dung'] + $theKhoParams['sl_kha_dung'];
                 else
