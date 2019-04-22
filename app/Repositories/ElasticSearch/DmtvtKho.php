@@ -331,4 +331,56 @@ class DmtvtKho
         $bool = Elasticsearch::indices()->exists($params) ? false : true;
         return $bool;
     }
+    
+    public function pushItemToIndex($item, $khoId)
+    {
+        $motNua = '';
+        $motPhanTu = '';
+        
+        if($item->don_vi_quy_doi == self::THUOC_DANG_VIEN || $item->don_vi_tinh == self::THUOC_DANG_VIEN) {
+            $motNua = self::MOT_NUA;
+            $motPhanTu = self::MOT_PHAN_TU;
+        }
+        
+        $params = [
+            'index' => 'dmtvt_kho_' . $khoId,
+            'type' => 'doc',
+            'id' => $item->id,
+            'body' => [
+                'id'                    => $item->id,
+                'nhom_danh_muc_id'      => $item->nhom_danh_muc_id,
+                'ten'                   => $item->ten,
+                'ten_khong_dau'         => Util::convertViToEn(strtolower($item->ten)),
+                'ten_bhyt'              => $item->ten_bhyt,
+                'ten_nuoc_ngoai'        => $item->ten_nuoc_ngoai,
+                'ma'                    => $item->ma,
+                'ma_bhyt'               => $item->ma_bhyt,
+                'don_vi_tinh_id'        => $item->don_vi_tinh_id,
+                'don_vi_tinh'           => $item->don_vi_tinh,
+                'don_vi_quy_doi'        => $item->don_vi_quy_doi,
+                'sl_kha_dung'           => $item->sl_kha_dung,
+                'nhan_vien_tao'         => $item->nhan_vien_tao,
+                'nhan_vien_cap_nhat'    => $item->nhan_vien_cap_nhat,
+                'thoi_gian_tao'         => $item->thoi_gian_tao,
+                'thoi_gian_cap_nhat'    => $item->thoi_gian_cap_nhat,
+                'hoat_chat_id'          => $item->hoat_chat_id,
+                'hoat_chat'             => $item->hoat_chat,
+                'biet_duoc_id'          => $item->biet_duoc_id,
+                'nong_do'               => $item->nong_do,
+                'duong_dung'            => $item->duong_dung,
+                'dong_goi'              => $item->dong_goi,
+                'hang_san_xuat'         => $item->hang_san_xuat,
+                'nuoc_san_xuat'         => $item->nuoc_san_xuat,
+                'trang_thai'            => $item->trang_thai,
+                'kho_id'                => $item->kho_id,
+                'loai_nhom'             => $item->loai_nhom,
+                'gia'                   => $item->gia,
+                'gia_bhyt'              => $item->gia_bhyt,
+                'gia_nuoc_ngoai'        => $item->gia_nuoc_ngoai,
+                'he_so_le_1'            => $motNua,
+                'he_so_le_2'            => $motPhanTu
+            ]
+        ];
+        $response = Elasticsearch::index($params);  
+    }
 }
