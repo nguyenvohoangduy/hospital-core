@@ -292,9 +292,9 @@ class DmtvtKho
                             'wildcard' => [
                                 'ten' => '*'.$keyword.'*',
                             ], 
-                            // 'wildcard' => [
-                            //     'hoat_chat' => '*'.$keyword.'*'
-                            // ]
+                            'wildcard' => [
+                                'hoat_chat' => '*'.$keyword.'*'
+                            ]
                         ]    
                     ]
                 ]
