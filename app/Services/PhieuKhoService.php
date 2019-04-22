@@ -115,19 +115,24 @@ class PhieuKhoService {
                 
                 //update so_luong_kha_dung in table gioi_han
                 $thuocVatTu = $this->gioiHanRepository->getByThuocVatTuId($item['id'], $input['kho_id']);
-                if($thuocVatTu)
-                    $soLuongKhaDung = $thuocVatTu['sl_kha_dung'] + $theKhoParams['sl_kha_dung'];
-                else
-                    $soLuongKhaDung = $theKhoParams['sl_kha_dung'];
-                    
+                
                 $gioiHanParams = [];
                 $gioiHanParams['danh_muc_thuoc_vat_tu_id'] = $item['id'];
                 $gioiHanParams['kho_id'] = $input['kho_id'];
-                $gioiHanParams['sl_kha_dung'] = $soLuongKhaDung;
-                $this->gioiHanRepository->updateSoLuongKhaDung($gioiHanParams);
                 
-                //update so_luong_kha_dung in elasticsearch
-                $this->dmtvtKho->updateSoLuongKhaDungById($gioiHanParams);
+                if($thuocVatTu) {
+                    $gioiHanParams['sl_kha_dung'] = $thuocVatTu['sl_kha_dung'] + $theKhoParams['sl_kha_dung'];
+                    $this->gioiHanRepository->updateSoLuongKhaDung($gioiHanParams);
+                    
+                    //update so_luong_kha_dung in elasticsearch
+                    $this->dmtvtKho->updateSoLuongKhaDungById($gioiHanParams);
+                } else {
+                    $gioiHanParams['sl_kha_dung'] = $theKhoParams['sl_kha_dung'];
+                    $this->gioiHanRepository->createGioiHan($gioiHanParams);
+                    
+                    //create document in elasticsearch index
+                    $this->dmtvtKho->pushItemToIndex($item, $input['kho_id']);
+                }
             }
         });
     }
@@ -378,6 +383,28 @@ class PhieuKhoService {
                         $theKhoParams['sl_ton_kho_chan'] = floor($item['so_luong_yeu_cau']);
                         
                         $this->theKhoRepository->createTheKho($theKhoParams);
+                        
+                        //update so_luong_kha_dung in table gioi_han
+                        $thuocVatTu = $this->gioiHanRepository->getByThuocVatTuId($theKhoParams['danh_muc_thuoc_vat_tu_id'], $theKhoParams['kho_id']);
+                        
+                        $gioiHanParams = [];
+                        $gioiHanParams['danh_muc_thuoc_vat_tu_id'] = $theKhoParams['danh_muc_thuoc_vat_tu_id'];
+                        $gioiHanParams['kho_id'] = $theKhoParams['kho_id'];
+                        
+                        if($thuocVatTu) {
+                            $gioiHanParams['sl_kha_dung'] = $thuocVatTu['sl_kha_dung'] + $theKhoParams['sl_kha_dung'];
+                            $this->gioiHanRepository->updateSoLuongKhaDung($gioiHanParams);
+                            
+                            //update so_luong_kha_dung in elasticsearch
+                            $this->dmtvtKho->updateSoLuongKhaDungById($gioiHanParams);
+                        } else {
+                            $gioiHanParams['sl_kha_dung'] = $theKhoParams['sl_kha_dung'];
+                            $this->gioiHanRepository->createGioiHan($gioiHanParams);
+                            
+                            //create document in elasticsearch index
+                            $thuocVatTuItem = $this->danhMucThuocVatTuService->getDMTVatTuById($theKhoParams['danh_muc_thuoc_vat_tu_id']);
+                            $this->dmtvtKho->pushItemToIndex($thuocVatTuItem, $theKhoParams['kho_id']);
+                        }
                     }
                 }
             } else if($data['trang_thai'] == self::YEU_CAU_TRA_STATUS) {
