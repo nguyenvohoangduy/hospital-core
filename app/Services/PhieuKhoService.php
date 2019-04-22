@@ -125,6 +125,9 @@ class PhieuKhoService {
                 $gioiHanParams['kho_id'] = $input['kho_id'];
                 $gioiHanParams['sl_kha_dung'] = $soLuongKhaDung;
                 $this->gioiHanRepository->updateSoLuongKhaDung($gioiHanParams);
+                
+                //update so_luong_kha_dung in elasticsearch
+                $this->dmtvtKho->updateSoLuongKhaDungById($gioiHanParams);
             }
         });
     }
