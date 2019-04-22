@@ -112,18 +112,20 @@ class SttPhongKhamRepository extends BaseRepositoryV2
         $benhVienId = $input['benhVienId'];
         $authUsersId = $input['authUsersId'];
         $today = Carbon::today();
-        
+        $column = ['stt_phong_kham.id'];
         $where = [
-            ['loai_stt', '=', $loaiStt],
-            ['trang_thai', '=', 1],
-            ['phong_id', '=', $phongId],
-            ['benh_vien_id', '=', $benhVienId]
+            ['stt_phong_kham.loai_stt', '=', $loaiStt],
+            ['stt_phong_kham.trang_thai', '=', 1],
+            ['stt_phong_kham.phong_id', '=', $phongId],
+            ['stt_phong_kham.benh_vien_id', '=', $benhVienId],
+            ['hsba_don_vi.trang_thai_thanh_toan', '=', 1]
         ];
         
-        $result = $this->model->where($where)
+        $result = $this->model->leftJoin("hsba_don_vi", "hsba_don_vi.id", "=", "stt_phong_kham.hsba_don_vi_id")
+                            ->where($where)
                             ->whereBetween('thoi_gian_phat', [Carbon::parse($today)->startOfDay(), Carbon::parse($today)->endOfDay()])
-                            ->orderBy('id', 'asc')
-                            ->first();
+                            ->orderBy('stt_phong_kham.id', 'asc')
+                            ->get($column)->first();
                             
         if($result) {
             $id = $result['id'];

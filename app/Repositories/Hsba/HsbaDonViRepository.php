@@ -132,7 +132,8 @@ class HsbaDonViRepository extends BaseRepositoryV2
             'hsba_don_vi.trang_thai',
             'tt2.diengiai as ten_trang_thai',
             'vien_phi.trang_thai as vien_phi_trang_thai',
-            'vien_phi.loai_vien_phi'
+            'vien_phi.loai_vien_phi',
+            'hsba_don_vi.trang_thai_thanh_toan'
         ];
         
         // echo "<pre>";
