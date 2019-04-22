@@ -8,6 +8,11 @@ use Carbon\Carbon;
 
 class SttPhongKhamRepository extends BaseRepositoryV2
 {
+    const TRANG_THAI_CHO_KHAM = 1;
+    const TRANG_THAI_DANG_KHAM = 2;
+    const TRANG_THAI_KHAM_XONG = 3;
+    const TRANG_THAI_DA_THANH_TOAN = 1;
+    
     public function getModel()
     {
         return SttPhongKham::class;
@@ -20,7 +25,7 @@ class SttPhongKhamRepository extends BaseRepositoryV2
         $where = [
             ['phong.ma_nhom', '=', $maNhom],
             ['phong.khoa_id', '=', $khoaId],
-            ['phong.trang_thai', '=', 1]
+            ['phong.trang_thai', '=', self::TRANG_THAI_CHO_KHAM]
         ];
         
         $data = DB::table('phong')
@@ -65,7 +70,7 @@ class SttPhongKhamRepository extends BaseRepositoryV2
         
         $attributes = ['loai_stt' => $params['loai_stt'],
                         'so_thu_tu' => $soThuTu,
-                        'trang_thai' => 1,
+                        'trang_thai' => self::TRANG_THAI_CHO_KHAM,
                         'thoi_gian_phat' => Carbon::now()->toDateTimeString(),
                         'thoi_gian_goi' => null,
                         'thoi_gian_ket_thuc' => null,
@@ -115,10 +120,10 @@ class SttPhongKhamRepository extends BaseRepositoryV2
         $column = ['stt_phong_kham.id'];
         $where = [
             ['stt_phong_kham.loai_stt', '=', $loaiStt],
-            ['stt_phong_kham.trang_thai', '=', 1],
+            ['stt_phong_kham.trang_thai', '=', self::TRANG_THAI_CHO_KHAM],
             ['stt_phong_kham.phong_id', '=', $phongId],
             ['stt_phong_kham.benh_vien_id', '=', $benhVienId],
-            ['hsba_don_vi.trang_thai_thanh_toan', '=', 1]
+            ['hsba_don_vi.trang_thai_thanh_toan', '=', self::TRANG_THAI_DA_THANH_TOAN]
         ];
         
         $result = $this->model->leftJoin("hsba_don_vi", "hsba_don_vi.id", "=", "stt_phong_kham.hsba_don_vi_id")
@@ -130,7 +135,7 @@ class SttPhongKhamRepository extends BaseRepositoryV2
         if($result) {
             $id = $result['id'];
                             
-            $attributes = ['trang_thai' => 2,
+            $attributes = ['trang_thai' => self::TRANG_THAI_DANG_KHAM,
                             'thoi_gian_goi' => Carbon::now()->toDateTimeString(),
                             'auth_users_id' => $authUsersId
                         ];
@@ -152,7 +157,7 @@ class SttPhongKhamRepository extends BaseRepositoryV2
         $today = Carbon::today();
         
         $where = [
-            ['trang_thai', '>=', 2],
+            ['trang_thai', '>=', self::TRANG_THAI_DANG_KHAM],
             ['phong_id', '=', $phongId],
             ['benh_vien_id', '=', $benhVienId]
         ];
@@ -171,7 +176,7 @@ class SttPhongKhamRepository extends BaseRepositoryV2
     {
         $today = Carbon::today();
         
-        $attributes = ['trang_thai' => 3,
+        $attributes = ['trang_thai' => self::TRANG_THAI_KHAM_XONG,
                         'thoi_gian_ket_thuc' => Carbon::now()->toDateTimeString()
                     ];
                     
