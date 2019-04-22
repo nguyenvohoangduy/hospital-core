@@ -55,23 +55,13 @@ class AuthPermissionsService {
         return $status;
     }    
     
-    public function getAllPermissionAndServiceByUserId($userId) {
+    public function getAllPermissionByUserId($userId) {
         $listGroupId = $this->authUsersGroupsRepository->getListGroupByUserId($userId);
         $listGroup = [];
         foreach($listGroupId as $item) {
             $listGroup[] = $item['group_id'];
         }
-        $data = $this->authPermissionsRepository->getAllPermissionAndServiceByUserId($listGroup);
-        return $data;
-    }
-    
-    public function getMaNhomPhongByUserId($userId, $typeService) {
-        $listGroupId = $this->authUsersGroupsRepository->getListGroupByUserId($userId);
-        $listGroup = [];
-        foreach($listGroupId as $item) {
-            $listGroup[] = $item['group_id'];
-        }
-        $data = $this->authPermissionsRepository->getMaNhomPhongByUserId($listGroup, $typeService);
+        $data = $this->authPermissionsRepository->getAllPermissionByUserId($listGroup);
         return $data;
     }
 }

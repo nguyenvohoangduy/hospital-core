@@ -122,7 +122,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });    
     
     // don-tiep-service
-    Route::group(['prefix' => 'don-tiep-service','as' => 'don-tiep.','middleware' => ['jwt.auth'] ], function () {
+    Route::group(['prefix' => 'don-tiep-service','as' => 'don-tiep.', 'middleware' => ['jwt.auth', 'authorization'] ], function () {
         Route::get('index','DonTiep\DonTiepController@index')->name('index');
         
         //Route::get('register-index','DonTiep\DonTiepController@registerIndex')->name('dang-ky-kham-benh.index');
@@ -133,7 +133,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     });
     
     // phong-kham-service
-    Route::group(['prefix' => 'phong-kham-service','as' => 'phong-kham.' ], function () {
+    Route::group(['prefix' => 'phong-kham-service','as' => 'phong-kham.', 'middleware' => ['jwt.auth', 'authorization'] ], function () {
         Route::get('index','PhongKham\PhongKhamController@index')->name('index');
     }); 
     
@@ -169,7 +169,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('quaySo/{khuVucId}/{benhVienId}','UserSetting\UserSettingController@getListQuay');
         Route::get('getKhoaPhongByUserId/{userId}/{benhVienId}','AuthController@getKhoaPhongByUserId');
         Route::get('getKhoaPhongDonTiepByBenhVienId/{benhVienId}','AuthController@getKhoaPhongDonTiepByBenhVienId');
-        Route::get('getListPhongByUserId/{userId}/{benhVienId}/{typeService}','AuthController@getListPhongByUserId');
+        Route::get('getListPhongByMaNhomPhong/{benhVienId}/{listMaNhomPhong}','AuthController@getListPhongByMaNhomPhong');
         Route::get('getKhoaByBenhVienId/{benhVienId}','UserSetting\UserSettingController@getKhoaByBenhVienId');
     });
     
@@ -468,7 +468,6 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::get('getKhoaByLoaiKhoaBenhVienId/{loaiKhoa}/{benhVienId}','Auth\PermissionController@getKhoaByLoaiKhoaBenhVienId');
      	Route::get('getMaNhomPhongByKhoaId/{khoaId}','Auth\PermissionController@getMaNhomPhongByKhoaId');
      	Route::post('checkData','Auth\PermissionController@checkData');
-     	Route::get('getAllPermissionAndServiceByUserId/{userId}','Auth\PermissionController@getAllPermissionAndServiceByUserId');
     });    
     
     Route::group(['prefix' => 'khoa'], function () {

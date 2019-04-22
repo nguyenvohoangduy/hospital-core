@@ -48,7 +48,7 @@ class Authorization
             $authService->setBenhVienId($benhVienId)
                         ->setKhoaId($khoaId)
                         ->setMaNhomPhong($maNhomPhong);
-            $isAuthorized= $authService->authorize(Auth::user()->ids, $route, $matchPolicyId);
+            $isAuthorized= $authService->authorize(Auth::user()->id, $route, $matchPolicyId);
             
             if ($isAuthorized){
                 return $next($request);

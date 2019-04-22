@@ -72,6 +72,7 @@ class HsbaService
     }
     
     public function listBenhNhanTrung($ho_va_ten, $ngay_sinh, $gioi_tinh_id) {
+        $ngay_sinh = date("d-m-Y", strtotime($ngay_sinh));
         return $this->hsbaRepository->listBenhNhanTrung($ho_va_ten, $ngay_sinh, $gioi_tinh_id);
     }
 }
