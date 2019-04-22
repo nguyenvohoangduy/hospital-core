@@ -261,9 +261,15 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
     }
     public function getById($id)
     {
-        $data = $this->model
-                    ->where('id', $id)
-                    ->first();
+        $column = [
+            'danh_muc_thuoc_vat_tu.*',
+            'hoat_chat.ten as hoat_chat'
+        ];
+        
+        $data = $this->model->where('danh_muc_thuoc_vat_tu.id', $id)
+                            ->leftJoin('hoat_chat','hoat_chat.id','=','danh_muc_thuoc_vat_tu.hoat_chat_id')
+                            ->get($column)
+                            ->first();
         return $data;
     }
   
