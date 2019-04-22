@@ -1,0 +1,3 @@
+BEGIN TRANSACTION;
+ALTER TABLE kho ADD loai_kho integer;
+END;

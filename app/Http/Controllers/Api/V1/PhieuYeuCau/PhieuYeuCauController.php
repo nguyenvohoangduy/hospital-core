@@ -5,13 +5,15 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Api\V1\APIController;
 use App\Services\TheKhoService;
 use App\Services\PhieuKhoService;
+use App\Services\KhoService;
 
 class PhieuYeuCauController extends APIController
 {
-    public function __construct(theKhoService $theKhoService,PhieuKhoService $phieuKhoService)
+    public function __construct(theKhoService $theKhoService,PhieuKhoService $phieuKhoService,KhoService $khoService)
     {
         $this->theKhoService = $theKhoService;
         $this->phieuKhoService = $phieuKhoService;
+        $this->khoService = $khoService;
     }
     
     public function getTonKhaDungById($id,$khoId)
@@ -25,5 +27,11 @@ class PhieuYeuCauController extends APIController
         $input = $request->all();
         $this->phieuKhoService->createPhieuYeuCau($input);
         return $this->respond([]);
-    }    
+    } 
+    
+    public function getListKhoLap($loaiKho,$benhVienId)
+    {
+        $data = $this->khoService->getListKhoLap($loaiKho,$benhVienId);
+        return $this->respond($data);
+    }     
 }
