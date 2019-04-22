@@ -20,26 +20,27 @@ class AuthPermissionsRepository extends BaseRepositoryV2
     }
     
     
-    public function findPermission( $benhVienId, $khoaId, $maNhomPhong, $userId, $uri, $policiId) {
-        $query = $this->model->leftJoin('auth_groups_has_permissions', 'auth_permissions.id', '=', 'auth_groups_has_permissions.permission_id');
+    public function findPermission( $benhVienId, $khoaId, $maNhomPhong, $listGroupId, $uri, $policyId) {
         $where = [
-                ['auth_permissions.policy_id', '=', $policiId],
-                ['auth_permissions.benh_vien_id', '=', $benhVienId]
-            ];
-        if ($khoaId === null) {
-            $query->whereNull('khoa');
-        } else {
-            $query->where('khoa',$khoaId);
-        }
-        if ($maNhomPhong === null) {
-            $query->whereNull('ma_nhom_phong');
-        } else {
-            $query->where('ma_nhom_phong', $maNhomPhong);
-        }  
-            
-        $permission = $query->where($where)->get()->toArray();// $query->where($where)->toSql();
+            ['auth_permissions.policy_id', '=', $policyId],
+            ['auth_permissions.benh_vien_id', '=', $benhVienId]
+        ];
         
-        //var_dump($permission);die;
+        $model = $this->model->where($where);
+        
+        if (!is_null($khoaId)) {
+            $model->where('khoa', $khoaId);
+        }
+        
+        if (!is_null($maNhomPhong)) {
+            $model->where('ma_nhom_phong', 'like', '%' . $maNhomPhong . '%');
+        }
+        
+        $permission = $model->join('auth_groups_has_permissions as t1', function($join) use ($listGroupId) {
+                $join->on('t1.permission_id', '=', 'auth_permissions.id')
+                    ->whereIn('t1.group_id', $listGroupId);
+        })->get()->toArray();
+
         return $permission;
     }
     
@@ -138,56 +139,14 @@ class AuthPermissionsRepository extends BaseRepositoryV2
             return false;
     }     
     
-    public function getAllPermissionAndServiceByUserId($listGroupId) {
-        $column = [
-            'auth_service.name as service_name',
-            'auth_service.display_name',
-        ];
-        
+    public function getAllPermissionByUserId($listGroupId) {
         $data = $this->model
             ->join('auth_groups_has_permissions as t1', function($join) use ($listGroupId) {
                 $join->on('t1.permission_id', '=', 'auth_permissions.id')
                     ->whereIn('t1.group_id', $listGroupId);
             })
             ->leftJoin('auth_service', 'auth_service.id', '=', 'auth_permissions.service_id')
-            ->distinct()
-            ->get($column);
-            
-        return $data;
-    }
-    
-    public function getMaNhomPhongByUserId($listGroupId, $typeService) {
-        $where = [];
-        if ($typeService == self::SERVICE_PHONG_KHAM) {
-            $where = [
-                ['auth_permissions.service_id', '=', $typeService],
-                ['auth_permissions.key', '=', self::KEY_PHONG_KHAM_INDEX]
-            ];
-        }
-        else if ($typeService == self::SERVICE_NOI_TRU) {
-            $where = [
-                ['auth_permissions.service_id', '=', $typeService],
-                ['auth_permissions.key', '=', self::KEY_NOI_TRU_INDEX]
-            ];
-        }
-        else if ($typeService == self::SERVICE_THUOC_VAT_TU) {
-            $where = [
-                ['auth_permissions.service_id', '=', $typeService],
-                ['auth_permissions.key', '=', self::KEY_THUOC_VAT_TU_INDEX]
-            ];
-        }
-        
-        $column = [
-            'auth_permissions.ma_nhom_phong',
-        ];
-        
-        $data = $this->model
-            ->join('auth_groups_has_permissions as t1', function($join) use ($listGroupId) {
-                $join->on('t1.permission_id', '=', 'auth_permissions.id')
-                    ->whereIn('t1.group_id', $listGroupId);
-            })
-            ->where($where)
-            ->get($column);
+            ->get();
             
         return $data;
     }

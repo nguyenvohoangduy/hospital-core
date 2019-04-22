@@ -105,7 +105,14 @@ class AuthService {
           ...    
         */
         //var_dump($policyId);die();
-        $authPermission = $this->authPermissionsRepository->findPermission($this->benhVienId,$this->khoaId,$this->maNhomPhong,$userId,$route->uri(),$policyId);
+        // find all groups by user_id
+        $listGroupId = $this->authUsersGroupsRepository->getListGroupByUserId($userId);
+        $listGroup = [];
+        foreach($listGroupId as $item) {
+            $listGroup[] = $item['group_id'];
+        }
+        
+        $authPermission = $this->authPermissionsRepository->findPermission($this->benhVienId, $this->khoaId, $this->maNhomPhong, $listGroup, $route->uri(), $policyId);
         return !empty($authPermission);
     }
     

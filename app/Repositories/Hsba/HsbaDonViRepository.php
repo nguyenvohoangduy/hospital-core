@@ -11,6 +11,11 @@ class HsbaDonViRepository extends BaseRepositoryV2
     const TAT_CA_TRANG_THAI = -1;
     const BENH_AN_KHAM_BENH = 24;
     const BENH_AN_KHONG_KHAM_BENH = 0;
+    const TRANG_THAI_CHO_KHAM = 1;
+    const TRANG_THAI_DANG_KHAM = 2;
+    const TRANG_THAI_DA_THANH_TOAN = 1;
+    const CHO_DIEU_TRI = 0;
+    const DANG_DIEU_TRI = 2;
     
     // Params KhoaPhong
     private $benhVienId = null;
@@ -132,7 +137,8 @@ class HsbaDonViRepository extends BaseRepositoryV2
             'hsba_don_vi.trang_thai',
             'tt2.diengiai as ten_trang_thai',
             'vien_phi.trang_thai as vien_phi_trang_thai',
-            'vien_phi.loai_vien_phi'
+            'vien_phi.loai_vien_phi',
+            'hsba_don_vi.trang_thai_thanh_toan'
         ];
         
         // echo "<pre>";
@@ -173,6 +179,8 @@ class HsbaDonViRepository extends BaseRepositoryV2
                 $join->on('sttpk.hsba_id', '=', 'hsba_don_vi.hsba_id')
                     ->where('sttpk.phong_id', '=', $this->phongId);
             });
+            $query = $query->whereIn('sttpk.trang_thai', [self::TRANG_THAI_CHO_KHAM, self::TRANG_THAI_DANG_KHAM])
+                    ->where('hsba_don_vi.trang_thai_thanh_toan', '=', self::TRANG_THAI_DA_THANH_TOAN);
             
             $arrayColumn = [
                 'sttpk.loai_stt',
@@ -227,7 +235,8 @@ class HsbaDonViRepository extends BaseRepositoryV2
         if($this->statusHsbaKp != self::TAT_CA_TRANG_THAI && $this->phongId) {
             $query = $query->where(function($queryAdv) {
                 if($this->statusHsbaKp == 0){
-                    $queryAdv->whereIn('hsba_don_vi.trang_thai', [0,2,3]);
+                    $queryAdv->whereIn('hsba_don_vi.trang_thai', [self::CHO_DIEU_TRI,self::DANG_DIEU_TRI])
+                            ->where('hsba_don_vi.trang_thai_thanh_toan', '=', self::TRANG_THAI_DA_THANH_TOAN);
                 }
                 else {
                     $queryAdv->where('hsba_don_vi.trang_thai', '=', $this->statusHsbaKp);
@@ -530,6 +539,7 @@ class HsbaDonViRepository extends BaseRepositoryV2
             'hsba.nguoi_than',
             'hsba.ms_bhyt',
             'hsba.thx_gplace_json',
+            'hsba.ma_cskcbbd',
             //'bhyt.id as bhyt_id',
             //'bhyt.ma_cskcbbd',
             //'bhyt.tu_ngay',
@@ -666,8 +676,8 @@ class HsbaDonViRepository extends BaseRepositoryV2
             'hsba.nguoi_than',
             'hsba.ms_bhyt',
             'hsba.thx_gplace_json',
+            'hsba.ma_cskcbbd',
             'bhyt.id as bhyt_id',
-            'bhyt.ma_cskcbbd',
             'bhyt.tu_ngay',
             'bhyt.den_ngay',
             'bhyt.ma_noi_song',
@@ -693,8 +703,8 @@ class HsbaDonViRepository extends BaseRepositoryV2
             // 'hsba_khoa_phong.thoi_gian_vao_vien',
             // 'hsba_khoa_phong.hinh_thuc_vao_vien_id',
             // 'hsba_khoa_phong.thoi_gian_ra_vien',
-            // 'hsba_khoa_phong.cdrv_icd10_code',
-            // 'hsba_khoa_phong.cdrv_icd10_text',
+            'hsba_don_vi.cdrv_icd10_code',
+            'hsba_don_vi.cdrv_icd10_text',
             // 'hsba_khoa_phong.cdrv_kt_icd10_code',
             // 'hsba_khoa_phong.cdrv_kt_icd10_text',
             // 'hsba_khoa_phong.ket_qua_dieu_tri',
