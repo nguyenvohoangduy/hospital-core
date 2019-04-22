@@ -25,4 +25,19 @@ class GioiHanRepository extends BaseRepositoryV2
         
         $this->model->where($where)->update(['sl_kha_dung' => $input['sl_kha_dung']]);
     }
+    
+    public function getByThuocVatTuId($tvtId, $khoId)
+    {
+        $where = [
+            ['danh_muc_thuoc_vat_tu_id', '=', $tvtId],
+            ['kho_id', '=', $khoId]
+        ];
+        
+        $data = $this->model->where($where)->first();
+        
+        if($data)
+            return $data;
+        else
+            return null;
+    }
 }

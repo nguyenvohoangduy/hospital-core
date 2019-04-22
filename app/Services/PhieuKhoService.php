@@ -112,6 +112,19 @@ class PhieuKhoService {
                 $chiTietPhieuKhoParams['he_so_quy_doi'] = $item['he_so_quy_doi'] ?? self::HE_SO_QUY_DOI;
                 $chiTietPhieuKhoParams['don_vi_co_ban'] = $item['don_vi_co_ban'];
                 $this->chiTietPhieuKhoRepository->createChiTietPhieuKho($chiTietPhieuKhoParams);
+                
+                //update so_luong_kha_dung in table gioi_han
+                $thuocVatTu = $this->gioi_han->getByThuocVatTuId($item['id'], $input['kho_id']);
+                if($thuocVatTu)
+                    $soLuongKhaDung = $thuocVatTu['sl_kha_dung'] + $theKhoParams['sl_kha_dung'];
+                else
+                    $soLuongKhaDung = $theKhoParams['sl_kha_dung'];
+                    
+                $gioiHanParams = [];
+                $gioiHanParams['danh_muc_thuoc_vat_tu_id'] = $item['id'];
+                $gioiHanParams['kho_id'] = $input['kho_id'];
+                $gioiHanParams['sl_kha_dung'] = $soLuongKhaDung;
+                $this->gioi_han->updateSoLuongKhaDung($gioiHanParams);
             }
         });
     }
