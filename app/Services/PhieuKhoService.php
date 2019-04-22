@@ -124,7 +124,7 @@ class PhieuKhoService {
                 $gioiHanParams['danh_muc_thuoc_vat_tu_id'] = $item['id'];
                 $gioiHanParams['kho_id'] = $input['kho_id'];
                 $gioiHanParams['sl_kha_dung'] = $soLuongKhaDung;
-                $this->gioi_han->updateSoLuongKhaDung($gioiHanParams);
+                $this->gioiHanRepository->updateSoLuongKhaDung($gioiHanParams);
             }
         });
     }
