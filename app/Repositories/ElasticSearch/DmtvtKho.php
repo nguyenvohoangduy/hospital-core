@@ -257,12 +257,12 @@ class DmtvtKho
                 'query' => [
                     'bool' => [
                         'should' => [
-                            'wildcard' => [
+                            ['wildcard' => [
                                 'ten' => '*'.$keyword.'*',
-                            ], 
-                            'wildcard' => [
+                            ]], 
+                            ['wildcard' => [
                                 'hoat_chat' => '*'.$keyword.'*'
-                            ]
+                            ]]
                         ]    
                     ]
                 ]
@@ -289,12 +289,12 @@ class DmtvtKho
                 'query' => [
                     'bool' => [
                         'should' => [
-                            'wildcard' => [
+                            ['wildcard' => [
                                 'ten' => '*'.$keyword.'*',
-                            ], 
-                            'wildcard' => [
+                            ]], 
+                            ['wildcard' => [
                                 'hoat_chat' => '*'.$keyword.'*'
-                            ]
+                            ]]
                         ]    
                     ]
                 ]
