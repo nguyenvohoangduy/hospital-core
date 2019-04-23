@@ -409,6 +409,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::group(['prefix' => 'phieuyeucau'], function () {
 		Route::get('getTonKhaDungById/{id}/{khoId}','PhieuYeuCau\PhieuYeuCauController@getTonKhaDungById');
 		Route::post('createPhieuYeuCau','PhieuYeuCau\PhieuYeuCauController@createPhieuYeuCau');
+		Route::get('getListKhoLap/{loaiKho}/{benhVienId}','PhieuYeuCau\PhieuYeuCauController@getListKhoLap');
     });
     
     Route::group(['prefix' => 'phieuxuatnhapkho'], function () {
