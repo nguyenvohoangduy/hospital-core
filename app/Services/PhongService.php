@@ -122,7 +122,9 @@ class PhongService {
     
     public function getListKhoaPhongNoiTruByKhoaId($benhVienId, $listKhoaId) {
         $listKhoaId = explode(",", $listKhoaId);
-        $data = $this->phongRepository->getListKhoaPhongNoiTruByKhoaId($benhVienId, $listKhoaId);
-        return $data;
+        $dataHanhChinh = $this->phongRepository->getListKhoaPhongHanhChinhByKhoaId($benhVienId, $listKhoaId);
+        $dataNoiTru = $this->phongRepository->getListKhoaPhongNoiTruByKhoaId($benhVienId, $listKhoaId);
+        $result = array_merge($dataHanhChinh, $dataNoiTru);
+        return $result;
     }
 }

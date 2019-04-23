@@ -314,7 +314,6 @@ class AuthController extends APIController
             $this->setStatusCode(400);
             $data = [];
         }
-        
         return $this->respond($data);
     }
 }
