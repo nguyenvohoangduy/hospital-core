@@ -403,6 +403,8 @@ class PhieuKhoService {
                             
                             //create document in elasticsearch index
                             $thuocVatTuItem = $this->danhMucThuocVatTuService->getDMTVatTuById($theKhoParams['danh_muc_thuoc_vat_tu_id']);
+                            $thuocVatTuItem['kho_id'] = $theKhoParams['kho_id'];
+                            $thuocVatTuItem['sl_kha_dung'] = $theKhoParams['sl_kha_dung'];
                             $this->dmtvtKho->pushItemToIndex($thuocVatTuItem, $theKhoParams['kho_id']);
                         }
                     }
