@@ -305,4 +305,16 @@ class AuthController extends APIController
         
         return $this->respond($data);
     }
+    
+    public function getListKhoaPhongNoiTruByKhoaId($benhVienId, $listKhoaId) {
+        $isNumericId = is_numeric($benhVienId);
+        if($isNumericId) {
+            $data = $this->phongService->getListKhoaPhongNoiTruByKhoaId($benhVienId, $listKhoaId);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+        
+        return $this->respond($data);
+    }
 }

@@ -170,6 +170,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('getKhoaPhongByUserId/{userId}/{benhVienId}','AuthController@getKhoaPhongByUserId');
         Route::get('getKhoaPhongDonTiepByBenhVienId/{benhVienId}','AuthController@getKhoaPhongDonTiepByBenhVienId');
         Route::get('getListPhongByMaNhomPhong/{benhVienId}/{listMaNhomPhong}','AuthController@getListPhongByMaNhomPhong');
+        Route::get('getListKhoaPhongNoiTruByKhoaId/{benhVienId}/{listKhoaId}','AuthController@getListKhoaPhongNoiTruByKhoaId');
         Route::get('getKhoaByBenhVienId/{benhVienId}','UserSetting\UserSettingController@getKhoaByBenhVienId');
     });
     
