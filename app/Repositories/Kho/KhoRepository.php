@@ -10,6 +10,7 @@ use App\Helper\Util;
 class KhoRepository extends BaseRepositoryV2
 {
     const NHAP_TU_NHA_CUNG_CAP = 1;
+    const KHO_DANG_SU_DUNG = 1;
     
     public function getModel()
     {
@@ -98,5 +99,17 @@ class KhoRepository extends BaseRepositoryV2
             ];
         $data = $this->model->where($where)->get();
         return $data;
-    }  
+    } 
+    
+    public function getListKhoLap($loaiKho,$benhVienId)
+    {
+        $where = [
+            ['loai_kho','=',$loaiKho],
+            ['nhap_tu_ncc','<>',1],
+            ['benh_vien_id','=',$benhVienId],
+            ['trang_thai','=',self::KHO_DANG_SU_DUNG],
+            ];
+        $data = $this->model->where($where)->get();
+        return $data;
+    }    
 }
