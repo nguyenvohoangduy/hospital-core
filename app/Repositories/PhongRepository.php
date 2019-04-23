@@ -151,6 +151,55 @@ class PhongRepository extends BaseRepositoryV2
                         ->get($column);
         return $data;
     }
+    
+    public function getListKhoaPhongNoiTruByKhoaId($benhVienId, $listKhoaId) {
+        $column = [
+            'phong.id',
+            'phong.khoa_id',
+            'phong.ten_phong',
+            'phong.ma_nhom',
+            'khoa.ten_khoa',
+            'phong.loai_phong',
+            'khoa.benh_vien_id'
+        ];
+        
+        $data = $this->model
+                        ->join('khoa', function($join) use ($benhVienId) {
+                            $join->on('khoa.id', '=', 'phong.khoa_id')
+                                ->where('khoa.benh_vien_id', '=', $benhVienId);
+                        })
+                        ->whereIn('phong.khoa_id', $listKhoaId)
+                        ->where('phong.loai_phong', self::PHONG_NOI_TRU)
+                        ->orderBy('khoa.ten_khoa')
+                        ->get($column)
+                        ->toArray();
+        return $data;
+    }
+    
+    public function getListKhoaPhongHanhChinhByKhoaId($benhVienId, $listKhoaId) {
+        $column = [
+            'phong.id',
+            'phong.khoa_id',
+            'phong.ten_phong',
+            'phong.ma_nhom',
+            'khoa.ten_khoa',
+            'phong.loai_phong',
+            'khoa.benh_vien_id'
+        ];
+        
+        $data = $this->model
+                        ->join('khoa', function($join) use ($benhVienId) {
+                            $join->on('khoa.id', '=', 'phong.khoa_id')
+                                ->where('khoa.benh_vien_id', '=', $benhVienId);
+                        })
+                        ->whereIn('phong.khoa_id', $listKhoaId)
+                        ->where('phong.loai_phong', self::PHONG_HANH_CHINH)
+                        ->where('phong.ma_nhom', 'like', '%HC%')
+                        ->orderBy('khoa.ten_khoa')
+                        ->get($column)
+                        ->toArray();
+        return $data;
+    }
   
     public function getPartial($limit = 100, $page = 1, $keyWords ='')
     {
