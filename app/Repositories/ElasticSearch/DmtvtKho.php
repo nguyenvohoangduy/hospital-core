@@ -253,16 +253,12 @@ class DmtvtKho
             'type' => 'doc',
             'body' => [
                 'from' => 0,
-                'size' => 1000,
+                'size' => 10000,
                 'query' => [
                     'bool' => [
                         'should' => [
-                            ['wildcard' => [
-                                'ten' => '*'.$keyword.'*',
-                            ]], 
-                            ['wildcard' => [
-                                'hoat_chat' => '*'.$keyword.'*'
-                            ]]
+                            ['wildcard' => ['ten' => '*'.$keyword.'*']], 
+                            ['wildcard' => ['hoat_chat' => '*'.$keyword.'*']]
                         ]    
                     ]
                 ]
@@ -289,13 +285,9 @@ class DmtvtKho
                 'query' => [
                     'bool' => [
                         'should' => [
-                            ['wildcard' => [
-                                'ten' => '*'.$keyword.'*',
-                            ]], 
-                            ['wildcard' => [
-                                'hoat_chat' => '*'.$keyword.'*'
-                            ]]
-                        ]    
+                            ['wildcard' => ['ten' => '*'.$keyword.'*']], 
+                            ['wildcard' => ['hoat_chat' => '*'.$keyword.'*']]
+                        ]   
                     ]
                 ]
             ]
