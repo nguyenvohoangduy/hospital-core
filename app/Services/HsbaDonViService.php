@@ -92,4 +92,10 @@ class HsbaDonViService
         $data = $this->hsbaDonViRepository->getPhongChoByHsbaId($hsbaId, $phongId);
         return $data;
     }
+    
+    public function getLichSuKhamDieuTri($id)
+    {
+        $data = $this->hsbaDonViRepository->getLichSuKhamDieuTri($id);
+        return $data;
+    }    
 }

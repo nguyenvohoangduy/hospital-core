@@ -381,6 +381,12 @@ class PhieuKhoService {
                         $theKhoParams['sl_dau_ky'] = $item['so_luong_yeu_cau'];
                         $theKhoParams['sl_kha_dung'] = $item['so_luong_yeu_cau'];
                         $theKhoParams['sl_ton_kho_chan'] = floor($item['so_luong_yeu_cau']);
+                        $theKhoParams['trang_thai'] = self::SU_DUNG; 
+                        $theKhoParams['sl_ton_kho'] = floor($item['so_luong_yeu_cau']);
+                        $theKhoParams['sl_nhap_chan'] = floor($item['so_luong_yeu_cau']);
+                        $theKhoParams['don_vi_co_ban'] = $item['don_vi_co_ban'];
+                        $theKhoParams['don_vi_nhap'] = $item['don_vi_co_ban'];
+                        $theKhoParams['he_so_quy_doi'] = self::HE_SO_QUY_DOI;
                         
                         $this->theKhoRepository->createTheKho($theKhoParams);
                         
@@ -403,6 +409,8 @@ class PhieuKhoService {
                             
                             //create document in elasticsearch index
                             $thuocVatTuItem = $this->danhMucThuocVatTuService->getDMTVatTuById($theKhoParams['danh_muc_thuoc_vat_tu_id']);
+                            $thuocVatTuItem['kho_id'] = $theKhoParams['kho_id'];
+                            $thuocVatTuItem['sl_kha_dung'] = $theKhoParams['sl_kha_dung'];
                             $this->dmtvtKho->pushItemToIndex($thuocVatTuItem, $theKhoParams['kho_id']);
                         }
                     }

@@ -72,7 +72,8 @@ class HsbaService
     }
     
     public function listBenhNhanTrung($ho_va_ten, $ngay_sinh, $gioi_tinh_id) {
-        $ngay_sinh = date("d-m-Y", strtotime($ngay_sinh));
+        $dateObj = \DateTime::createFromFormat("d/m/Y", $ngay_sinh);
+        $ngay_sinh = $dateObj->format("m/d/Y");
         return $this->hsbaRepository->listBenhNhanTrung($ho_va_ten, $ngay_sinh, $gioi_tinh_id);
     }
 }

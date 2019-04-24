@@ -263,11 +263,13 @@ class DanhMucThuocVatTuRepository extends BaseRepositoryV2
     {
         $column = [
             'danh_muc_thuoc_vat_tu.*',
-            'hoat_chat.ten as hoat_chat'
+            'hoat_chat.ten as hoat_chat',
+            'don_vi_tinh.ten as don_vi_tinh'
         ];
         
         $data = $this->model->where('danh_muc_thuoc_vat_tu.id', $id)
                             ->leftJoin('hoat_chat','hoat_chat.id','=','danh_muc_thuoc_vat_tu.hoat_chat_id')
+                            ->leftJoin('don_vi_tinh','don_vi_tinh.id','=','danh_muc_thuoc_vat_tu.don_vi_tinh_id')
                             ->get($column)
                             ->first();
         return $data;

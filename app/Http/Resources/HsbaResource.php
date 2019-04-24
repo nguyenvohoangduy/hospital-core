@@ -50,6 +50,8 @@ class HsbaResource extends Resource
             'so_cmnd'                   => $this->so_cmnd,
             'ma_tiem_chung'             => $this->ma_tiem_chung,
             'url_hinh_anh'              => $this->url_hinh_anh,
+            'tuyen_bhyt'                => $this->tuyen_bhyt,
+            'ma_cskcbbd'                => $this->ma_cskcbbd,
         ];
     }
 }
