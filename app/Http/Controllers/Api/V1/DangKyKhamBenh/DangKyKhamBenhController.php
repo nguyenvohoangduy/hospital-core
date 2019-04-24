@@ -15,6 +15,7 @@ use App\Services\HanhChinhService;
 use App\Services\Icd10Service;
 use App\Services\BhytService;
 use App\Http\Controllers\API\V1\APIController;
+use App\Services\HsbaDonViService;
 
 class DangKyKhamBenhController extends APIController
 {
@@ -45,7 +46,8 @@ class DangKyKhamBenhController extends APIController
         HsbaKhoaPhongService $hsbaKhoaPhongService,
         Icd10Service $icd10Service,
         BhytService $bhytService,
-        HanhChinhService $hanhChinhService
+        HanhChinhService $hanhChinhService,
+        HsbaDonViService $hsbaDonViService
         )
     {
         $this->phongService = $phongService;
@@ -59,7 +61,7 @@ class DangKyKhamBenhController extends APIController
         $this->icd10Service = $icd10Service;
         $this->bhytService = $bhytService;
         $this->hanhChinhService = $hanhChinhService;
-        
+        $this->hsbaDonViService = $hsbaDonViService;
     }
     
     // get danh sach phong kham theo departmentgroupid va departmenttype
@@ -173,7 +175,7 @@ class DangKyKhamBenhController extends APIController
     
     public function getLichSuKhamDieuTriByBenhNhanId(Request $request)
     {
-        $data = $this->hsbaKhoaPhongService->getLichSuKhamDieuTri($request->benhNhanId);
+        $data = $this->hsbaDonViService->getLichSuKhamDieuTri($request->benhNhanId);
         return $this->respond($data);
     }
     

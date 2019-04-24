@@ -100,7 +100,7 @@ class BenhNhanServiceV2 {
         ,'benh_vien_id', 'loai_vien_phi'
     ];
     
-    private $bhytKeys = ['ms_bhyt', 'ma_cskcbbd', 'tu_ngay', 'den_ngay', 'ma_noi_song', 'du5nam6thangluongcoban', 'dtcbh_luyke6thang', 'tuyen_bhyt'];
+    private $bhytKeys = ['benh_nhan_id', 'ms_bhyt', 'ma_cskcbbd', 'tu_ngay', 'den_ngay', 'ma_noi_song', 'du5nam6thangluongcoban', 'dtcbh_luyke6thang', 'tuyen_bhyt'];
     
     private $sttPkKeys = [
         'loai_stt', 'ma_nhom', 'stt_don_tiep_id'
@@ -222,11 +222,14 @@ class BenhNhanServiceV2 {
         $dieuTriParams = $request->only(...$this->dieuTriKeys);        
         $sttPhongKhamParams =  $request->only(...$this->sttPkKeys);
         $chuyenVienParams =  $request->only(...$this->chuyenVienKeys);
+        
+        $benhNhanParams['id'] = $this->checkBenhNhanTonTai($benhNhanParams['benh_nhan_id'],$benhNhanParams['ho_va_ten'],$benhNhanParams['ngay_sinh'],$benhNhanParams['gioi_tinh_id'], $scan);
+        
         $result = DB::transaction(function () use ($request, $scan, $benhNhanParams, $hsbaParams,$hsbaDvParams, $hsbaKpParams, $bhytParams, $dieuTriParams, $sttPhongKhamParams,$chuyenVienParams, $arrayRequest) {
             try {
                 // TODO - implement try catch log inside each function carefully
-                $this->createBhyt($bhytParams)
-                    ->checkOrCreateBenhNhan($scan,$benhNhanParams)
+                $this->checkOrCreateBenhNhan($scan,$benhNhanParams)
+                    ->createBhyt($bhytParams)
                     ->createHsbaKhamBenh($hsbaParams)
                     ->createHsbaDvKhamBenh($hsbaDvParams)
                     //->createHsbaKpKhamBenh($hsbaKpParams)
@@ -243,15 +246,17 @@ class BenhNhanServiceV2 {
                     ->createYLenh()
                     ->pushToHsbaKpQueue()
                     ->pushLogQueue($arrayRequest, self::TYPE_LOG_INPUT);
-                
+                DB::commit();
                 return $this->dataSttPk;
                 
             } catch(\Throwable  $ex) {
                 //store log
+                DB::rollback();
                 $this->exceptionToLog($request, $ex);
                 throw $ex;
             } catch (\Exception $ex) {
                 //store log
+                DB::rollback();
                 $this->exceptionToLog($request, $ex);
                 throw $ex;
             } 
@@ -262,6 +267,7 @@ class BenhNhanServiceV2 {
     private function createBhyt($params) {
         if($params['ms_bhyt'] != null && $params['tu_ngay'] != null && $params['den_ngay'] != null) {
             $dataBhyt = $params;
+            $params['benh_nhan_id'] = $this->dataBenhNhan['id'];
             $dataBhyt['id'] = $this->bhytRepository->createDataBhyt($params);
         } else {
             $dataBhyt['id'] = null;
@@ -281,7 +287,7 @@ class BenhNhanServiceV2 {
             $dataBenhVienThietLap = $this->benhVienRepository->getBenhVienThietLap($dataBenhNhan['benh_vien_id']);
         unset($dataBenhNhan['benh_vien_id']);
             
-        $dataBenhNhan['ho_va_ten'] = $tenBenhNhanInHoa;
+        $dataBenhNhan['ho_va_ten'] = trim($tenBenhNhanInHoa);
         $dataBenhNhan['nghe_nghiep_id'] = ($this->dataNgheNghiep['gia_tri'])??null;
         $dataBenhNhan['dan_toc_id'] = $this->dataDanToc['gia_tri']??null;
         $dataBenhNhan['quoc_tich_id'] = $this->dataQuocTich['gia_tri']??null;
@@ -291,12 +297,10 @@ class BenhNhanServiceV2 {
         $dataBenhNhan['vi_dien_tu'] = Crypt::encryptString(self::VI_DIEN_TU_MAC_DINH);
 
         //$dataBenhNhan['thong_tin_chuyen_tuyen'] = !empty($dataBenhNhan['thong_tin_chuyen_tuyen']) ? json_encode($dataBenhNhan['thong_tin_chuyen_tuyen']) : null;
-        $bhyt = $this->checkBhytFromScanner($scan);
-        if ($bhyt['benh_nhan_id']) {
-            $dataBenhNhan['id'] = $bhyt['benh_nhan_id'];
-        } else {
+        
+        unset($dataBenhNhan['benh_nhan_id']);
+        if(!$dataBenhNhan['id'])
             $dataBenhNhan['id'] =  $this->benhNhanRepository->createDataBenhNhan($dataBenhNhan);
-        }
         $this->dataBenhNhan = $dataBenhNhan;
         if($hinh_benh_nhan) {
             $s3 = new AwsS3($dataBenhVienThietLap['bucket']);
@@ -670,5 +674,21 @@ class BenhNhanServiceV2 {
             ],
         ];
         $this->errorLog->toLogQueue($params, $ex, $messageAttributes);
+    }
+    
+    private function checkBenhNhanTonTai($idBenhNhan, $tenBenhNhan, $ngaySinh, $gioiTinh, $scan) {
+        $return = 0;
+        if($idBenhNhan){
+            $result = $this->benhNhanRepository->checkBenhNhanTonTai($idBenhNhan, $tenBenhNhan, $ngaySinh, $gioiTinh);
+            if($result)
+                $return = $result->id;
+        }
+        else{
+            $bhyt = $this->checkBhytFromScanner($scan);
+            if ($bhyt['benh_nhan_id']) {
+                $return = $bhyt['benh_nhan_id'];
+            }
+        }
+        return $return;
     }
 }
