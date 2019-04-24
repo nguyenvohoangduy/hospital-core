@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Crypt;
 use DB;
 
 // Repositories
@@ -76,6 +76,8 @@ class BenhNhanServiceV2 {
     
     const TYPE_LOG_INPUT = 'input';
     const TYPE_LOG_ERROR = 'error';
+    
+    const VI_DIEN_TU_MAC_DINH = 0;
     
     private $benhNhanKeys = [
         'benh_nhan_id', 'ho_va_ten', 'ngay_sinh', 'gioi_tinh_id'
@@ -291,6 +293,9 @@ class BenhNhanServiceV2 {
         $dataBenhNhan['quoc_tich_id'] = $this->dataQuocTich['gia_tri']??null;
         $dataBenhNhan['nam_sinh'] =  str_limit($dataBenhNhan['ngay_sinh'], 4,'');// TODO - define constant
         $dataBenhNhan['nguoi_than'] = $this->dataNhomNguoiThan->toJsonEncoded();
+        // Khoi tao vi dien tu
+        $dataBenhNhan['vi_dien_tu'] = Crypt::encryptString(self::VI_DIEN_TU_MAC_DINH);
+
         //$dataBenhNhan['thong_tin_chuyen_tuyen'] = !empty($dataBenhNhan['thong_tin_chuyen_tuyen']) ? json_encode($dataBenhNhan['thong_tin_chuyen_tuyen']) : null;
         
         unset($dataBenhNhan['benh_nhan_id']);
