@@ -777,4 +777,21 @@ class HsbaDonViRepository extends BaseRepositoryV2
     {
 		$this->model->where('id', '=', $hsbaDonViId)->update(['thoi_gian_vao_vien' => Carbon::now()->toDateTimeString()]);
     }
+    
+    public function getLichSuKhamDieuTri($id)
+    {
+        $where = [
+            ['hsba_don_vi.benh_nhan_id', '=', $id],
+        ];
+        $column=[
+            'phong.ten_phong',
+            'hsba_don_vi.thoi_gian_vao_vien',
+            'hsba_don_vi.thoi_gian_ra_vien',
+            'hsba_don_vi.cdrv_icd10_text'
+        ];
+        $result = $this->model->leftJoin('phong','phong.id','=','hsba_don_vi.phong_hien_tai')
+                            ->where($where)
+                            ->get($column);
+        return $result;
+    } 
 }
