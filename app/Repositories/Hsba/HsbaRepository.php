@@ -253,7 +253,7 @@ class HsbaRepository extends BaseRepositoryV2
             'benh_nhan.ma_tiem_chung',
             'benh_nhan.url_hinh_anh',
             'bhyt.tuyen_bhyt',
-            'bhyt.noi_dkkcbbd',
+            'bhyt.ma_cskcbbd',
         ];
         
         $result = $this->model->where('hsba.benh_nhan_id', $benhNhanId)
@@ -410,13 +410,23 @@ class HsbaRepository extends BaseRepositoryV2
     
     public function listBenhNhanTrung($ho_va_ten, $ngay_sinh, $gioi_tinh_id)
     {
-        $result = $this->model
-                            ->whereRaw('LOWER(hsba.ten_benh_nhan) = ?', strtolower($ho_va_ten))
-                            ->where('hsba.ngay_sinh', '=', $ngay_sinh)
-                            ->where('hsba.gioi_tinh_id', '=', $gioi_tinh_id)
-                            ->get(['hsba.benh_nhan_id as id', 'hsba.ten_benh_nhan as ten'
-                                    , 'hsba.ms_bhyt', 'hsba.dia_chi_lien_he as dia_chi'
-                                    , 'hsba.gioi_tinh_id as gioi_tinh', 'hsba.ngay_sinh']);
+        $result = DB::table("benh_nhan")
+                            ->leftJoin(DB::raw('(select benh_nhan_id, MAX(tu_ngay) tu_ngay
+                                from bhyt GROUP BY benh_nhan_id) as bh'), function ($join) {
+                                    $join->on ( 'bh.benh_nhan_id', '=', 'benh_nhan.id' ); })
+                            ->leftJoin("bhyt", function($join){
+                                    $join->On("bhyt.benh_nhan_id", "=", "bh.benh_nhan_id");
+                                    $join->On("bhyt.tu_ngay", "=", "bh.tu_ngay");
+                            })
+                            ->leftJoin("tinh", DB::raw("cast(tinh.id as text)"), "=", "benh_nhan.tinh_thanh_pho_id")
+                            ->leftJoin("huyen", DB::raw("cast(huyen.id as text)"),"=","benh_nhan.quan_huyen_id")
+                            ->leftJoin("xa", DB::raw("cast(xa.id as text)"),"=","benh_nhan.phuong_xa_id")
+                            ->whereRaw('LOWER(trim(benh_nhan.ho_va_ten)) = ?', mb_strtolower(trim($ho_va_ten)))
+                            ->where('benh_nhan.ngay_sinh', '=', $ngay_sinh)
+                            ->where('benh_nhan.gioi_tinh_id', '=', $gioi_tinh_id)
+                            ->get(['benh_nhan.id', 'benh_nhan.ho_va_ten as ten', 'bhyt.ms_bhyt'
+                                    , DB::raw("CONCAT(benh_nhan.so_nha, ' ', benh_nhan.duong_thon, ', ', xa.ten_xa, ', ', huyen.ten_huyen, ', ', tinh.ten_tinh) as dia_chi")
+                                    , 'benh_nhan.gioi_tinh_id as gioi_tinh', 'benh_nhan.ngay_sinh']);
         return $result;
     }
 }
