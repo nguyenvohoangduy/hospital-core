@@ -29,6 +29,10 @@ class HanhChinhService {
     const TT_CHO_DIEU_TRI = 0;
     const TT_DANG_DIEU_TRI = 2;
     
+    //trạng thái hsba
+    const HSBA_MO = 0;
+    const HSBA_DONG = 1;
+    
     //hình thức vào viện
     const NHAN_TU_KKB = 2;
     
@@ -160,7 +164,7 @@ class HanhChinhService {
     
     private function createPhongGiuongDetail($request) {
         $phongGiuongDetailParams['benh_nhan_id'] = $request['benh_nhan_id'];
-        $phongGiuongDetailParams['hsbadv_id'] = $request['hsba_don_vi_id'];
+        $phongGiuongDetailParams['hsbadv_id'] = $request['hsba_don_vi'];
         $phongGiuongDetailParams['hsba_id'] = $request['hsba_id'];
         $phongGiuongDetailParams['phong_benh_id'] = $request['phong_benh_id'];
         $phongGiuongDetailParams['giuong_benh_id'] = $request['giuong_id'];
@@ -246,7 +250,7 @@ class HanhChinhService {
         $hsbaNew['khoa_id'] = $request['khoa_id'];
         $hsbaNew['phong_id'] = $phong->id;
         $hsbaNew['hinh_thuc_vao_vien'] = self::NHAN_TU_KKB;
-        $hsbaNew['trang_thai_hsba'] = 0;
+        $hsbaNew['trang_thai_hsba'] = self::HSBA_MO;
         $hsbaNew['ngay_tao'] = Carbon::now()->toDateTimeString();
         $hsbaId = $this->hsbaRepository->createDataHsba($hsbaNew);
         return $hsbaId;

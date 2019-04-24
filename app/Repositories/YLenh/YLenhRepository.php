@@ -506,6 +506,7 @@ class YLenhRepository extends BaseRepositoryV2
         $data = $this->model
             ->whereIn('phieu_y_lenh_id',$phieuYLenhId)
             ->whereIn('loai_y_lenh',self::Y_LENH_CODE_THUOC_VAT_TU)
+            ->where('trang_thai', '!=', self::NGUNG_Y_LENH)
             ->get();
 		return $data;
     }
