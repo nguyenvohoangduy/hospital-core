@@ -426,7 +426,7 @@ class HsbaRepository extends BaseRepositoryV2
                             ->where('benh_nhan.gioi_tinh_id', '=', $gioi_tinh_id)
                             ->get(['benh_nhan.id', 'benh_nhan.ho_va_ten as ten', 'bhyt.ms_bhyt'
                                     , DB::raw("CONCAT(benh_nhan.so_nha, ' ', benh_nhan.duong_thon, ', ', xa.ten_xa, ', ', huyen.ten_huyen, ', ', tinh.ten_tinh) as dia_chi")
-                                    , 'benh_nhan.gioi_tinh_id as gioi_tinh', 'benh_nhan.ngay_sinh']);
+                                    , 'benh_nhan.gioi_tinh_id as gioi_tinh', 'benh_nhan.ngay_sinh', 'benh_nhan.so_cmnd']);
         return $result;
     }
 }
