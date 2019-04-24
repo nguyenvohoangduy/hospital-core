@@ -50,10 +50,12 @@ class ViDienTuService {
     
     private function updateBenhNhan($request) {
         $dataBenhNhan = $this->benhNhanRepository->getById($request['benh_nhan_id']);
-        $dataBenhNhan['vi_dien_tu'] = $dataBenhNhan['vi_dien_tu'] ? Crypt::decryptString($dataBenhNhan['vi_dien_tu']) : 0;
+        $newEncrypter = new \Illuminate\Encryption\Encrypter(env('APP_SECRET'), \Config::get('app.cipher'));
+        //$dataBenhNhan['vi_dien_tu'] = $newEncrypter->encrypt(self::VI_DIEN_TU_MAC_DINH);
+        $dataBenhNhan['vi_dien_tu'] = $dataBenhNhan['vi_dien_tu'] ? $newEncrypter->decrypt($dataBenhNhan['vi_dien_tu']) : 0;
         $viDienTu = intval($dataBenhNhan['vi_dien_tu']) + $request['so_tien'];
         
-        $data['vi_dien_tu'] = Crypt::encryptString($viDienTu);
+        $data['vi_dien_tu'] = $newEncrypter->encrypt($viDienTu);
         $this->benhNhanRepository->update($request['benh_nhan_id'], $data);
     }
     

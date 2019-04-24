@@ -294,8 +294,9 @@ class BenhNhanServiceV2 {
         $dataBenhNhan['nam_sinh'] =  str_limit($dataBenhNhan['ngay_sinh'], 4,'');// TODO - define constant
         $dataBenhNhan['nguoi_than'] = $this->dataNhomNguoiThan->toJsonEncoded();
         // Khoi tao vi dien tu
-        $dataBenhNhan['vi_dien_tu'] = Crypt::encryptString(self::VI_DIEN_TU_MAC_DINH);
-
+        $newEncrypter = new \Illuminate\Encryption\Encrypter(env('APP_SECRET'));
+        //$dataBenhNhan['vi_dien_tu'] = Crypt::encryptString(self::VI_DIEN_TU_MAC_DINH);
+        $dataBenhNhan['vi_dien_tu'] = $newEncrypter->encrypt(self::VI_DIEN_TU_MAC_DINH);
         //$dataBenhNhan['thong_tin_chuyen_tuyen'] = !empty($dataBenhNhan['thong_tin_chuyen_tuyen']) ? json_encode($dataBenhNhan['thong_tin_chuyen_tuyen']) : null;
         
         unset($dataBenhNhan['benh_nhan_id']);
