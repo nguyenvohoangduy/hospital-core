@@ -97,4 +97,10 @@ class KhoService {
         $data = $this->dmtvtKho->searchThuocVatTuByKhoId($khoId, $keyword);
         return $data;
     }
+    
+    public function getListKhoLap($loaiKho,$benhVienId)
+    {
+        $data = $this->khoRepository->getListKhoLap($loaiKho,$benhVienId);
+        return $data;
+    }    
 }

@@ -12,6 +12,7 @@ class PhongRepository extends BaseRepositoryV2
     const TRANG_THAI_HOAT_DONG = 1;
     const PHONG_HANH_CHINH = 1;
     const PHONG_NOI_TRU = 3;
+    const LOAI_PHONG_KHAM = 2;
     
     const KHOA_KHAM_BENH_DON_TIEP = 'KKB_ĐT';
     
@@ -99,7 +100,11 @@ class PhongRepository extends BaseRepositoryV2
     }
     
     public function getMaNhomPhongByKhoaId($khoaId) {
-        $data = $this->model->where('khoa_id',$khoaId)->distinct()->orderBy('ma_nhom')->get(['ma_nhom']);
+        $where=[
+            ['khoa_id','=',$khoaId],
+            ['loai_phong','=',self::LOAI_PHONG_KHAM]
+            ];
+        $data = $this->model->where($where)->distinct()->orderBy('ma_nhom')->get(['ma_nhom']);
         return $data;
     }    
     
@@ -144,6 +149,55 @@ class PhongRepository extends BaseRepositoryV2
                         ->whereIn('phong.ma_nhom', $listMaNhomPhong)
                         ->orderBy('khoa.ten_khoa')
                         ->get($column);
+        return $data;
+    }
+    
+    public function getListKhoaPhongNoiTruByKhoaId($benhVienId, $listKhoaId) {
+        $column = [
+            'phong.id',
+            'phong.khoa_id',
+            'phong.ten_phong',
+            'phong.ma_nhom',
+            'khoa.ten_khoa',
+            'phong.loai_phong',
+            'khoa.benh_vien_id'
+        ];
+        
+        $data = $this->model
+                        ->join('khoa', function($join) use ($benhVienId) {
+                            $join->on('khoa.id', '=', 'phong.khoa_id')
+                                ->where('khoa.benh_vien_id', '=', $benhVienId);
+                        })
+                        ->whereIn('phong.khoa_id', $listKhoaId)
+                        ->where('phong.loai_phong', self::PHONG_NOI_TRU)
+                        ->orderBy('khoa.ten_khoa')
+                        ->get($column)
+                        ->toArray();
+        return $data;
+    }
+    
+    public function getListKhoaPhongHanhChinhByKhoaId($benhVienId, $listKhoaId) {
+        $column = [
+            'phong.id',
+            'phong.khoa_id',
+            'phong.ten_phong',
+            'phong.ma_nhom',
+            'khoa.ten_khoa',
+            'phong.loai_phong',
+            'khoa.benh_vien_id'
+        ];
+        
+        $data = $this->model
+                        ->join('khoa', function($join) use ($benhVienId) {
+                            $join->on('khoa.id', '=', 'phong.khoa_id')
+                                ->where('khoa.benh_vien_id', '=', $benhVienId);
+                        })
+                        ->whereIn('phong.khoa_id', $listKhoaId)
+                        ->where('phong.loai_phong', self::PHONG_HANH_CHINH)
+                        ->where('phong.ma_nhom', 'like', '%HC%')
+                        ->orderBy('khoa.ten_khoa')
+                        ->get($column)
+                        ->toArray();
         return $data;
     }
   
