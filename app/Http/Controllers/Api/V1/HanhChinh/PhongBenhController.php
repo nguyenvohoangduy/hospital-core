@@ -11,6 +11,12 @@ class PhongBenhController extends APIController
     {
         $this->phongBenhService = $phongBenhService;
     }
+    
+    public function index(Request $request)
+    {
+        $this->setStatusCode(200);
+        return $this->respond([]);
+    }    
 
     public function getListPhongBenh(Request $request)
     {
