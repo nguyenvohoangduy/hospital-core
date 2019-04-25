@@ -418,9 +418,15 @@ class HsbaRepository extends BaseRepositoryV2
                                     $join->On("bhyt.benh_nhan_id", "=", "bh.benh_nhan_id");
                                     $join->On("bhyt.tu_ngay", "=", "bh.tu_ngay");
                             })
-                            ->leftJoin("tinh", DB::raw("cast(tinh.id as text)"), "=", "benh_nhan.tinh_thanh_pho_id")
-                            ->leftJoin("huyen", DB::raw("cast(huyen.id as text)"),"=","benh_nhan.quan_huyen_id")
-                            ->leftJoin("xa", DB::raw("cast(xa.id as text)"),"=","benh_nhan.phuong_xa_id")
+                            ->leftJoin(DB::raw('hanh_chinh as tinh'), function ($join) {
+                                    $join->on (DB::raw("cast(tinh.ma_tinh as text)"), '=', 'benh_nhan.tinh_thanh_pho_id' ); })
+                            ->leftJoin(DB::raw('hanh_chinh as huyen'), function ($join) {
+                                    $join->on (DB::raw("cast(huyen.ma_huyen as text)"), '=', 'benh_nhan.quan_huyen_id' );
+                                    $join->on (DB::raw("cast(huyen.huyen_matinh as text)"), '=', 'benh_nhan.tinh_thanh_pho_id' );})
+                            ->leftJoin(DB::raw('hanh_chinh as xa'), function ($join) {
+                                    $join->on (DB::raw("cast(xa.ma_xa as text)"), '=', 'benh_nhan.phuong_xa_id' );
+                                    $join->on (DB::raw("cast(xa.xa_mahuyen as text)"), '=', 'benh_nhan.quan_huyen_id' );
+                                    $join->on (DB::raw("cast(xa.xa_matinh as text)"), '=', 'benh_nhan.tinh_thanh_pho_id' );})
                             ->whereRaw('LOWER(trim(benh_nhan.ho_va_ten)) = ?', mb_strtolower(trim($ho_va_ten)))
                             ->where('benh_nhan.ngay_sinh', '=', $ngay_sinh)
                             ->where('benh_nhan.gioi_tinh_id', '=', $gioi_tinh_id)
