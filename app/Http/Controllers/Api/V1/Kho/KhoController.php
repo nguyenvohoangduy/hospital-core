@@ -18,6 +18,13 @@ class KhoController extends APIController
         $this->khoService = $khoService;
         $this->danhMucThuocVatTuService = $danhMucThuocVatTuService;
     }
+    
+    public function index(Request $request)
+    {
+        $this->setStatusCode(200);
+        return $this->respond([]);
+    }    
+    
     public function getListKho(Request $request)
     {
         $limit = $request->query('limit', 100);

@@ -29,7 +29,13 @@ class BhytRepository extends BaseRepositoryV2
     
     public function createDataBhyt(array $input)
     {
-        $id = $this->model->create($input)->id;
+        $check = $this->model->where('benh_nhan_id', $input['benh_nhan_id'])->where('ms_bhyt', $input['ms_bhyt'])->get()->first();
+        if($check)
+            $id = $check->id;
+            
+        else 
+            $id = $this->model->create($input)->id;
+            
         return $id;
     }
     

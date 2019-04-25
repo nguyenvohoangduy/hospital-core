@@ -13,6 +13,12 @@ class NhaCungCapController extends APIController
     {
         $this->nhaCungCapService = $nhaCungCapService;
     }
+    
+    public function index(Request $request)
+    {
+        $this->setStatusCode(200);
+        return $this->respond([]);
+    }    
 
     public function getListNhaCungCap(Request $request)
     {
