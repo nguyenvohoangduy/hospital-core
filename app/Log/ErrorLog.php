@@ -57,7 +57,7 @@ abstract class ErrorLog
                                 'StringValue' => $this->folder
                             ],
             'app_env'    => ['DataType' => "String",
-                                'StringValue' => env('APP_ENV')
+                                'StringValue' => \Config::get('app.env')
                             ]
         ];
         //merge $attributes with $messageAttributes

@@ -50,8 +50,7 @@ class ViDienTuService {
     
     private function updateBenhNhan($request) {
         $dataBenhNhan = $this->benhNhanRepository->getById($request['benh_nhan_id']);
-        $newEncrypter = new \Illuminate\Encryption\Encrypter(env('APP_SECRET'), \Config::get('app.cipher'));
-        //$dataBenhNhan['vi_dien_tu'] = $newEncrypter->encrypt(self::VI_DIEN_TU_MAC_DINH);
+        $newEncrypter = new \Illuminate\Encryption\Encrypter(\Config::get('app.secret'), \Config::get('app.cipher'));
         $dataBenhNhan['vi_dien_tu'] = $dataBenhNhan['vi_dien_tu'] ? $newEncrypter->decrypt($dataBenhNhan['vi_dien_tu']) : 0;
         $viDienTu = intval($dataBenhNhan['vi_dien_tu']) + $request['so_tien'];
         
@@ -62,7 +61,8 @@ class ViDienTuService {
     private function createLichSuGiaoDich($request) {
         $data['benh_nhan_id'] = $request['benh_nhan_id'];
         $data['noi_dung'] = $request['noi_dung'];
-        $data['so_tien'] = Crypt::encryptString($request['so_tien']);
+        $newEncrypter = new \Illuminate\Encryption\Encrypter(\Config::get('app.secret'), \Config::get('app.cipher'));
+        $data['so_tien'] = $newEncrypter->encrypt($request['so_tien']);
         $data['ngay_giao_dich'] = Carbon::now()->toDateTimeString();
         $this->lichSuGiaoDichRepository->create($data);
     }
@@ -82,5 +82,28 @@ class ViDienTuService {
     private function getBucketS3ByBenhVienId($benhVienId) {
         $data = $this->benhVienRepository->getBenhVienThietLap($benhVienId);
         return $data['bucket'];
+    }
+    
+    public function getPartial($limit, $page, $keyword)
+    {
+        $data = $this->benhNhanRepository->getPartial($limit, $page, $keyword);
+        return $data;
+    }
+    
+    public function getListLichSuGiaoDichByBenhNhanId($limit, $page, $benhNhanId, $from, $to) {
+        $data = $this->lichSuGiaoDichRepository->getListByBenhNhanId($limit, $page, $benhNhanId, $from, $to);
+        $data['data'] = $this->encryptBalanceInList($data);
+        return $data;
+    }
+    
+    private function encryptBalanceInList($data) {
+        $newEncrypter = new \Illuminate\Encryption\Encrypter(\Config::get('app.secret'), \Config::get('app.cipher'));
+        $result = [];
+        foreach($data['data'] as $value) {
+            $value['so_tien'] = $value['so_tien'] ? $newEncrypter->decrypt($value['so_tien']) : 0;
+            $result[] = $value;
+        }
+        
+        return $result;
     }
 }
