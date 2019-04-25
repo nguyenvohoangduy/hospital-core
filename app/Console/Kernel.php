@@ -15,7 +15,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\PushDmtvt::class,
         Commands\PushTvtTheoKho::class,
-        Commands\CacheDmth::class
+        Commands\CacheDmth::class,
+        Commands\DbSchemaCompare::class
     ];
 
     /**

@@ -102,7 +102,7 @@ class HanhChinhService {
     
     public function luuNhapKhoa(array $request)
     {
-        //0. Update hsbakp cũ
+        //0. Update hsba đơn vị cũ
         //1. Tạo hsba mới
         //2. Tạo hsba_don_vi
         //3. tạo viện phí mới
@@ -117,7 +117,7 @@ class HanhChinhService {
                 $hsbaDv = $this->hsbaDonViRepository->getById($request['hsba_don_vi_id']);
                 //viện phí ?
                 $request['doi_tuong_benh_nhan'] = $hsbaDv['doi_tuong_benh_nhan'];
-                //0. update hsbakp cu
+                //0. update hsba don vi cu
                 $this->updateOldHSBADV($request);
                 
                 //1. Tao hsba
@@ -233,8 +233,10 @@ class HanhChinhService {
         $hsbaDonViParams['hinh_thuc_vao_vien_id'] = self::NHAN_TU_KKB; //2: nhận từ khoa khám bệnh
         $hsbaDonViParams['vien_phi_id'] = $hsbaDv['vien_phi_id'];
         $hsbaDonViParams['bhyt_id'] = $hsbaDv['bhyt_id'];
+        $hsbaDonViParams['buong_hien_tai'] = $request['phong_benh_id'];
         $hsbaDonViParams['giuong_hien_tai'] = $request['giuong_id'];
         $hsbaDonViParams['thoi_gian_vao_vien'] = Carbon::now()->toDateTimeString();
+        $hsbaDonViParams['auth_users_id'] = $request['auth_users_id'];
         // //kiểm tra phòng chuyển đến có phải là phòng điều trị -> nếu đúng -> lấy trạng thái = 2: đang điều trị ngược lại 0: đang chờ điều trị
         $hsbaDonViParams['trang_thai'] = $phong->loai_phong == self::PHONG_DIEU_TRI_NOI_TRU || $phong->loai_phong == self::PHONG_DIEU_TRI_NGOAI_TRU ? self::TT_DANG_DIEU_TRI : self::TT_CHO_DIEU_TRI; 
         $hsbaDonViId = $this->hsbaDonViRepository->create($hsbaDonViParams);
