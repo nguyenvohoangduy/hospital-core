@@ -24,6 +24,12 @@ class NoiTruController extends APIController {
         $this->chiTietPhieuKhoService = $chiTietPhieuKhoService;
     }
     
+    public function index(Request $request)
+    {
+        $this->setStatusCode(200);
+        return $this->respond([]);
+    }    
+    
     public function getListPhongNoiTru($benhVienId, Request $request)
     {
         // main params
