@@ -4,7 +4,7 @@ namespace App\Repositories\BenhNhan;
 use DB;
 use App\Repositories\BaseRepositoryV2;
 use App\Models\BenhNhan;
-
+use App\Helper\Util;
 
 class BenhNhanRepository extends BaseRepositoryV2
 {
@@ -54,4 +54,33 @@ class BenhNhanRepository extends BaseRepositoryV2
         return $result;
     }
     
+    public function getPartial($limit = 100, $page = 1, $keyword = NULL) {
+        $column = [
+            'id',
+            'ho_va_ten',
+            'ngay_sinh',
+            'gioi_tinh_id',
+            'so_cmnd'
+        ];
+        
+        $query = $this->model->where('id', '>', 0);
+        
+        if($keyword != NULL) {
+            $query = $query->where(function($queryAdv) use ($keyword) {
+                $upperCase = mb_convert_case($keyword, MB_CASE_UPPER, "UTF-8");
+                $lowerCase = mb_convert_case($keyword, MB_CASE_LOWER, "UTF-8");
+                $titleCase = mb_convert_case($keyword, MB_CASE_TITLE, "UTF-8");
+                
+                $queryAdv->where('ho_va_ten', 'like', '%'.$upperCase.'%')
+                        ->orWhere('ho_va_ten', 'like', '%'.$lowerCase.'%')
+                        ->orWhere('ho_va_ten', 'like', '%'.$titleCase.'%')
+                        ->orWhere('ho_va_ten', 'like', '%'.$keyword.'%')
+                        ->orWhereRaw("cast(id as text) like '%$keyword%'");
+            });
+        }      
+        
+        $data = $query->orderBy('id', 'desc');
+        
+        return Util::getPartial($data, $limit, $page, $column);
+    }
 }

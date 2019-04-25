@@ -512,6 +512,8 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     
     Route::group(['prefix' => 'vidientu'], function () {
 		Route::post('giaoDich','ViDienTu\ViDienTuController@giaoDich');
+		Route::get('getPartialBenhNhan','ViDienTu\ViDienTuController@getPartialBenhNhan');
+		Route::get('getListLichSuGiaoDichByBenhNhanId','ViDienTu\ViDienTuController@getListLichSuGiaoDichByBenhNhanId');
     });
 });
 
