@@ -30,6 +30,11 @@ class BenhNhanRepository extends BaseRepositoryV2
         return $result;
     }
     
+    public function getById($id) {
+        $result = $this->model->find($id); 
+        return $result; 
+    }
+    
     public function update($id, array $input)
     {
         $result = $this->find($id);

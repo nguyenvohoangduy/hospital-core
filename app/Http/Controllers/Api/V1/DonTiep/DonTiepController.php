@@ -14,6 +14,7 @@ use App\Services\PhongService;
 use App\Services\VienPhiService;
 use App\Http\Controllers\Api\V1\APIController;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Crypt;
 
 class DonTiepController extends APIController
 {

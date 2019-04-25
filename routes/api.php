@@ -509,6 +509,10 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('user', 'AuthController@user');
         Route::post('logout', 'AuthController@logout');
     });
+    
+    Route::group(['prefix' => 'vidientu'], function () {
+		Route::post('giaoDich','ViDienTu\ViDienTuController@giaoDich');
+    });
 });
 
 Route::middleware('jwt.refresh')->get('/token/refresh', 'AuthController@refresh');

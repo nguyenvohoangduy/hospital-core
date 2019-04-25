@@ -533,12 +533,8 @@ class HsbaDonViRepository extends BaseRepositoryV2
             'hsba.dia_chi_lien_he',
             'hsba.url_hinh_anh',
             'hsba.trang_thai_hsba',
-            // 'hsba.loai_nguoi_than',
-            // 'hsba.ten_nguoi_than',
-            // 'hsba.dien_thoai_nguoi_than',
             'hsba.nguoi_than',
             'hsba.ms_bhyt',
-            'hsba.thx_gplace_json',
             'hsba.ma_cskcbbd',
             //'bhyt.id as bhyt_id',
             //'bhyt.ma_cskcbbd',
@@ -623,7 +619,6 @@ class HsbaDonViRepository extends BaseRepositoryV2
     
     public function getByHsbaId($hsbaId, $phongId, $dataBenhVienThietLap)
     {
-        //dd($dataBenhVienThietLap);
         $where = [
             ['hsba_don_vi.loai_benh_an', '<>', self::BENH_AN_KHONG_KHAM_BENH],
             ['hsba.id', '=', $hsbaId]
@@ -670,12 +665,8 @@ class HsbaDonViRepository extends BaseRepositoryV2
             'hsba.dia_chi_lien_he',
             'hsba.url_hinh_anh',
             'hsba.trang_thai_hsba',
-            // 'hsba.loai_nguoi_than',
-            // 'hsba.ten_nguoi_than',
-            // 'hsba.dien_thoai_nguoi_than',
             'hsba.nguoi_than',
             'hsba.ms_bhyt',
-            'hsba.thx_gplace_json',
             'hsba.ma_cskcbbd',
             'bhyt.id as bhyt_id',
             'bhyt.tu_ngay',
@@ -692,52 +683,16 @@ class HsbaDonViRepository extends BaseRepositoryV2
             'hsba_don_vi.cdvv_icd10_text',
             'hsba_don_vi.cdvv_icd10_code',
             'hsba_don_vi.loai_benh_an as loai_benh_an_id',
-            // 'hsba_khoa_phong.ly_do_vao_vien',
-            // 'hsba_khoa_phong.qua_trinh_benh_ly',
-            // 'hsba_khoa_phong.tien_su_benh_ban_than',
-            // 'hsba_khoa_phong.tien_su_benh_gia_dinh',
-            // 'hsba_khoa_phong.cdtd_icd10_text',
-            // 'hsba_khoa_phong.cdtd_icd10_code',
-            // 'hsba_khoa_phong.noi_gioi_thieu_id',
-            // 'hsba_khoa_phong.phong_hien_tai',
-            // 'hsba_khoa_phong.thoi_gian_vao_vien',
-            // 'hsba_khoa_phong.hinh_thuc_vao_vien_id',
-            // 'hsba_khoa_phong.thoi_gian_ra_vien',
             'hsba_don_vi.cdrv_icd10_code',
             'hsba_don_vi.cdrv_icd10_text',
-            // 'hsba_khoa_phong.cdrv_kt_icd10_code',
-            // 'hsba_khoa_phong.cdrv_kt_icd10_text',
-            // 'hsba_khoa_phong.ket_qua_dieu_tri',
-            // 'hsba_khoa_phong.hinh_thuc_ra_vien',
-            // 'hsba_khoa_phong.kham_toan_than',
-            // 'hsba_khoa_phong.kham_bo_phan',
-            // 'hsba_khoa_phong.ket_qua_can_lam_san',
-            // 'hsba_khoa_phong.huong_xu_ly',
-            // 'hsba_khoa_phong.tom_tat_benh_an',
-            // 'hsba_khoa_phong.tien_luong',
-            // 'hsba_khoa_phong.mach',
-            // 'hsba_khoa_phong.nhiet_do',
-            // 'hsba_khoa_phong.nhip_tho',
-            // 'hsba_khoa_phong.sp_o2',
-            // 'hsba_khoa_phong.can_nang',
-            // 'hsba_khoa_phong.chieu_cao',
-            // 'hsba_khoa_phong.thi_luc_mat_trai',
-            // 'hsba_khoa_phong.thi_luc_mat_phai',
-            // 'hsba_khoa_phong.kl_thi_luc_mat_trai',
-            // 'hsba_khoa_phong.kl_thi_luc_mat_phai',
-            // 'hsba_khoa_phong.nhan_ap_mat_trai',
-            // 'hsba_khoa_phong.nhan_ap_mat_phai',
-            // 'hsba_khoa_phong.huyet_ap_thap',
-            // 'hsba_khoa_phong.huyet_ap_cao',
-            // 'hsba_khoa_phong.chan_doan_ban_dau',
-            // 'hsba_khoa_phong.upload_file_hoi_benh',
-            // 'hsba_khoa_phong.upload_file_kham_benh',
             'vien_phi.loai_vien_phi',
             'vien_phi.id as vien_phi_id',
             'bhyt.tuyen_bhyt',
             'sttpk.loai_stt',
             'sttpk.stt_don_tiep_id',
-            'dieu_tri.id as phieu_dieu_tri_id'
+            'dieu_tri.id as phieu_dieu_tri_id',
+            'phong_benh.ten as phong_benh',
+            'giuong_benh.stt as giuong_benh'
         ];
         
         $query = $this->model
@@ -764,7 +719,9 @@ class HsbaDonViRepository extends BaseRepositoryV2
                         ->on('dieu_tri.khoa_id', '=', 'hsba_don_vi.khoa_hien_tai')
                         ->on('dieu_tri.phong_id', '=', 'hsba_don_vi.phong_hien_tai')
                         ->where('dieu_tri.hsba_id', '=', $hsbaId);
-                });
+                })
+                ->leftJoin('phong_benh', 'phong_benh.id', '=', 'hsba_don_vi.buong_hien_tai')
+                ->leftJoin('giuong_benh', 'giuong_benh.id', '=', 'hsba_don_vi.giuong_hien_tai');
             
         $data = $query->where($where)->get($column);
           
