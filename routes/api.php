@@ -139,7 +139,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('registerIndex','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.index');
         //Route::post('register','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.create');
         //Route::get('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient')->name('hsba.update.index');
-        Route::post('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient')->name('hsba.update');
+        //Route::post('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient')->name('hsba.update');
     });
     
     // phong-kham-service
@@ -390,6 +390,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
  		Route::get('getAllThuocVatTu','Kho\KhoController@getAllThuocVatTu');
  		Route::get('searchThuocVatTuByKeywords/{keywords}','Kho\KhoController@searchThuocVatTuByKeywords');
  		Route::get('getNhapTuNccByBenhVienId/{benhVienId}','Kho\KhoController@getNhapTuNccByBenhVienId');
+ 		Route::get('getListThuocVatTu','Kho\KhoController@getListThuocVatTu');
     });
     
     Route::group(['prefix' => 'donvitinh'], function () {
