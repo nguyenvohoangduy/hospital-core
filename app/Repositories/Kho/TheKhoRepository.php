@@ -3,6 +3,7 @@ namespace App\Repositories\Kho;
 use DB;
 use App\Repositories\BaseRepositoryV2;
 use App\Models\TheKho;
+use App\Helper\Util;
 
 class TheKhoRepository extends BaseRepositoryV2
 {
@@ -150,4 +151,60 @@ class TheKhoRepository extends BaseRepositoryV2
         $data = $this->model->findOrFail($id);
         return $data;
     }
+    
+    public function getListThuocVatTu($limit = 100, $page = 1, $keyWords=null, $khoId=null)
+    {
+        $model = $this->model;
+        
+        if($khoId){
+            $model = $model->where('kho_id',$khoId);
+        }
+       
+        $offset = ($page - 1) * $limit;
+        
+        $totalRecord = $model->count();
+        
+        if($totalRecord) {
+            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
+            
+            $data = $model->select(
+                            'danh_muc_thuoc_vat_tu_id',
+                            DB::raw("SUM(sl_dau_ky) AS sl_dau_ky"),
+                            DB::raw("SUM(sl_kha_dung) AS sl_kha_dung"),
+                            DB::raw("SUM(sl_ton_kho) AS sl_ton_kho"),
+                            DB::raw("SUM(sl_ton_kho_chan) AS sl_ton_kho_chan"),
+                            DB::raw("SUM(sl_ton_kho_le_1) AS sl_ton_kho_le_1"),
+                            DB::raw("SUM(sl_ton_kho_le_2) AS sl_ton_kho_le_2"),
+                            'don_vi_co_ban',
+                            DB::raw("SUM(sl_nhap_chan) AS sl_nhap_chan"),
+                            DB::raw("SUM(sl_nhap_le) AS sl_nhap_le"),
+                            'don_vi_nhap',
+                            'ten',
+                            'ma'
+                            )
+                    ->leftJoin('danh_muc_thuoc_vat_tu','danh_muc_thuoc_vat_tu.id','=','the_kho.danh_muc_thuoc_vat_tu_id')
+                    ->groupBy('the_kho.danh_muc_thuoc_vat_tu_id','the_kho.don_vi_co_ban','the_kho.don_vi_nhap','danh_muc_thuoc_vat_tu.ten','danh_muc_thuoc_vat_tu.ma');
+
+            if($keyWords){
+                $data = $data->whereRaw('LOWER(ten) LIKE ? ',['%'.strtolower($keyWords).'%']);
+            }
+            
+            $data = $data->offset($offset)->limit($limit)->get();
+            
+        } else {
+            $totalPage = 0;
+            $data = [];
+            $page = 0;
+            $totalRecord = 0;
+        }
+            
+        $result = [
+            'data'          => $data,
+            'page'          => $page,
+            'totalPage'     => $totalPage,
+            'totalRecord'   => $totalRecord?$data->count():0
+        ];
+        
+        return $result;        
+    }    
 }
