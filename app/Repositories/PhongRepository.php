@@ -287,4 +287,17 @@ class PhongRepository extends BaseRepositoryV2
         return $data;
     }
     
+    public function getIdPhongByMaNhomPhongAndKhoaId($maNhomPhong, $khoaId) {
+        $column = [
+            'id'
+        ];
+        
+        $where = [
+            ['khoa_id', '=', $khoaId],
+            ['ma_nhom', '=', $maNhomPhong]
+        ];
+        
+        $data = $this->model->where($where)->first($column)->toArray();
+        return $data;
+    }
 }
