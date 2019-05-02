@@ -245,6 +245,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('getMauHoiBenhById/{id}/{chucNang}','PhongKham\PhongKhamController@getMauHoiBenhById');
         Route::get('searchThuocVatTuByKhoId/{khoId}/{keyword}','PhongKham\PhongKhamController@searchThuocVatTuByKhoId');
         Route::post('saveThuocVatTu','PhongKham\PhongKhamController@saveThuocVatTu');
+        Route::get('getReportPdf','PhongKham\PhongKhamController@getReportPdf');
     });
     
     Route::group(['prefix' => 'danhmuc'], function () {
