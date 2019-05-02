@@ -228,14 +228,13 @@ class DieuTriService
                 //viện phí ?
                 $khoaHienTai = $hsbaDv['khoa_hien_tai'];
                 $phongHienTai = $hsbaDv['phong_hien_tai'];
-                
                 switch ($khoaHienTai) {
                     case $khoaChuyenDen ://2.1 chuyển phòng
                         //thêm stt_phong_kham
                         $sttPhongKhamParams['loai_stt'] = $request['loai_stt'];
                         $sttPhongKhamParams['ma_nhom'] = $request['ma_nhom'];
                         $sttPhongKhamParams['stt_don_tiep_id'] = $request['stt_don_tiep_id'];
-                        $sttPhongKhamParams['benh_nhan_id'] = $hsbaDv['benh_nhan_id'];
+                        $sttPhongKhamParams['benh_nhan_id'] = $request['benh_nhan_id'];
                         $sttPhongKhamParams['ten_benh_nhan'] = $request['ten_benh_nhan'];
                         $sttPhongKhamParams['gioi_tinh_id'] = $request['gioi_tinh_id'];
                         $sttPhongKhamParams['ms_bhyt'] = $request['ms_bhyt'];
@@ -245,7 +244,6 @@ class DieuTriService
                         $sttPhongKhamParams['hsba_id'] = $hsbaDv['hsba_id'];
                         $sttPhongKhamParams['hsba_don_vi_id'] = $hsbaDv['id'];
                         $data = $this->sttPhongKhamService->getSttPhongKham($sttPhongKhamParams);
-                        
                         //tạo phiếu điều trị đối vs phòng chuyển đến
                         $dieuTriParams['hsba_don_vi_id'] = $hsbaDv['id'];
                         $dieuTriParams['hsba_id'] = $hsbaDv['hsba_id'];
@@ -258,8 +256,9 @@ class DieuTriService
                         $idDieuTri = $this->dieuTriRepository->createDataDieuTri($dieuTriParams);
                         
                         //update phong_hien_tai chuyển tới của hsba_khoa_phong hiện tại 
-                        $hsbaKpParams['phong_hien_tai'] = $data['phong_id'];
-                        $this->hsbaKhoaPhongRepository->update($hsbaDv['id'], $hsbaKpParams);
+                        $phongParams = $this->phongRepository->getIdPhongByMaNhomPhongAndKhoaId($request['ma_nhom'], $request['khoa_id']);
+                        $hsbaDvParams['phong_hien_tai'] = $phongParams['id'];
+                        $this->hsbaDonViRepository->update($hsbaDv['id'], $hsbaDvParams);
                         return $data;
                     break;    
                     

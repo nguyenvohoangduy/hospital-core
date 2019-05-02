@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\V1\Kho;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\V1\APIController;
 use App\Services\KhoService;
+use App\Services\TheKhoService;
 use App\Services\DanhMucThuocVatTuService;
 use App\Http\Requests\CreateKhoFormRequest;
 use App\Http\Requests\UpdateKhoFormRequest;
@@ -12,11 +13,13 @@ class KhoController extends APIController
     public function __construct
     (
         KhoService $khoService,
-        DanhMucThuocVatTuService $danhMucThuocVatTuService
+        DanhMucThuocVatTuService $danhMucThuocVatTuService,
+        TheKhoService $theKhoService
     )
     {
         $this->khoService = $khoService;
         $this->danhMucThuocVatTuService = $danhMucThuocVatTuService;
+        $this->theKhoService = $theKhoService;
     }
     
     public function index(Request $request)
@@ -122,5 +125,16 @@ class KhoController extends APIController
     {
         $data = $this->khoService->getNhapTuNccByBenhVienId($benhVienId);
         return $this->respond($data);
-    }    
+    }
+    
+    public function getListThuocVatTu(Request $request)
+    {
+        $limit = $request->query('limit', 100);
+        $page = $request->query('page', 1);
+        $keyWords = $request->query('keyWords', null);
+        $khoId = $request->query('khoId', null);
+        
+        $data = $this->theKhoService->getListThuocVatTu($limit, $page, $keyWords, $khoId);
+        return $this->respond($data);
+    }      
 }

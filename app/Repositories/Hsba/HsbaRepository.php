@@ -106,6 +106,8 @@ class HsbaRepository extends BaseRepositoryV2
             'hsba.ngay_tao as thoi_gian_vao_vien',
             'hsba.ngay_ra_vien as thoi_gian_ra_vien',
             'hsba.loai_benh_an',
+            'hsba.khoa_id',
+            'hsba.phong_id'
         ];
         
         $query = $this->model->where($where);

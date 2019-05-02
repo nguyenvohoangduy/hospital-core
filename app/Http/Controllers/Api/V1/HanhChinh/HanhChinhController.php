@@ -23,6 +23,12 @@ class HanhChinhController extends APIController {
         $this->hsbaDonViService = $hsbaDonViService;
     }
     
+    public function index(Request $request)
+    {
+        $this->setStatusCode(200);
+        return $this->respond([]);
+    }    
+    
     public function luuNhapKhoa(Request $request)
     {
         $input = $request->all();
