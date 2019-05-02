@@ -513,4 +513,14 @@ class PhongKhamController extends APIController
     {
         return response(200);
     }     
+    
+    public function getReportPdf()
+    {
+        $data = [];
+        $url='https://s3-us-west-2.amazonaws.com/hospital-79488/storage/dang-ky-kham-benh/local/2019/04/12/chuky1.jpg';
+        $b64image = "data:image/jpg;base64,".base64_encode(file_get_contents($url));
+        $data['ho_ten'] = 'nguyễn văn a';
+        $data['chu_ky'] = $b64image;
+        return $data;
+    }    
 }
