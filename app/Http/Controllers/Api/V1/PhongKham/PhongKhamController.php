@@ -103,7 +103,6 @@ class PhongKhamController extends APIController
             $input = $request->except('bmi');
             $this->dieuTriService->updateInfoDieuTri($input);
             $this->setStatusCode(201);
-            
         } catch (\Exception $ex) {
             return $this->respondInternalError($ex->getMessage());
         } catch (\Throwable  $ex) {

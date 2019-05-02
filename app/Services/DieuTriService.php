@@ -108,10 +108,10 @@ class DieuTriService
                 //$this->dieuTriRepository->updateDieuTri($dataDieuTri['id'], $dieuTriParams);
                 //cập nhật hsba_khoa_phong
                 $hsbaDvParams = null;
-                $input = array_where($dieuTriParams, function ($value, $key) {
-                        return $value != '';
-                });
-                $input = array_except($input, ['hsba_don_vi_id', 'thoi_gian_chi_dinh', 'khoa_id']);
+                // $input = array_where($dieuTriParams, function ($value, $key) {
+                //         return $value != '';
+                // });
+                $input = array_except($dieuTriParams, ['hsba_don_vi_id', 'thoi_gian_chi_dinh', 'khoa_id']);
                 
                 // Get Data Benh Vien Thiet Lap
                 if (empty($dieuTriParams['benh_vien_id'])) $dieuTriParams = 1;
@@ -126,22 +126,28 @@ class DieuTriService
                 $item = $this->hsbaPhongKhamRepository->getByHsbaDvId($dieuTriParams['hsba_don_vi_id']);
                 $fileItem =  isset($item->upload_file_kham_benh) ? json_decode($item->upload_file_kham_benh, true) : [];
                 
+                // Splice string file name to delete
+                $subUrl = 'https://s3-'. env('S3_REGION') .'.amazonaws.com/' . $dataBenhVienThietLap['bucket']. '/';
+                $lengthSubUrl = strlen($subUrl);
+                
                 // Remove File old
-                if(!empty($input['oldFiles'])) {
+                if(!empty($params['oldFiles'])) {
                     foreach($fileItem as $file) {
-                        if(!in_array($file, $input['oldFiles'])) {
-                            $s3->deleteObject($file);
+                        if (!in_array($file, $params['oldFiles'])) {
+                            $fileObj = substr($file, $lengthSubUrl);
+                            $s3->deleteObject($fileObj);
                         }
                         else {
                             $fileUpload[] = $file;
                         }
                     }
-                    unset($input['oldFiles']);
+                    unset($params['oldFiles']);
                 }
                 else {
                     if(!empty($fileItem)) {
                         foreach($fileItem as $file) {
-                            $s3->deleteObject($file);
+                            $fileObj = substr($file, $lengthSubUrl);
+                            $s3->deleteObject($fileObj);
                         }
                     }
                 }
