@@ -14,39 +14,39 @@ class SoPhieuThuService {
         $this->soPhieuThuRepository = $soPhieuThuRepository;
     }
   
-    public function createSoPhieuThu(array $input)
+    public function create(array $input)
     {
         $input['ngay_tao'] = Carbon::now();
         $input['so_phieu_su_dung'] = $input['so_phieu_tu'];
-        $id = $this->soPhieuThuRepository->createDataSoPhieuThu($input);
+        $id = $this->soPhieuThuRepository->create($input);
         return $id;
     }
     
-    public function getListSoPhieuThu($maSo, $trangThai) {
-        $data = $this->soPhieuThuRepository->getListSoPhieuThu($maSo, $trangThai);
+    public function getList($maSo, $trangThai) {
+        $data = $this->soPhieuThuRepository->getList($maSo, $trangThai);
         return $data;
     }
     
-    public function getSoPhieuThuById($id)
+    public function getById($id)
     {
-        $data = $this->soPhieuThuRepository->getSoPhieuThuById($id);
+        $data = $this->soPhieuThuRepository->getById($id);
         
         return $data;
     }
     
-    public function updateSoPhieuThu($id, array $input)
+    public function update($id, array $input)
     {
-        $this->soPhieuThuRepository->updateSoPhieuThu($id, $input);
+        $this->soPhieuThuRepository->update($id, $input);
     }
     
-    public function deleteSoPhieuThu($id)
+    public function delete($id)
     {
-        $this->soPhieuThuRepository->deleteSoPhieuThu($id);
+        $this->soPhieuThuRepository->delete($id);
     }
     
-    public function getSoPhieuThuByAuthUserIdAndTrangThai($userId)
+    public function getByAuthUserIdAndTrangThai($userId)
     {
-        $data = $this->soPhieuThuRepository->getSoPhieuThuByAuthUserIdAndTrangThai($userId);
+        $data = $this->soPhieuThuRepository->getByAuthUserIdAndTrangThai($userId);
         
         return $data;
     }
