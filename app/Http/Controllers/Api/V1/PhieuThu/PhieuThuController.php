@@ -19,14 +19,14 @@ class PhieuThuController extends APIController {
         $maSo = $request->query('ma_so', '');
         $trangThai = $request->query('trang_thai', '');
         
-        $data = $this->soPhieuThuService->getListSoPhieuThu($maSo, $trangThai);
+        $data = $this->soPhieuThuService->getList($maSo, $trangThai);
         return $this->respond($data);
     }
     
     public function getSoPhieuThuById($id) {
         $isNumericId = is_numeric($id);
         if($isNumericId) {
-            $data = $this->soPhieuThuService->getSoPhieuThuById($id);
+            $data = $this->soPhieuThuService->getById($id);
         } else {
             $this->setStatusCode(400);
             $data = [];
@@ -37,7 +37,7 @@ class PhieuThuController extends APIController {
     public function createSoPhieuThu(SoPhieuThuFormRequest $request) {
         $input = $request->all();
         
-        $id = $this->soPhieuThuService->createSoPhieuThu($input);
+        $id = $this->soPhieuThuService->create($input);
         if($id) {
             $this->setStatusCode(201);
             return $this->respond($id);
@@ -54,7 +54,7 @@ class PhieuThuController extends APIController {
             $input = $request->all();
             
             if($isNumericId) {
-                $this->soPhieuThuService->updateSoPhieuThu($id, $input);
+                $this->soPhieuThuService->update($id, $input);
             } else {
                 $this->setStatusCode(400);
             }
@@ -68,7 +68,7 @@ class PhieuThuController extends APIController {
         $isNumericId = is_numeric($id);
         
         if($isNumericId) {
-            $this->soPhieuThuService->deleteSoPhieuThu($id);
+            $this->soPhieuThuService->delete($id);
             $this->setStatusCode(204);
         } else {
             $this->setStatusCode(400);
@@ -99,7 +99,7 @@ class PhieuThuController extends APIController {
     
     public function createPhieuThu(Request $request) {
         $input = $request->all();
-        $id = $this->phieuThuService->createPhieuThu($input);
+        $id = $this->phieuThuService->create($input);
         if($id) {
             $this->setStatusCode(201);
             return $this->respond($id);
@@ -112,7 +112,7 @@ class PhieuThuController extends APIController {
     public function getSoPhieuThuByAuthUserIdAndTrangThai($userId) {
         $isNumericId = is_numeric($userId);
         if($isNumericId) {
-            $data = $this->soPhieuThuService->getSoPhieuThuByAuthUserIdAndTrangThai($userId);
+            $data = $this->soPhieuThuService->getByAuthUserIdAndTrangThai($userId);
         } else {
             $this->setStatusCode(400);
             $data = [];

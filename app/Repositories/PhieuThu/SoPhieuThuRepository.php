@@ -11,7 +11,7 @@ class SoPhieuThuRepository extends BaseRepositoryV2
         return SoPhieuThu::class;
     }
     
-    public function getListSoPhieuThu($maSo, $trangThai) {
+    public function getList($maSo, $trangThai) {
         $column = [
             'so_phieu_thu.id',
             'auth_users.fullname',
@@ -37,36 +37,36 @@ class SoPhieuThuRepository extends BaseRepositoryV2
         return $result;
     }
     
-    public function getSoPhieuThuById($id)
+    public function getById($id)
     {
         $result = $this->model->find($id); 
         return $result;
     }
   
-    public function createDataSoPhieuThu(array $input)
+    public function create(array $input)
     {
         $id = $this->model->create($input)->id;
         return $id;
     }
     
-    public function updateSoPhieuThu($id, array $input)
+    public function update($id, array $input)
     {
         $data = $this->model->findOrFail($id);
 		$data->update($input);
     }
     
-    public function deleteSoPhieuThu($id)
+    public function delete($id)
     {
         $this->model->where('id', $id)->delete();
     }
     
-    public function getSoPhieuThuByAuthUserIdAndTrangThai($auth_users_id) {
+    public function getByAuthUserIdAndTrangThai($auth_users_id) {
         $result = $this->model
                         ->where('auth_users_id', $auth_users_id)
                         ->where('trang_thai', 0)
                         ->whereRaw('tong_so_phieu > so_phieu_su_dung')
                         ->orderBy('id')
-                        ->first(); 
+                        ->get();
         return $result;
     }
 }

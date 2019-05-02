@@ -37,11 +37,15 @@ class HsbaPhongKhamService {
             $item = $this->hsbaPhongKhamRepository->getDetail($params['hsba_id'], $params['phong_id']);
             $fileItem =  isset($item->upload_file_hoi_benh) ? json_decode($item->upload_file_hoi_benh, true) : [];
             
+            // Splice string file name to delete
+            $subUrl = 'https://s3-'. env('S3_REGION') .'.amazonaws.com/' . $dataBenhVienThietLap['bucket']. '/';
+            $lengthSubUrl = strlen($subUrl);
             // Remove File old
             if(!empty($params['oldFiles'])) {
                 foreach($fileItem as $file) {
-                    if(!in_array($file, $params['oldFiles'])) {
-                        $s3->deleteObject($file);
+                    if (!in_array($file, $params['oldFiles'])) {
+                        $fileObj = substr($file, $lengthSubUrl);
+                        $s3->deleteObject($fileObj);
                     }
                     else {
                         $fileUpload[] = $file;
@@ -52,7 +56,8 @@ class HsbaPhongKhamService {
             else {
                 if(!empty($fileItem)) {
                     foreach($fileItem as $file) {
-                        $s3->deleteObject($file);
+                        $fileObj = substr($file, $lengthSubUrl);
+                        $s3->deleteObject($fileObj);
                     }
                 }
             }
