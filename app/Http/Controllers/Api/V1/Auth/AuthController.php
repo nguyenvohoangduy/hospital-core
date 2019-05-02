@@ -75,11 +75,18 @@ class AuthController extends APIController
         $data = $this->authService->getUserRolesByEmail($request->email);
         $userName = $this->authService->getUserNameByEmail($request->email);
         $listPermission = $this->authPermissionsService->getAllPermissionByUserId($userName->id);
+        $subMenu=[];
+        if(!empty($listPermission)){
+            foreach($listPermission as $item){
+                $subMenu[]=$item->display_name;
+            }
+        }
         $extraPayload = array(
             'permission' => $listPermission,
             'groupId'  => $data['idGroup'],
             'userName' => $userName->fullname,
             'userId'   => $userName->id,
+            'subMenu'  => array_values(array_unique($subMenu))
         );
         
         return response([
