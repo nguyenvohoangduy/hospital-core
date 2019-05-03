@@ -306,6 +306,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::delete('deleteAuthUsers/{id}','AuthUser\AuthUserController@deleteAuthUsers');
      	Route::get('checkEmail/{email}','AuthUser\AuthUserController@checkEmailbyEmail');
      	Route::post('resetPassword','AuthUser\AuthUserController@resetPasswordByUserId');
+     	Route::get('getAuthUserThuNgan','AuthUser\AuthUserController@getAuthUserThuNgan');
     });
     
     Route::group(['prefix' => 'nhomnguoidung'], function () {

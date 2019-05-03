@@ -16,8 +16,10 @@ class SoPhieuThuService {
   
     public function create(array $input)
     {
+        $input['so_phieu_den'] = $input['so_phieu_tu'] + $input['tong_so_phieu'] - 1;
         $input['ngay_tao'] = Carbon::now();
-        $input['so_phieu_su_dung'] = $input['so_phieu_tu'];
+        $input['so_phieu_su_dung'] = 0;
+        $input['so_phieu_dang_su_dung'] = $input['so_phieu_tu'];
         $id = $this->soPhieuThuRepository->create($input);
         return $id;
     }

@@ -145,4 +145,9 @@ class AuthUsersService
         if(!empty($find))
             $this->authUsersRepository->resetPasswordByUserId($input);
     }    
+    
+    public function getAuthUserThuNgan() {
+        $data = $this->authUsersRepository->getAuthUserThuNgan();
+        return $data;
+    }
 }

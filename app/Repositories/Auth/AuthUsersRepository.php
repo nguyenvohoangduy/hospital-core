@@ -145,4 +145,44 @@ class AuthUsersRepository extends BaseRepositoryV2
         $loginDate = date('m/d/Y h:i:s a', time());
         $this->model->where('email',$email)->update(['login_at' => $loginDate]);
     }
+    
+    public function getAuthUserThuNgan() {
+        $limit = 100;
+        $page = 1;
+        $offset = ($page - 1) * $limit;
+        
+        $column = [
+            'id',
+            'fullname',
+        ];
+        
+        $khoaThuNgan = ['Khoa Tài Chính Kế Toán', 'Khoa Khám Bệnh'];
+        
+        $query = $this->model;
+        
+        $query = $query->whereIn('khoa', $khoaThuNgan);
+        $totalRecord = $query->count();
+        if($totalRecord) {
+            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
+            
+            $data = $query->orderBy('id', 'desc')
+                        ->offset($offset)
+                        ->limit($limit)
+                        ->get($column);
+        } else {
+            $totalPage = 0;
+            $data = [];
+            $page = 0;
+            $totalRecord = 0;
+        }
+        
+        $result = [
+            'data'          => $data,
+            'page'          => $page,
+            'totalPage'     => $totalPage,
+            'totalRecord'   => $totalRecord
+        ];
+        
+        return $result;
+    }
 }
