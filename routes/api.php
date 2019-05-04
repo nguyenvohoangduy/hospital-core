@@ -159,6 +159,11 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('phieuNhapKhoIndex','PhieuNhapKho\PhieuNhapKhoController@index')->name('phieu-nhap-kho.index');
         Route::get('phieuYeuCauIndex','PhieuYeuCau\PhieuYeuCauController@index')->name('phieu-yeu-cau.index');
         Route::get('quanLyTonKhoIndex','Kho\KhoController@index')->name('quan-ly-ton-kho.index');
+    }); 
+    
+    //thu-ngan-service
+    Route::group(['prefix' => 'thu-ngan-service','as' => 'thu-ngan.' ,'middleware' => ['jwt.auth', 'authorization'] ], function () {
+        Route::get('index','ThuNgan\ThuNganController@index')->name('index');
     });    
         
     Route::group(['prefix' => 'dontiep'], function () {
