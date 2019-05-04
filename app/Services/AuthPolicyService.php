@@ -48,5 +48,5 @@ class AuthPolicyService {
     {
         $data = $this->authPolicyRepository->getByServiceId($serviceId);
         return $data;
-    }    
+    }
 }

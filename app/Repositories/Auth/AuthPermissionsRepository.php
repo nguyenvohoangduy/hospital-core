@@ -140,13 +140,20 @@ class AuthPermissionsRepository extends BaseRepositoryV2
     }     
     
     public function getAllPermissionByUserId($listGroupId) {
+        $column=[
+            'auth_permissions.*',
+            'auth_service.*',
+            'auth_policy.url',
+            'auth_policy.name as policy_name'
+            ];
         $data = $this->model
             ->join('auth_groups_has_permissions as t1', function($join) use ($listGroupId) {
                 $join->on('t1.permission_id', '=', 'auth_permissions.id')
                     ->whereIn('t1.group_id', $listGroupId);
             })
             ->leftJoin('auth_service', 'auth_service.id', '=', 'auth_permissions.service_id')
-            ->get();
+            ->leftJoin('auth_policy', 'auth_policy.id', '=', 'auth_permissions.policy_id')
+            ->get($column);
             
         return $data;
     }

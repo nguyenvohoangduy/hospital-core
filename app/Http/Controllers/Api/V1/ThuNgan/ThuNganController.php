@@ -23,6 +23,12 @@ class ThuNganController extends APIController
         $this->vienPhiService = $vienPhiService;
         $this->yLenhService = $yLenhService;
     }
+    
+    public function index(Request $request)
+    {
+        $this->setStatusCode(200);
+        return $this->respond([]);
+    }    
   
     public function createSoThuNgan(SoThuNganFormRequest $request)
     {

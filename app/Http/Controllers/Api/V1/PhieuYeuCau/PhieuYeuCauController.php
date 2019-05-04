@@ -16,6 +16,12 @@ class PhieuYeuCauController extends APIController
         $this->khoService = $khoService;
     }
     
+    public function index(Request $request)
+    {
+        $this->setStatusCode(200);
+        return $this->respond([]);
+    }    
+    
     public function getTonKhaDungById($id,$khoId)
     {
         $data = $this->theKhoService->getTonKhaDungById($id,$khoId);
