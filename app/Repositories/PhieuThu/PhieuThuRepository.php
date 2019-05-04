@@ -95,7 +95,7 @@ class PhieuThuRepository extends BaseRepositoryV2
         return $data;
     }
   
-    public function createDataPhieuThu(array $input)
+    public function create(array $input)
     {
         $id = $this->model->create($input)->id;
         return $id;

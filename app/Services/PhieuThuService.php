@@ -27,20 +27,19 @@ class PhieuThuService {
         $this->hsbaDonViRepository = $hsbaKhoaPhongRepository;
     }
   
-    public function createPhieuThu(array $input)
+    public function create(array $input)
     {
         $result = DB::transaction(function() use ($input) {
             try{
-                $soPhieuThuItem = $this->soPhieuThuRepository->getSoPhieuThuByAuthUserIdAndTrangThai($input['auth_users_id']);
+                $soPhieuThuItem = $this->soPhieuThuRepository->getById($input['so_phieu_thu_id']);
                 //cần check khi chưa có sổ phiếu thu thì sao ???
-                $input['so_phieu_thu_id'] = $soPhieuThuItem->id;
                 $input['ma_so'] = $soPhieuThuItem->so_phieu_su_dung + 1;
                 $input['ngay_tao'] = Carbon::now();
-                $id = $this->phieuThuRepository->createDataPhieuThu($input);
+                $id = $this->phieuThuRepository->create($input);
                 
                 // Update so phieu thu
                 $dataSoPhieuThu['so_phieu_su_dung'] = $input['ma_so'];
-                $this->soPhieuThuRepository->updateSoPhieuThu($soPhieuThuItem->id, $dataSoPhieuThu);
+                $this->soPhieuThuRepository->update($input['so_phieu_thu_id'], $dataSoPhieuThu);
                 
                 // Update Y Lenh
                 $dataYLenh['phieu_thu_id'] = $id;

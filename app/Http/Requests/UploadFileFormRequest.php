@@ -22,8 +22,7 @@ class UploadFileFormRequest extends ApiFormRequest
     public function rules()
     {
         return [
-            'files.*' => 'mimes:mpga,jpeg,png,jpg,gif,svg,pdf|max:307200'
-            //'files.*'  => 'mimes:jpeg,bmp,png,audio/mpeg,audio/mp3,audio/mpeg3,pdf,jpg|max:307200'
+            'files.*' => 'mimes:mpga,jpeg,png,jpg,gif,svg,pdf,mp3,mpeg3|max:307200'
         ];
     }
 }
