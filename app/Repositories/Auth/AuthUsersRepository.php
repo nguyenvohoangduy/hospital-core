@@ -4,6 +4,7 @@ use DB;
 use App\Repositories\BaseRepositoryV2;
 use App\Models\Auth\AuthUsers;
 use Carbon\Carbon;
+use App\Helper\Util;
 
 class AuthUsersRepository extends BaseRepositoryV2
 {
@@ -161,28 +162,8 @@ class AuthUsersRepository extends BaseRepositoryV2
         $query = $this->model;
         
         $query = $query->whereIn('khoa', $khoaThuNgan);
-        $totalRecord = $query->count();
-        if($totalRecord) {
-            $totalPage = ($totalRecord % $limit == 0) ? $totalRecord / $limit : ceil($totalRecord / $limit);
-            
-            $data = $query->orderBy('id', 'desc')
-                        ->offset($offset)
-                        ->limit($limit)
-                        ->get($column);
-        } else {
-            $totalPage = 0;
-            $data = [];
-            $page = 0;
-            $totalRecord = 0;
-        }
+        $data = $query->orderBy('id', 'desc');
         
-        $result = [
-            'data'          => $data,
-            'page'          => $page,
-            'totalPage'     => $totalPage,
-            'totalRecord'   => $totalRecord
-        ];
-        
-        return $result;
+        return Util::getPartial($data,$limit,$page);
     }
 }
