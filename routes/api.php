@@ -133,10 +133,10 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     Route::group(['prefix' => 'don-tiep-service','as' => 'don-tiep.', 'middleware' => ['jwt.auth', 'authorization'] ], function () {
         Route::get('index','DonTiep\DonTiepController@index')->name('index');
         
-        Route::get('registerIndex','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.index');
-        Route::get('register-index','DonTiep\DonTiepController@registerIndex')->name('dang-ky-kham-benh.index');
+        // Route::get('registerIndex','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.index');
+        // Route::get('register-index','DonTiep\DonTiepController@registerIndex')->name('dang-ky-kham-benh.index');
         Route::post('register','DonTiep\DonTiepController@register')->name('dang-ky-kham-benh.create');
-        Route::get('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient')->name('hsba.update.index');
+        // Route::get('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient')->name('hsba.update.index');
         Route::post('updateInfoPatient/{hsbaId}','DonTiep\DonTiepController@updateInfoPatient')->name('hsba.update');
     });
     
