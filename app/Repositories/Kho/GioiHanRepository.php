@@ -55,7 +55,7 @@ class GioiHanRepository extends BaseRepositoryV2
     
     public function getListThuocVatTuSapHet($limit = 100, $page = 1, $keyWords=null, $khoId=null)
     {
-        $model = $this->model->whereRaw('sl_ton_kho < co_so');
+        $model = $this->model->whereRaw('sl_ton_kho <= co_so');
          
         if($khoId){
             $model = $model->where('kho_id',$khoId);
