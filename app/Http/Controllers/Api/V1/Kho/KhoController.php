@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Api\V1\APIController;
 use App\Services\KhoService;
 use App\Services\TheKhoService;
+use App\Services\GioiHanService;
 use App\Services\DanhMucThuocVatTuService;
 use App\Http\Requests\CreateKhoFormRequest;
 use App\Http\Requests\UpdateKhoFormRequest;
@@ -14,12 +15,14 @@ class KhoController extends APIController
     (
         KhoService $khoService,
         DanhMucThuocVatTuService $danhMucThuocVatTuService,
-        TheKhoService $theKhoService
+        TheKhoService $theKhoService,
+        GioiHanService $gioiHanService
     )
     {
         $this->khoService = $khoService;
         $this->danhMucThuocVatTuService = $danhMucThuocVatTuService;
         $this->theKhoService = $theKhoService;
+        $this->gioiHanService = $gioiHanService;
     }
     
     public function index(Request $request)
@@ -156,7 +159,7 @@ class KhoController extends APIController
         $keyWords = $request->query('keyWords', null);
         $khoId = $request->query('khoId', null);
         
-        $data = $this->theKhoService->getListThuocVatTuSapHet($limit, $page, $keyWords, $khoId);
+        $data = $this->gioiHanService->getListThuocVatTuSapHet($limit, $page, $keyWords, $khoId);
         return $this->respond($data);
     }
 }

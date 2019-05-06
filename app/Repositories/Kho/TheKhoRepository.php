@@ -240,31 +240,4 @@ class TheKhoRepository extends BaseRepositoryV2
         return Util::getPartial($data,$limit,$page);
     }   
     
-    public function getListThuocVatTuSapHet($limit = 100, $page = 1, $keyWords=null, $khoId=null)
-    {
-        $model = DB::table('gioi_han')->whereRaw('sl_ton_kho < co_so');
-         
-        if($khoId){
-            $model = $model->where('kho_id',$khoId);
-        }
-   
-        $data = $model->select(
-                        'gioi_han.danh_muc_thuoc_vat_tu_id',
-                        'gioi_han.sl_kha_dung',
-                        'gioi_han.sl_ton_kho',
-                        DB::raw('don_vi_tinh.ten don_vi_co_ban'),
-                        'danh_muc_thuoc_vat_tu.ten',
-                        'danh_muc_thuoc_vat_tu.ma',
-                        'ten_kho'
-                        )
-                ->leftJoin('danh_muc_thuoc_vat_tu','danh_muc_thuoc_vat_tu.id','=','gioi_han.danh_muc_thuoc_vat_tu_id')
-                ->leftJoin('kho','kho.id','=','gioi_han.kho_id')
-                ->leftJoin('don_vi_tinh','don_vi_tinh.id','=','danh_muc_thuoc_vat_tu.don_vi_tinh_id');
-
-        if($keyWords){
-            $data = $data->whereRaw('LOWER(ten) LIKE ? ',['%'.strtolower($keyWords).'%']);
-        }
-        
-        return Util::getPartial($data,$limit,$page);
-    }  
 }

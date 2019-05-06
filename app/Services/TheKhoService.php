@@ -59,10 +59,4 @@ class TheKhoService {
         return $data;
     } 
     
-    public function getListThuocVatTuSapHet($limit, $page, $keyWords, $khoId)
-    {
-        $data = $this->theKhoRepository->getListThuocVatTuSapHet($limit, $page, $keyWords, $khoId);
-        
-        return $data;
-    } 
 }
