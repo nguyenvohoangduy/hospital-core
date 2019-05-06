@@ -210,7 +210,7 @@ class TheKhoRepository extends BaseRepositoryV2
     
     public function getListThuocVatTuHetHan($limit = 100, $page = 1, $keyWords=null, $khoId=null)
     {
-        $model = $this->model->whereRaw('sl_ton_kho_chan + sl_ton_kho_le_1 + sl_ton_kho_le_2 > 0');
+        $model = $this->model->whereRaw('sl_ton_kho > 0');
          
         if($khoId){
             $model = $model->where('kho_id',$khoId);
