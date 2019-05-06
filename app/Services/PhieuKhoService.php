@@ -98,6 +98,7 @@ class PhieuKhoService {
                 $theKhoParams['gia_nhap']=$item['don_gia_nhap'];  
                 //$theKhoParams['vat_nhap']=$item['vat%'];
                 $theKhoParams['trang_thai']=self::SU_DUNG;   
+                $theKhoParams['han_su_dung']=$item['han_su_dung'];  
                 $theKhoId = $this->theKhoRepository->createTheKho($theKhoParams);
                 
                 $chiTietPhieuKhoParams = [];
@@ -122,16 +123,22 @@ class PhieuKhoService {
                 
                 if($thuocVatTu) {
                     $gioiHanParams['sl_kha_dung'] = $thuocVatTu['sl_kha_dung'] + $theKhoParams['sl_kha_dung'];
+                    $gioiHanParams['sl_ton_kho'] = $thuocVatTu['sl_ton_kho'] + $theKhoParams['sl_kha_dung'];
                     $this->gioiHanRepository->updateSoLuongKhaDung($gioiHanParams);
+                    $this->gioiHanRepository->updateSoLuongTonKho($gioiHanParams);
                     
                     //update so_luong_kha_dung in elasticsearch
                     $this->dmtvtKho->updateSoLuongKhaDungById($gioiHanParams);
                 } else {
                     $gioiHanParams['sl_kha_dung'] = $theKhoParams['sl_kha_dung'];
+                    $gioiHanParams['sl_ton_kho'] = $theKhoParams['sl_kha_dung'];
                     $this->gioiHanRepository->createGioiHan($gioiHanParams);
                     
                     //create document in elasticsearch index
-                    $this->dmtvtKho->pushItemToIndex($item, $input['kho_id']);
+                    $obj = $this->danhMucThuocVatTuRepository->getById($item['id']);
+                    $obj['sl_kha_dung'] = $thuocVatTu['sl_kha_dung'] + $theKhoParams['sl_kha_dung'];
+                    $obj['sl_ton_kho'] = $thuocVatTu['sl_ton_kho'] + $theKhoParams['sl_kha_dung'];
+                    $this->dmtvtKho->pushItemToIndex($obj, $input['kho_id']);
                 }
             }
         });
@@ -399,7 +406,9 @@ class PhieuKhoService {
                         
                         if($thuocVatTu) {
                             $gioiHanParams['sl_kha_dung'] = $thuocVatTu['sl_kha_dung'] + $theKhoParams['sl_kha_dung'];
+                            $gioiHanParams['sl_ton_kho'] = $thuocVatTu['sl_ton_kho'] + $theKhoParams['sl_kha_dung'];
                             $this->gioiHanRepository->updateSoLuongKhaDung($gioiHanParams);
+                            $this->gioiHanRepository->updateSoLuongTonKho($gioiHanParams);
                             
                             //update so_luong_kha_dung in elasticsearch
                             $this->dmtvtKho->updateSoLuongKhaDungById($gioiHanParams);
