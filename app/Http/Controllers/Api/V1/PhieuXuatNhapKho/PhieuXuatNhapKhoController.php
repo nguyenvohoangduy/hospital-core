@@ -10,6 +10,13 @@ class PhieuXuatNhapKhoController extends APIController
     {
         $this->phieuKhoService = $phieuKhoService;
     }
+    
+    public function index(Request $request)
+    {
+        $this->setStatusCode(200);
+        return $this->respond([]);
+    }    
+    
     public function getListPhieuKhoByKhoIdXuLy(Request $request)
     {
         $startDay = $request->query('startDay');

@@ -26,8 +26,9 @@ class PhieuThuRepository extends BaseRepositoryV2
             'phieu_thu.id',
             'auth_users.fullname',
             'so_phieu_thu.ma_so',
+            'phieu_thu.ma_so as ma_phieu',
             'phieu_thu.loai_phieu_thu_id',
-            'phieu_thu.ngay_tap',
+            'phieu_thu.ngay_tao',
             'phieu_thu.vien_phi_id',
             'phieu_thu.ten_benh_nhan',
             'phieu_thu.ghi_chu',
@@ -39,7 +40,7 @@ class PhieuThuRepository extends BaseRepositoryV2
         $query = $this->model->where('so_phieu_thu_id', $id);
         $query->join('auth_users', 'phieu_thu.auth_users_id', '=', 'auth_users.id');
         $query->join('so_phieu_thu', 'phieu_thu.so_phieu_thu_id', '=', 'so_phieu_thu.id');
-        $data = $query->get();
+        $data = $query->get($column);
         
         $result = [
             'data'          => $data
@@ -95,7 +96,7 @@ class PhieuThuRepository extends BaseRepositoryV2
         return $data;
     }
   
-    public function createDataPhieuThu(array $input)
+    public function create(array $input)
     {
         $id = $this->model->create($input)->id;
         return $id;

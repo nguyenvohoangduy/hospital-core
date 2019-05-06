@@ -120,5 +120,9 @@ class AuthUserController extends APIController
             return $ex;
         }
     }    
-
+    
+    public function getAuthUserThuNgan(Request $request) {
+        $data = $this->authUsersService->getAuthUserThuNgan();
+        return $this->respond($data);
+    }
 }

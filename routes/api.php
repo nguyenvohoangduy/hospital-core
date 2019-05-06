@@ -127,8 +127,6 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
 //         Route::delete('delete/{id}','KhoaPhong\PhongController@delete')->name('phong.delete');
 
         Route::get('phongBenhIndex','HanhChinh\PhongBenhController@index')->name('phong-benh.index');
-        Route::get('khoIndex','Kho\KhoController@index')->name('kho.index');
-        Route::get('nhaCungCapIndex','NhaCungCap\NhaCungCapController@index')->name('nha-cung-cap.index');
     });    
     
     // don-tiep-service
@@ -150,7 +148,23 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     //noi-tru-service
     Route::group(['prefix' => 'noi-tru-service','as' => 'noi-tru.' ,'middleware' => ['jwt.auth', 'authorization'] ], function () {
         Route::get('index','NoiTru\NoiTruController@index')->name('index');
-    });     
+        Route::get('hanhChinhIndex','HanhChinh\HanhChinhController@index')->name('hanh-chinh.index');
+    });
+    
+    //thuoc-vat-tu-service
+    Route::group(['prefix' => 'thuoc-vat-tu-service','as' => 'thuoc-vat-tu.' ,'middleware' => ['jwt.auth', 'authorization'] ], function () {
+        Route::get('khoIndex','Kho\KhoController@index')->name('kho.index');
+        Route::get('nhaCungCapIndex','NhaCungCap\NhaCungCapController@index')->name('nha-cung-cap.index');
+        Route::get('phieuXuatNhapKhoIndex','PhieuXuatNhapKho\PhieuXuatNhapKhoController@index')->name('phieu-xuat-nhap-kho.index');
+        Route::get('phieuNhapKhoIndex','PhieuNhapKho\PhieuNhapKhoController@index')->name('phieu-nhap-kho.index');
+        Route::get('phieuYeuCauIndex','PhieuYeuCau\PhieuYeuCauController@index')->name('phieu-yeu-cau.index');
+        Route::get('quanLyTonKhoIndex','Kho\KhoController@index')->name('quan-ly-ton-kho.index');
+    }); 
+    
+    //thu-ngan-service
+    Route::group(['prefix' => 'thu-ngan-service','as' => 'thu-ngan.' ,'middleware' => ['jwt.auth', 'authorization'] ], function () {
+        Route::get('index','ThuNgan\ThuNganController@index')->name('index');
+    });    
         
     Route::group(['prefix' => 'dontiep'], function () {
         Route::post('makeSttDonTiepWhenScanCard','DonTiep\SttDonTiepController@makeSttDonTiepWhenScanCard');
@@ -297,6 +311,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::delete('deleteAuthUsers/{id}','AuthUser\AuthUserController@deleteAuthUsers');
      	Route::get('checkEmail/{email}','AuthUser\AuthUserController@checkEmailbyEmail');
      	Route::post('resetPassword','AuthUser\AuthUserController@resetPasswordByUserId');
+     	Route::get('getAuthUserThuNgan','AuthUser\AuthUserController@getAuthUserThuNgan');
     });
     
     Route::group(['prefix' => 'nhomnguoidung'], function () {
