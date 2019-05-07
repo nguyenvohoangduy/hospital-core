@@ -207,4 +207,37 @@ class TheKhoRepository extends BaseRepositoryV2
         
         return $result;        
     }    
+    
+    public function getListThuocVatTuHetHan($limit = 100, $page = 1, $keyWords=null, $khoId=null)
+    {
+        $model = $this->model->whereRaw('sl_ton_kho > 0');
+         
+        if($khoId){
+            $model = $model->where('kho_id',$khoId);
+        }
+   
+        $data = $model->select(
+                        'danh_muc_thuoc_vat_tu_id',
+                        DB::raw("SUM(sl_dau_ky) AS sl_dau_ky"),
+                        DB::raw("SUM(sl_kha_dung) AS sl_kha_dung"),
+                        DB::raw("SUM(sl_ton_kho) AS sl_ton_kho"),
+                        'don_vi_co_ban',
+                        'ten',
+                        'ma',
+                        'the_kho.han_su_dung',
+                        'ten_kho'
+                        )
+                ->leftJoin('danh_muc_thuoc_vat_tu','danh_muc_thuoc_vat_tu.id','=','the_kho.danh_muc_thuoc_vat_tu_id')
+                ->leftJoin('kho','kho.id','=','the_kho.kho_id')
+                ->whereRaw("han_su_dung < (now()+(canh_bao_het_han||' day')::interval)")
+                ->groupBy('the_kho.danh_muc_thuoc_vat_tu_id','the_kho.don_vi_co_ban','the_kho.don_vi_nhap'
+                    ,'danh_muc_thuoc_vat_tu.ten','danh_muc_thuoc_vat_tu.ma','the_kho.han_su_dung','kho.ten_kho');
+
+        if($keyWords){
+            $data = $data->whereRaw('LOWER(ten) LIKE ? ',['%'.strtolower($keyWords).'%']);
+        }
+        
+        return Util::getPartial($data,$limit,$page);
+    }   
+    
 }

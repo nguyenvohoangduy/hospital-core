@@ -329,9 +329,11 @@ class DmtvtKho
         $motNua = '';
         $motPhanTu = '';
         
-        if($item->don_vi_quy_doi == self::THUOC_DANG_VIEN || $item->don_vi_tinh == self::THUOC_DANG_VIEN) {
-            $motNua = self::MOT_NUA;
-            $motPhanTu = self::MOT_PHAN_TU;
+        if(isset($item->don_vi_quy_doi)) {
+            if($item->don_vi_quy_doi == self::THUOC_DANG_VIEN || $item->don_vi_tinh == self::THUOC_DANG_VIEN) {
+                $motNua = self::MOT_NUA;
+                $motPhanTu = self::MOT_PHAN_TU;
+            }
         }
         
         $params = [
@@ -349,7 +351,7 @@ class DmtvtKho
                 'ma_bhyt'               => $item->ma_bhyt,
                 'don_vi_tinh_id'        => $item->don_vi_tinh_id,
                 'don_vi_tinh'           => $item->don_vi_tinh,
-                'don_vi_quy_doi'        => $item->don_vi_quy_doi,
+                'don_vi_quy_doi'        => $item->don_vi_quy_doi ?? NULL,
                 'sl_kha_dung'           => $item->sl_kha_dung,
                 'nhan_vien_tao'         => $item->nhan_vien_tao,
                 'nhan_vien_cap_nhat'    => $item->nhan_vien_cap_nhat,
