@@ -52,4 +52,11 @@ class TheKhoService {
         return $data;
     }     
     
+    public function getListThuocVatTuHetHan($limit, $page, $keyWords, $khoId)
+    {
+        $data = $this->theKhoRepository->getListThuocVatTuHetHan($limit, $page, $keyWords, $khoId);
+        
+        return $data;
+    } 
+    
 }
