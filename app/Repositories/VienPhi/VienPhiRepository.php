@@ -85,5 +85,10 @@ class VienPhiRepository extends BaseRepositoryV2
     //     return $data; 
     // }    
     
- 
+    public function getVienPhiByHsbaId($hsbaId) {
+        $data = $this->model
+                ->where('hsba_id', $hsbaId)
+                ->first();
+        return $data; 
+    }
 }

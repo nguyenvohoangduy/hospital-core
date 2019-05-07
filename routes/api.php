@@ -218,6 +218,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::get('ketQuaDieuTri','DangKyKhamBenh\DangKyKhamBenhController@getListKetQuaDieuTri');
     	Route::get('giaiPhauBenh','DangKyKhamBenh\DangKyKhamBenhController@getListGiaiPhauBenh');
     	Route::get('xuTri','DangKyKhamBenh\DangKyKhamBenhController@getListXuTri');
+    	Route::get('hinhThucRaVien','DangKyKhamBenh\DangKyKhamBenhController@getListHinhThucRaVien');
     	Route::get('hinhThucChuyen','DangKyKhamBenh\DangKyKhamBenhController@getListHinhThucChuyen');
     	Route::get('tuyen','DangKyKhamBenh\DangKyKhamBenhController@getListTuyen');
     	Route::get('lyDoChuyen','DangKyKhamBenh\DangKyKhamBenhController@getListLyDoChuyen');
@@ -376,6 +377,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('list/{benhVienId}','NoiTru\NoiTruController@getListPhongNoiTru');
         Route::get('getByHsbaId/{hsbaId}/{phongId}/{benhVienId}','NoiTru\NoiTruController@getByHsbaId');
         Route::post('traThuoc','NoiTru\NoiTruController@traThuoc');
+        Route::post('xuTriNoiTru','NoiTru\NoiTruController@xuTriNoiTru');
     });
     
     Route::group(['prefix' => 'hsbadv'], function () {
