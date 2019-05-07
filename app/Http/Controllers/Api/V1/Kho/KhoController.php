@@ -147,8 +147,9 @@ class KhoController extends APIController
         $page = $request->query('page', 1);
         $keyWords = $request->query('keyWords', null);
         $khoId = $request->query('khoId', null);
+        $loaiHetHan = $request->query('loaiHetHan', null);
         
-        $data = $this->theKhoService->getListThuocVatTuHetHan($limit, $page, $keyWords, $khoId);
+        $data = $this->theKhoService->getListThuocVatTuHetHan($limit, $page, $keyWords, $khoId, $loaiHetHan);
         return $this->respond($data);
     }
     
@@ -158,8 +159,18 @@ class KhoController extends APIController
         $page = $request->query('page', 1);
         $keyWords = $request->query('keyWords', null);
         $khoId = $request->query('khoId', null);
+        $loaiTonKho = $request->query('loaiTonKho', null);
         
-        $data = $this->gioiHanService->getListThuocVatTuSapHet($limit, $page, $keyWords, $khoId);
+        $data = $this->gioiHanService->getListThuocVatTuSapHet($limit, $page, $keyWords, $khoId, $loaiTonKho);
+        return $this->respond($data);
+    }
+    
+    public function getListTonKhoChiTiet(Request $request)
+    {
+        $tvtId = $request->query('tvtId', 0);
+        $khoId = $request->query('khoId', null);
+        
+        $data = $this->theKhoService->getListTonKhoChiTiet($tvtId, $khoId);
         return $this->respond($data);
     }
 }
