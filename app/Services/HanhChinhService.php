@@ -117,8 +117,8 @@ class HanhChinhService {
                 $hsbaDv = $this->hsbaDonViRepository->getById($request['hsba_don_vi_id']);
                 //viện phí ?
                 $request['doi_tuong_benh_nhan'] = $hsbaDv['doi_tuong_benh_nhan'];
-                //0. update hsba don vi cu
-                $this->updateOldHSBADV($request);
+                //0. update hsba don vi cu, dong hsba
+                $this->updateOldHsbaAndHsbaDv($request);
                 
                 //1. Tao hsba
                 $request['hsba_id'] = $this->createHSBA($request);
@@ -172,10 +172,13 @@ class HanhChinhService {
         $this->phongGiuongChiTietRepository->create($phongGiuongDetailParams);
     }
     
-    private function updateOldHSBADV($request) {
-        $hsbaKp['khoa_chuyen_den'] = NULL;
-        $hsbaKp['phong_chuyen_den'] = NULL;
-        $this->hsbaDonViRepository->update($request['hsba_don_vi_id'], $hsbaKp);
+    private function updateOldHsbaAndHsbaDv($request) {
+        $hsbaDv['khoa_chuyen_den'] = NULL;
+        $hsbaDv['phong_chuyen_den'] = NULL;
+        $this->hsbaDonViRepository->update($request['hsba_don_vi_id'], $hsbaDv);
+        
+        $hsba['trang_thai_hsba'] = self::HSBA_DONG;
+        $this->hsbaRepository->update($request['hsba_id'], $hsba);
     }
 
     private function createPhieuYLenh(array $input) {
