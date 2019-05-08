@@ -96,7 +96,8 @@ class KhoRepository extends BaseRepositoryV2
         $where=  [
             ['nhap_tu_ncc', '=', self::NHAP_TU_NHA_CUNG_CAP],
             ['benh_vien_id', '=', $benhVienId]
-            ];
+        ];
+        
         $data = $this->model->where($where)->get();
         return $data;
     } 
@@ -105,11 +106,32 @@ class KhoRepository extends BaseRepositoryV2
     {
         $where = [
             ['loai_kho','=',$loaiKho],
-            ['nhap_tu_ncc','<>',1],
+            ['nhap_tu_ncc','<>', self::NHAP_TU_NHA_CUNG_CAP],
             ['benh_vien_id','=',$benhVienId],
             ['trang_thai','=',self::KHO_DANG_SU_DUNG],
-            ];
+        ];
+        
         $data = $this->model->where($where)->get();
         return $data;
-    }    
+    }   
+    
+    public function getKhoNhinThay($phongId, $benhVienId)
+    {
+        $where = [
+            ['benh_vien_id','=',$benhVienId],
+            ['trang_thai','=',self::KHO_DANG_SU_DUNG],
+        ];
+        
+        $query = $this->model->where($where);
+        
+        $query = $query->where(function($queryAdv) use ($phongId) {
+            $queryAdv->where('phong_duoc_nhin_thay', 'like', '%['.$phongId.']%')
+                    ->orWhere('phong_duoc_nhin_thay', 'like', '%['.$phongId.',%')
+                    ->orWhere('phong_duoc_nhin_thay', 'like', '%,'.$phongId.']%')
+                    ->orWhere('phong_duoc_nhin_thay', 'like', '%,'.$phongId.',%');
+        });
+        
+        $data = $query->get();
+        return $data;
+    }
 }

@@ -52,9 +52,16 @@ class TheKhoService {
         return $data;
     }     
     
-    public function getListThuocVatTuHetHan($limit, $page, $keyWords, $khoId)
+    public function getListThuocVatTuHetHan($limit, $page, $keyWords, $khoId, $loaiHetHan)
     {
-        $data = $this->theKhoRepository->getListThuocVatTuHetHan($limit, $page, $keyWords, $khoId);
+        $data = $this->theKhoRepository->getListThuocVatTuHetHan($limit, $page, $keyWords, $khoId, $loaiHetHan);
+        
+        return $data;
+    } 
+    
+    public function getListTonKhoChiTiet($tvtId=null, $khoId=null)
+    {
+        $data = $this->theKhoRepository->getListTonKhoChiTiet($tvtId, $khoId);
         
         return $data;
     } 

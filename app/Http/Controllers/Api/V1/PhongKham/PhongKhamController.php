@@ -529,5 +529,5 @@ class PhongKhamController extends APIController
         $data['ho_ten'] = 'nguyễn văn a';
         $data['chu_ky'] = $b64image;
         return $data;
-    }    
+    }  
 }
