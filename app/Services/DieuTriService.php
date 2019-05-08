@@ -32,7 +32,11 @@ class DieuTriService
     const XT_CHUYEN_VIEN = 13;
     const XT_CAP_TOA_CHO_VE = 4;
     
-    //trạng thái hsba khoa phòng
+    // xử trí nội trú
+    const XT_NT_RA_VIEN = 1;
+    const XT_NT_BO_VE = 3;
+    
+    //trạng thái hsba đơn vị
     const TT_KET_THUC_DIEU_TRI = 99;
     const TT_CHO_DIEU_TRI = 0;
     const TT_DANG_DIEU_TRI = 2;
@@ -55,6 +59,7 @@ class DieuTriService
     
     //loại bệnh án
     const BENH_AN_KHAM_BENH = 24;
+    const BENH_AN_NOI_TRU = 1;
     
     //viện phí
     const VP_TRANG_THAI = 1;
@@ -211,6 +216,117 @@ class DieuTriService
         }
     }
     
+    public function xuTriNoiTru(array $request)
+    {
+        switch ($request['xu_tri']) {
+            case self::XT_NT_RA_VIEN:
+                $this->createRaVienNoiTru($request);
+                return [];
+                break;
+            case self::XT_NT_BO_VE:     
+                $this->createKetThucKhamNoiTru($request);
+                return [];
+                break;
+        }
+    }
+    
+    private function createRaVienNoiTru($request) {
+        $result = DB::transaction(function () use ($request) {
+            try {
+                // $raVienParams = null;
+                // $raVienParams['hsba_don_vi_id']=$request['hsba_don_vi_id']?$request['hsba_don_vi_id']:'';
+                // $raVienParams['benh_nhan_id']=$request['benh_nhan_id']?$request['benh_nhan_id']:'';
+                // $raVienParams['thoi_gian_ra_vien']=$request['thoi_gian_ra_vien']?$request['thoi_gian_ra_vien']:'';
+                // $raVienParams['tinh_trang']=$request['tinh_trang']?$request['tinh_trang']:'';
+                // $raVienParams['phuong_phap_dieu_tri']=$request['phuong_phap_dieu_tri']?$request['phuong_phap_dieu_tri']:'';
+                // $raVienParams['huong_dieu_tri_tiep_theo']=$request['huong_dieu_tri_tiep_theo']?$request['huong_dieu_tri_tiep_theo']:'';
+                // $raVienParams['lich_hen']=$request['lich_hen']?$request['lich_hen']:'';
+                // $raVienParams['loi_dan_bac_si']=$request['loi_dan_bac_si']?$request['loi_dan_bac_si']:'';
+                // //1.Kiểm tra bệnh nhân có xử trí trước đó hay chưa
+                
+                // $raVien = $this->raVienRepository->getById($request['hsba_don_vi_id'], $request['benh_nhan_id']);
+                // if(empty($raVien)){
+                //     $this->raVienRepository->createRaVien($raVienParams);
+                // }
+                // else{
+                //     $this->raVienRepository->updateRaVien($raVien->id,$raVienParams);
+                // }
+                // //2.Update hsba
+                // $request = array_except($request,['thoi_gian_ra_vien','tinh_trang', 'phuong_phap_dieu_tri','huong_dieu_tri_tiep_theo','lich_hen','loi_dan_bac_si']);
+                $this->createKetThucKhamNoiTru($request);
+                
+            } catch(\Throwable  $ex) {
+                $this->exceptionToLog($request, self::XU_TRI, $ex);
+                throw $ex;
+            } catch (\Exception $ex) {
+                $this->exceptionToLog($request, self::XU_TRI, $ex);
+                throw $ex;
+            }
+        });
+        return $result;
+    }
+    
+    private function createKetThucKhamNoiTru($request) {
+        $result = DB::transaction(function () use ($request) {
+            try {
+                // kiem tra trang thai cua vien phi
+                $vienPhi = $this->vienPhiRepository->getVienPhiByHsbaId($request['hsba_id']);
+                if ($vienPhi['trang_thai'] == self::VP_TRANG_THAI) {
+                    throw new \Exception("Viện phí đã đóng. Xin vui lòng kiểm tra lại"); 
+                }
+                
+                //get hinh thuc ra vien
+                switch ($request['xu_tri']) {
+                    case self::XT_NT_RA_VIEN: 
+                        $hinh_thuc_ra_vien = self::RA_VIEN;
+                        break;
+                    case self::XT_NT_BO_VE: 
+                        $hinh_thuc_ra_vien = self::BO_VE;
+                        break;
+                }
+                
+                // Cập nhật hsba_don_vi
+                $hsbaDvParams = null;
+                $hsbaDvParams['cdtd_icd10_code'] = $request['cdtd_icd10_code'] ? $request['cdtd_icd10_code'] : '';
+                $hsbaDvParams['cdtd_icd10_text'] = $request['cdtd_icd10_text'] ? $request['cdtd_icd10_text'] : '';
+                $hsbaDvParams['cdkkb_icd10_code'] = $request['cdkkb_icd10_code'] ? $request['cdkkb_icd10_code'] : '';
+                $hsbaDvParams['cdkkb_icd10_text'] = $request['cdkkb_icd10_text'] ? $request['cdkkb_icd10_text'] : '';
+                $hsbaDvParams['cdvk_icd10_code'] = $request['cdvk_icd10_code'] ? $request['cdvk_icd10_code'] : '';
+                $hsbaDvParams['cdvk_icd10_text'] = $request['cdvk_icd10_text'] ? $request['cdvk_icd10_text'] : '';
+                $hsbaDvParams['trang_thai'] = self::TT_KET_THUC_DIEU_TRI;
+                $hsbaDvParams['giai_phau_benh_id'] = $request['giai_phau_benh_id'];
+                $hsbaDvParams['hinh_thuc_ra_vien'] = $hinh_thuc_ra_vien;
+                $hsbaDvParams['ket_qua_dieu_tri'] = $request['ket_qua_dieu_tri'];
+                $hsbaDvParams['thoi_gian_ra_vien'] = Carbon::now()->toDateTimeString();
+                $hsbaDvParams['is_thu_thuat'] = $request['is_thu_thuat'] ? 1 : 0;
+                $hsbaDvParams['is_phau_thuat'] = $request['is_phau_thuat'] ? 1 : 0;
+                $hsbaDvParams['is_bien_chung'] = $request['is_bien_chung'] ? 1 : 0;
+                $hsbaDvParams['is_tai_bien'] = $request['is_tai_bien'] ? 1 : 0;
+                $this->hsbaDonViRepository->update($request['hsba_don_vi_id'], $hsbaDvParams);
+                
+                //cập nhật hsba
+                $hsbaParams = null;
+                $hsbaParams['loai_benh_an'] = self::BENH_AN_NOI_TRU;
+                $hsbaParams['hinh_thuc_ra_vien'] = $hinh_thuc_ra_vien;
+                $hsbaParams['ket_qua_dieu_tri'] = $request['ket_qua_dieu_tri'];
+                $hsbaParams['trang_thai_hsba'] = self::DONG_HSBA;
+                $hsbaParams['ngay_ra_vien'] = Carbon::now()->toDateTimeString();
+                $hsbaParams['cdrv_benh_chinh_code'] = $request['cdrv_benh_chinh_code'] ? $request['cdrv_benh_chinh_code'] : '';
+                $hsbaParams['cdrv_benh_chinh_text'] = $request['cdrv_benh_chinh_text'] ? $request['cdrv_benh_chinh_text'] : '';
+                $hsbaParams['cdrv_benh_phu_code'] = $request['cdrv_benh_phu_code'] ? $request['cdrv_benh_phu_code'] : '';
+                $hsbaParams['cdrv_benh_phu_text'] = $request['cdrv_benh_phu_text'] ? $request['cdrv_benh_phu_text'] : '';
+                $this->hsbaRepository->updateHsba($request['hsba_id'], $hsbaParams);
+            } catch(\Throwable  $ex) {
+                $this->exceptionToLog($request, self::XU_TRI, $ex);
+                throw $ex;
+            } catch (\Exception $ex) {
+                $this->exceptionToLog($request, self::XU_TRI, $ex);
+                throw $ex;
+            }
+        });
+        return $result; 
+    }
+    
     private function createChuyenPhong(array $request)
     {
         //1. tìm khoa, phòng hiện tại của bệnh nhân
@@ -336,7 +452,8 @@ class DieuTriService
         $input['thoi_gian_ra_vien'] = Carbon::now()->toDateTimeString();
         $input = array_except($input, ['hsba_don_vi_id', 'ten_benh_nhan', 'nam_sinh',
                                         'xu_tri', 'giai_phau_benh', 'loai_stt', 'gioi_tinh_id', 
-                                        'stt_don_tiep_id', 'ms_bhyt', 'khoa_id', 'cdrv_kt_icd10_code', 'cdrv_kt_icd10_text']);
+                                        'stt_don_tiep_id', 'ms_bhyt', 'khoa_id', 'cdrv_benh_chinh_code', 
+                                        'cdrv_benh_chinh_text', 'cdrv_benh_phu_code', 'cdrv_benh_phu_text']);
         $this->hsbaDonViRepository->update($hsbaDv, $input);
     }
     
@@ -373,12 +490,13 @@ class DieuTriService
                 }
                 $request['thoi_gian_ra_vien'] = Carbon::now()->toDateTimeString();
                 $this->updateHsbaDonViByXuTri($request['hsba_don_vi_id'], $request, self::TT_KET_THUC_DIEU_TRI, $hinh_thuc_ra_vien);
+                
                 //cập nhật hsba
                 $hsbaParams = null;
-                $hsbaParams['cdrv_icd10_code'] = $request['cdrv_icd10_code'] ? $request['cdrv_icd10_code'] : $hsbaDv['cdrv_icd10_code'];
-                $hsbaParams['cdrv_icd10_text'] = $request['cdrv_icd10_text'] ? $request['cdrv_icd10_text'] : $hsbaDv['cdrv_icd10_text'];
-                $hsbaParams['cdrv_kem_theo_icd10_code'] = $request['cdrv_kt_icd10_code'] ? $request['cdrv_kt_icd10_code'] : $hsbaDv['cdrv_kt_icd10_code'];
-                $hsbaParams['cdrv_kem_theo_icd10_text'] = $request['cdrv_kt_icd10_text'] ? $request['cdrv_kt_icd10_text'] : $hsbaDv['cdrv_kt_icd10_text'];
+                $hsbaParams['cdrv_benh_chinh_code'] = $request['cdrv_benh_chinh_code'] ? $request['cdrv_benh_chinh_code'] : $hsbaDv['cdrv_icd10_code'];
+                $hsbaParams['cdrv_benh_chinh_text'] = $request['cdrv_benh_chinh_text'] ? $request['cdrv_benh_chinh_text'] : $hsbaDv['cdrv_icd10_text'];
+                $hsbaParams['cdrv_benh_phu_code'] = $request['cdrv_benh_phu_code'] ? $request['cdrv_benh_phu_code'] : $hsbaDv['cdrv_kt_icd10_code'];
+                $hsbaParams['cdrv_benh_phu_text'] = $request['cdrv_benh_phu_text'] ? $request['cdrv_benh_phu_text'] : $hsbaDv['cdrv_kt_icd10_text'];
                 $hsbaParams['trang_thai_hsba'] = self::DONG_HSBA;
                 $hsbaParams['hinh_thuc_ra_vien'] = $hinh_thuc_ra_vien;
                 $hsbaParams['ket_qua_dieu_tri'] = $request['ket_qua_dieu_tri'];

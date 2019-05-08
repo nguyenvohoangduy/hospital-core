@@ -106,5 +106,10 @@ class PermissionController extends APIController
         $input = $request->all();
         $status = $this->authPermissionsService->checkData($input);
         return $this->respond($status);
+    }
+    
+    public function getKhoByUrl($url) {
+        $data = $this->authPermissionsService->getKhoByUrl($url);
+        return $this->respond($data);
     }    
 }

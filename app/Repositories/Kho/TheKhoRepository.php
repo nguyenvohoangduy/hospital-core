@@ -7,6 +7,10 @@ use App\Helper\Util;
 
 class TheKhoRepository extends BaseRepositoryV2
 {
+    const SAP_HET_HAN = '1';
+    const DA_HET_HAN = '2';
+    const TAT_CA = '0';
+    
     public function getModel()
     {
         return TheKho::class;
@@ -220,12 +224,22 @@ class TheKhoRepository extends BaseRepositoryV2
         return $result;        
     }    
     
-    public function getListThuocVatTuHetHan($limit = 100, $page = 1, $keyWords=null, $khoId=null)
+    public function getListThuocVatTuHetHan($limit = 100, $page = 1, $keyWords=null, $khoId=null, $loaiHetHan=self::SAP_HET_HAN)
     {
         $model = $this->model->whereRaw('sl_ton_kho > 0');
          
         if($khoId){
             $model = $model->where('kho_id',$khoId);
+        }
+        
+        if($loaiHetHan==self::SAP_HET_HAN){
+            $model = $model->whereRaw("han_su_dung < (now()+(canh_bao_het_han||' day')::interval) and han_su_dung > now()");
+        }
+        else if($loaiHetHan==self::DA_HET_HAN){
+            $model = $model->whereRaw("han_su_dung < now()");
+        }
+        else{
+            $model = $model->whereRaw("han_su_dung < (now()+(canh_bao_het_han||' day')::interval)");
         }
    
         $data = $model->select(
@@ -241,7 +255,6 @@ class TheKhoRepository extends BaseRepositoryV2
                         )
                 ->leftJoin('danh_muc_thuoc_vat_tu','danh_muc_thuoc_vat_tu.id','=','the_kho.danh_muc_thuoc_vat_tu_id')
                 ->leftJoin('kho','kho.id','=','the_kho.kho_id')
-                ->whereRaw("han_su_dung < (now()+(canh_bao_het_han||' day')::interval)")
                 ->groupBy('the_kho.danh_muc_thuoc_vat_tu_id','the_kho.don_vi_co_ban','the_kho.don_vi_nhap'
                     ,'danh_muc_thuoc_vat_tu.ten','danh_muc_thuoc_vat_tu.ma','the_kho.han_su_dung','kho.ten_kho');
 
@@ -250,6 +263,32 @@ class TheKhoRepository extends BaseRepositoryV2
         }
         
         return Util::getPartial($data,$limit,$page);
+    }   
+    
+    public function getListTonKhoChiTiet($tvtId=null, $khoId=null)
+    {
+        $model = $this->model->where('the_kho.danh_muc_thuoc_vat_tu_id', $tvtId)
+                            ->whereRaw('the_kho.sl_ton_kho > 0');
+         
+        if($khoId){
+            $model = $model->where('the_kho.kho_id',$khoId);
+        }
+   
+        $data = $model->select(
+                        'the_kho.danh_muc_thuoc_vat_tu_id',
+                        "the_kho.sl_kha_dung",
+                        "the_kho.sl_ton_kho",
+                        'the_kho.don_vi_co_ban',
+                        'danh_muc_thuoc_vat_tu.ten',
+                        'danh_muc_thuoc_vat_tu.ma',
+                        'the_kho.han_su_dung',
+                        'kho.ten_kho'
+                        )
+                ->leftJoin('danh_muc_thuoc_vat_tu','danh_muc_thuoc_vat_tu.id','=','the_kho.danh_muc_thuoc_vat_tu_id')
+                ->leftJoin('kho','kho.id','=','the_kho.kho_id')
+                ->get();
+
+        return ['data' => $data];
     }   
     
 }

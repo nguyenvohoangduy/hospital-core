@@ -126,10 +126,17 @@ class PhongKhamController extends APIController
     
     public function xuTriBenhNhan(Request $request)
     {
-        $input = $request->all();
-        $data = $this->dieuTriService->xuTriBenhNhan($input);
-        
-        return $this->respond($data);
+        try 
+        {
+            $input = $request->all();
+            $data = $this->dieuTriService->xuTriBenhNhan($input);
+            
+            return $this->respond($data);
+        } catch (\Exception $ex) {
+            return $this->respondInternalError($ex->getMessage());
+        } catch (\Throwable  $ex) {
+            return $this->respondInternalError($ex->getMessage());
+        }
     }
     
     public function chuyenKhoaPhong(Request $request)

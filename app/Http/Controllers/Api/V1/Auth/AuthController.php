@@ -72,9 +72,9 @@ class AuthController extends APIController
             ], 400);
         }
         $this->authService->updateLastVisit($request->email);
-        $data = $this->authService->getUserRolesByEmail($request->email);
+        $data = $this->authService->getUserRolesByEmail($request->email,$request->benhVien);
         $userName = $this->authService->getUserNameByEmail($request->email);
-        $listPermission = $this->authPermissionsService->getAllPermissionByUserId($userName->id);
+        $listPermission = $this->authPermissionsService->getAllPermissionByUserId($userName->id, $request->benhVien);
         $subMenu=[];
         if(!empty($listPermission)){
             foreach($listPermission as $item){
