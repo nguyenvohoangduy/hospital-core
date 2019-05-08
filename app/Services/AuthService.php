@@ -52,10 +52,10 @@ class AuthService {
         return $this;
     }
 
-    public function getUserRolesByEmail($email)
+    public function getUserRolesByEmail($email,$benhVienId)
     {
         $id = $this->authUsersRepository->getIdByEmail($email);
-        $idGroup = $this->authUsersGroupsRepository->getIdGroupById($id->id);
+        $idGroup = $this->authUsersGroupsRepository->getIdGroupById($id->id,$benhVienId);
         $roles = $this->authGroupsHasRolesRepository->getRolesByIdGroup($idGroup);
         $data = [
             'roles' => $roles,

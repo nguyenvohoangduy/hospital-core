@@ -2,16 +2,19 @@
 namespace App\Services;
 use App\Repositories\Auth\AuthPermissionsRepository;
 use App\Repositories\Auth\AuthUsersGroupsRepository;
+use App\Repositories\Kho\KhoRepository;
 use Illuminate\Http\Request;
 use Validator;
 class AuthPermissionsService {
     public function __construct(
         AuthPermissionsRepository $authPermissionsRepository,
-        AuthUsersGroupsRepository $authUsersGroupsRepository
+        AuthUsersGroupsRepository $authUsersGroupsRepository,
+        KhoRepository $khoRepository
     )
     {
         $this->authPermissionsRepository = $authPermissionsRepository;
         $this->authUsersGroupsRepository = $authUsersGroupsRepository;
+        $this->khoRepository = $khoRepository;
     }
     
     public function getPartial($limit, $page, $keywords, $serviceId)
@@ -55,13 +58,36 @@ class AuthPermissionsService {
         return $status;
     }    
     
-    public function getAllPermissionByUserId($userId) {
+    public function getAllPermissionByUserId($userId,$benhVienId) {
         $listGroupId = $this->authUsersGroupsRepository->getListGroupByUserId($userId);
         $listGroup = [];
         foreach($listGroupId as $item) {
             $listGroup[] = $item['group_id'];
         }
-        $data = $this->authPermissionsRepository->getAllPermissionByUserId($listGroup);
+        $data = $this->authPermissionsRepository->getAllPermissionByUserId($listGroup,$benhVienId);
         return $data;
     }
+    
+    public function getKhoByUrl($url)
+        {
+            $data = $this->authPermissionsRepository->getKhoByUrl($url);
+            $arrKhoId = [];
+            if(!empty($data)){
+                foreach($data as $item){
+                    $arr = json_decode($item->kho);
+                    foreach($arr as $itemArr){
+                        $arrKhoId[]=$itemArr;
+                    }
+                }
+            }
+            $result = [];
+            $arrUnique = array_values(array_unique($arrKhoId));
+            foreach($arrUnique as $item){
+                $dataKho = $this->khoRepository->getKhoById($item);
+                if($dataKho){
+                    $result[]=$dataKho;
+                }
+            }
+            return $result;
+        }    
 }

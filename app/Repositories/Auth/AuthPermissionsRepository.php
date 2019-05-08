@@ -130,6 +130,9 @@ class AuthPermissionsRepository extends BaseRepositoryV2
         }
         if(array_key_exists('ma_nhom_phong',$input)) {
             $where[]=['ma_nhom_phong','=',$input['ma_nhom_phong']];
+        }
+        if(array_key_exists('kho',$input)) {
+            $where[]=['kho','=',$input['kho']];
         }        
         $data = $this->model->where($where)->first();
         
@@ -139,7 +142,7 @@ class AuthPermissionsRepository extends BaseRepositoryV2
             return false;
     }     
     
-    public function getAllPermissionByUserId($listGroupId) {
+    public function getAllPermissionByUserId($listGroupId,$benhVienId) {
         $column=[
             'auth_permissions.*',
             'auth_service.*',
@@ -147,6 +150,7 @@ class AuthPermissionsRepository extends BaseRepositoryV2
             'auth_policy.name as policy_name'
             ];
         $data = $this->model
+            ->where('auth_permissions.benh_vien_id',$benhVienId)
             ->join('auth_groups_has_permissions as t1', function($join) use ($listGroupId) {
                 $join->on('t1.permission_id', '=', 'auth_permissions.id')
                     ->whereIn('t1.group_id', $listGroupId);
@@ -154,7 +158,15 @@ class AuthPermissionsRepository extends BaseRepositoryV2
             ->leftJoin('auth_service', 'auth_service.id', '=', 'auth_permissions.service_id')
             ->leftJoin('auth_policy', 'auth_policy.id', '=', 'auth_permissions.policy_id')
             ->get($column);
-            
         return $data;
     }
+    
+    public function getKhoByUrl($url)
+    {
+        $data = $this->model
+            ->where('key','LIKE','%'.$url.'%')
+            ->whereNotNull('kho')
+            ->get();
+        return $data;
+    }    
 }
