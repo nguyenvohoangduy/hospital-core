@@ -81,6 +81,7 @@ class AuthController extends APIController
                 $subMenu[]=$item->display_name;
             }
         }
+        
         $extraPayload = array(
             'permission' => $listPermission,
             'groupId'  => $data['idGroup'],
@@ -89,13 +90,14 @@ class AuthController extends APIController
             'subMenu'  => array_values(array_unique($subMenu))
         );
         
+        $expires_at = \Config::get('jwt.ttl');
         return response([
             'status' => 'success',
             'token' => $token,
-            'payload' => $extraPayload
+            'payload' => $extraPayload,
+            'expiration' => $expires_at
         ]);
     }
-    
 
     public function user(Request $request)
     {
