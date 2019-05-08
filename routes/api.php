@@ -409,6 +409,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
  		Route::get('getListThuocVatTu','Kho\KhoController@getListThuocVatTu');
  		Route::get('getListThuocVatTuHetHan','Kho\KhoController@getListThuocVatTuHetHan');
  		Route::get('getListThuocVatTuSapHet','Kho\KhoController@getListThuocVatTuSapHet');
+ 		Route::get('getListTonKhoChiTiet','Kho\KhoController@getListTonKhoChiTiet');
     });
     
     Route::group(['prefix' => 'donvitinh'], function () {
