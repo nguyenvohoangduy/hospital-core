@@ -522,5 +522,20 @@ class PhongKhamController extends APIController
         $data['ho_ten'] = 'nguyễn văn a';
         $data['chu_ky'] = $b64image;
         return $data;
-    }    
+    }  
+    
+    public function getKhoNhinThay($phongId, $benhVienId)
+    {
+        $phongIsNumeric = is_numeric($phongId);
+        $benhVienIsNumeric = is_numeric($benhVienId);
+        
+        if($phongIsNumeric && $benhVienIsNumeric) {
+            $data = $this->khoService->getKhoNhinThay($phongId, $benhVienId);
+        } else {
+            $this->setStatusCode(400);
+            $data = [];
+        }
+
+        return $this->respond($data);
+    }
 }
