@@ -72,6 +72,9 @@ class DieuTriService
     const KHAM_BENH = 'kham-benh';
     const XU_TRI = 'xu-tri';
     
+    const PHONG_KHAM = 'PHONG_KHAM';
+    const NOI_TRU = 'NOI_TRU';
+    
     public function __construct
     (
         DieuTriRepository $dieuTriRepository, 
@@ -207,11 +210,11 @@ class DieuTriService
             case self::XT_CAP_TOA_CHO_VE:
             case self::XT_HEN:
             case self::XT_KHAC:
-                $this->createRaVien($request, 'PK');
+                $this->createRaVien($request, self::PHONG_KHAM);
                 return [];
                 break;
             case self::XT_CHUYEN_VIEN:   
-                $this->createChuyenVien($request, 'PK');
+                $this->createChuyenVien($request, self::PHONG_KHAM);
                 return [];
                 break;
         }
@@ -221,7 +224,7 @@ class DieuTriService
     {
         switch ($request['xu_tri']) {
             case self::XT_NT_RA_VIEN:
-                $this->createRaVien($request, 'NT');
+                $this->createRaVien($request, self::NOI_TRU);
                 return [];
                 break;
             case self::XT_NT_BO_VE:     
@@ -233,7 +236,7 @@ class DieuTriService
                 return $data;
                 break;
             case self::XT_CHUYEN_VIEN:   
-                $this->createChuyenVien($request, 'NT');
+                $this->createChuyenVien($request, self::NOI_TRU);
                 return [];
                 break;
         }
@@ -513,11 +516,11 @@ class DieuTriService
                     $this->raVienRepository->updateRaVien($raVien->id,$raVienParams);
                 }
                 //2.Update hsba khoa phòng & hsba & viện phí
-                if ($type == 'PK') {
+                if ($type == self::PHONG_KHAM) {
                     $request = array_except($request,['thoi_gian_ra_vien','tinh_trang', 'phuong_phap_dieu_tri','huong_dieu_tri_tiep_theo','lich_hen','loi_dan_bac_si']);
                     $this->createKetThucKham($request);
                 }
-                else if ($type == 'NT') {
+                else if ($type == self::NOI_TRU) {
                     $this->createKetThucKhamNoiTru($request);
                 }
             } catch(\Throwable  $ex) {
@@ -556,14 +559,14 @@ class DieuTriService
                 //insert chuyen_vien
                 $this->chuyenVienRepository->createData($dataChuyenVien);
                 //2.Update hsba khoa phòng & hsba & viện phí
-                if ($type == 'PK') {
+                if ($type == self::PHONG_KHAM) {
                     $params = array_except($params,['chuyen_tuyen_hoi',
                                         'benh_vien_tuyen_duoi_code', 'benh_vien_tuyen_duoi', 'dau_hieu_lam_sang', 'hinh_thuc_chuyen_vien_id',
                                         'tuyen_id', 'ly_do_chuyen_vien_id', 'xet_nghiem', 'huong_dieu_tri', 'chan_doan', 'phuong_tien_van_chuyen',
                                         'thuoc', 'nguoi_van_chuyen', 'tinh_trang_nguoi_benh', 'khoa_id']);
                     $this->createKetThucKham($params);
                 }
-                else if ($type == 'NT') {
+                else if ($type == self::NOI_TRU) {
                     $this->createKetThucKhamNoiTru($params);
                 }
             } catch(\Throwable  $ex) {
