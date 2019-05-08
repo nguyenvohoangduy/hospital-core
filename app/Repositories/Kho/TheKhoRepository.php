@@ -18,21 +18,33 @@ class TheKhoRepository extends BaseRepositoryV2
     
     public function createTheKho(array $input)
     {
+        $input['ma_con'] = $this->getLastMaCon($input['danh_muc_thuoc_vat_tu_id'], $input['kho_id']);
+        
+        $id = $this->model->create($input)->id;
+        return $id;
+    }
+    
+    public function save(array $input)
+    {
+        $this->model->insert($input);
+    }
+    
+    public function getLastMaCon($id, $khoId)
+    {
         $find = $this->model
-                     ->where('danh_muc_thuoc_vat_tu_id',$input['danh_muc_thuoc_vat_tu_id'])
-                     ->where('kho_id',$input['kho_id'])
+                     ->where('danh_muc_thuoc_vat_tu_id', $id)
+                     ->where('kho_id', $khoId)
                      ->orderBy('ma_con','DESC')
                      ->first();
         if($find) {
             $explode = explode('.',$find['ma_con']);
-            $input['ma_con']=$input['danh_muc_thuoc_vat_tu_id'].'.'.(intval($explode[1])+1);
+            $maCon = $id.'.'.(intval($explode[1])+1);
         }
         else {
-            $input['ma_con']=$input['danh_muc_thuoc_vat_tu_id'].'.1';
+            $maCon = $id.'.1';
         }
         
-        $id = $this->model->create($input)->id;
-        return $id;
+        return $maCon;
     }
     
     public function getTonKhaDungById($id,$khoId)
