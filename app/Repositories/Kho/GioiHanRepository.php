@@ -7,6 +7,10 @@ use App\Helper\Util;
 
 class GioiHanRepository extends BaseRepositoryV2
 {
+    const SAP_HET = '1';
+    const DA_HET = '2';
+    const TAT_CA = '0';
+    
     public function getModel()
     {
         return GioiHan::class;
@@ -52,13 +56,22 @@ class GioiHanRepository extends BaseRepositoryV2
             return null;
     }
     
-    
-    public function getListThuocVatTuSapHet($limit = 100, $page = 1, $keyWords=null, $khoId=null)
+    public function getListThuocVatTuSapHet($limit = 100, $page = 1, $keyWords=null, $khoId=null, $loaiTonKho=self::SAP_HET)
     {
         $model = $this->model->whereRaw('sl_ton_kho <= co_so');
          
         if($khoId){
             $model = $model->where('kho_id',$khoId);
+        }
+        
+        if($loaiTonKho==self::SAP_HET){
+            $model = $model->whereRaw("sl_ton_kho <= co_so and sl_ton_kho > 0");
+        }
+        else if($loaiTonKho==self::DA_HET){
+            $model = $model->whereRaw("sl_ton_kho <= 0");
+        }
+        else{
+            $model = $model->whereRaw("sl_ton_kho <= coalesce(co_so, 0)");
         }
    
         $data = $model->select(

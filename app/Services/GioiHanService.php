@@ -14,9 +14,9 @@ class GioiHanService {
         $this->gioiHanRepository = $gioiHanRepository;
     }
     
-    public function getListThuocVatTuSapHet($limit, $page, $keyWords, $khoId)
+    public function getListThuocVatTuSapHet($limit, $page, $keyWords, $khoId, $loaiTonKho)
     {
-        $data = $this->gioiHanRepository->getListThuocVatTuSapHet($limit, $page, $keyWords, $khoId);
+        $data = $this->gioiHanRepository->getListThuocVatTuSapHet($limit, $page, $keyWords, $khoId, $loaiTonKho);
         
         return $data;
     } 

@@ -72,15 +72,16 @@ class AuthController extends APIController
             ], 400);
         }
         $this->authService->updateLastVisit($request->email);
-        $data = $this->authService->getUserRolesByEmail($request->email);
+        $data = $this->authService->getUserRolesByEmail($request->email,$request->benhVien);
         $userName = $this->authService->getUserNameByEmail($request->email);
-        $listPermission = $this->authPermissionsService->getAllPermissionByUserId($userName->id);
+        $listPermission = $this->authPermissionsService->getAllPermissionByUserId($userName->id, $request->benhVien);
         $subMenu=[];
         if(!empty($listPermission)){
             foreach($listPermission as $item){
                 $subMenu[]=$item->display_name;
             }
         }
+        
         $extraPayload = array(
             'permission' => $listPermission,
             'groupId'  => $data['idGroup'],
@@ -89,13 +90,14 @@ class AuthController extends APIController
             'subMenu'  => array_values(array_unique($subMenu))
         );
         
+        $expires_at = \Config::get('jwt.ttl');
         return response([
             'status' => 'success',
             'token' => $token,
-            'payload' => $extraPayload
+            'payload' => $extraPayload,
+            'expiration' => $expires_at
         ]);
     }
-    
 
     public function user(Request $request)
     {
