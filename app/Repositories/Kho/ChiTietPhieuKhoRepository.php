@@ -41,6 +41,13 @@ class ChiTietPhieuKhoRepository extends BaseRepositoryV2
         return $data;
     }
     
+    public function updateChiTietPhieuKho($phieuKhoId, $thuocVatTuId, array $input){
+        $this->model->where([
+                        ['phieu_kho_id',$phieuKhoId],
+                        ['danh_muc_thuoc_vat_tu_id', $thuocVatTuId]
+                    ])->update($input);
+    }
+    
     public function updateAndGetChiTietPhieuKho($phieuKhoId,array $input)
     {
         $this->model->where('phieu_kho_id',$phieuKhoId)->update($input);

@@ -7,6 +7,7 @@ use App\Services\PhieuChamSocService;
 use App\Services\VienPhiService;
 use App\Services\YLenhService;
 use App\Services\ChiTietPhieuKhoService;
+use App\Services\DieuTriService;
 use App\Http\Controllers\Api\V1\APIController;
 use Carbon\Carbon;
 
@@ -15,9 +16,11 @@ class NoiTruController extends APIController {
         HsbaDonViService $hsbaDonViService,
         VienPhiService $vienPhiService,
         YLenhService $yLenhService,
-        ChiTietPhieuKhoService $chiTietPhieuKhoService
+        ChiTietPhieuKhoService $chiTietPhieuKhoService,
+        DieuTriService $dieuTriService
     )
     {
+        $this->dieuTriService = $dieuTriService;
         $this->hsbaDonViService = $hsbaDonViService;
         $this->vienPhiService = $vienPhiService;
         $this->yLenhService = $yLenhService;
@@ -99,4 +102,19 @@ class NoiTruController extends APIController {
             return $this->respond(false);
         }
     }     
+    
+    public function xuTriNoiTru(Request $request)
+    {
+        try 
+        {
+            $input = $request->all();
+            $data = $this->dieuTriService->xuTriNoiTru($input);
+            
+            return $this->respond($data);
+        } catch (\Exception $ex) {
+            return $this->respondInternalError($ex->getMessage());
+        } catch (\Throwable  $ex) {
+            return $this->respondInternalError($ex->getMessage());
+        }
+    }
 }

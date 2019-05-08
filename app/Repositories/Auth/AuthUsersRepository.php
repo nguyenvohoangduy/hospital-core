@@ -4,6 +4,7 @@ use DB;
 use App\Repositories\BaseRepositoryV2;
 use App\Models\Auth\AuthUsers;
 use Carbon\Carbon;
+use App\Helper\Util;
 
 class AuthUsersRepository extends BaseRepositoryV2
 {
@@ -144,5 +145,25 @@ class AuthUsersRepository extends BaseRepositoryV2
     {
         $loginDate = date('m/d/Y h:i:s a', time());
         $this->model->where('email',$email)->update(['login_at' => $loginDate]);
+    }
+    
+    public function getAuthUserThuNgan() {
+        $limit = 100;
+        $page = 1;
+        $offset = ($page - 1) * $limit;
+        
+        $column = [
+            'id',
+            'fullname',
+        ];
+        
+        $khoaThuNgan = ['Khoa Tài Chính Kế Toán', 'Khoa Khám Bệnh'];
+        
+        $query = $this->model;
+        
+        $query = $query->whereIn('khoa', $khoaThuNgan);
+        $data = $query->orderBy('id', 'desc');
+        
+        return Util::getPartial($data,$limit,$page);
     }
 }

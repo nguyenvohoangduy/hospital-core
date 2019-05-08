@@ -218,6 +218,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
     	Route::get('ketQuaDieuTri','DangKyKhamBenh\DangKyKhamBenhController@getListKetQuaDieuTri');
     	Route::get('giaiPhauBenh','DangKyKhamBenh\DangKyKhamBenhController@getListGiaiPhauBenh');
     	Route::get('xuTri','DangKyKhamBenh\DangKyKhamBenhController@getListXuTri');
+    	Route::get('hinhThucRaVien','DangKyKhamBenh\DangKyKhamBenhController@getListHinhThucRaVien');
     	Route::get('hinhThucChuyen','DangKyKhamBenh\DangKyKhamBenhController@getListHinhThucChuyen');
     	Route::get('tuyen','DangKyKhamBenh\DangKyKhamBenhController@getListTuyen');
     	Route::get('lyDoChuyen','DangKyKhamBenh\DangKyKhamBenhController@getListLyDoChuyen');
@@ -260,6 +261,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('searchThuocVatTuByKhoId/{khoId}/{keyword}','PhongKham\PhongKhamController@searchThuocVatTuByKhoId');
         Route::post('saveThuocVatTu','PhongKham\PhongKhamController@saveThuocVatTu');
         Route::get('getReportPdf','PhongKham\PhongKhamController@getReportPdf');
+        Route::get('getKhoNhinThay/{phongId}/{benhVienId}','PhongKham\PhongKhamController@getKhoNhinThay');
     });
     
     Route::group(['prefix' => 'danhmuc'], function () {
@@ -311,6 +313,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
      	Route::delete('deleteAuthUsers/{id}','AuthUser\AuthUserController@deleteAuthUsers');
      	Route::get('checkEmail/{email}','AuthUser\AuthUserController@checkEmailbyEmail');
      	Route::post('resetPassword','AuthUser\AuthUserController@resetPasswordByUserId');
+     	Route::get('getAuthUserThuNgan','AuthUser\AuthUserController@getAuthUserThuNgan');
     });
     
     Route::group(['prefix' => 'nhomnguoidung'], function () {
@@ -375,6 +378,7 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
         Route::get('list/{benhVienId}','NoiTru\NoiTruController@getListPhongNoiTru');
         Route::get('getByHsbaId/{hsbaId}/{phongId}/{benhVienId}','NoiTru\NoiTruController@getByHsbaId');
         Route::post('traThuoc','NoiTru\NoiTruController@traThuoc');
+        Route::post('xuTriNoiTru','NoiTru\NoiTruController@xuTriNoiTru');
     });
     
     Route::group(['prefix' => 'hsbadv'], function () {
@@ -406,6 +410,9 @@ Route::group(['middleware'=>'cors', 'namespace' => 'Api\V1', 'prefix' => 'v1', '
  		Route::get('searchThuocVatTuByKeywords/{keywords}','Kho\KhoController@searchThuocVatTuByKeywords');
  		Route::get('getNhapTuNccByBenhVienId/{benhVienId}','Kho\KhoController@getNhapTuNccByBenhVienId');
  		Route::get('getListThuocVatTu','Kho\KhoController@getListThuocVatTu');
+ 		Route::get('getListThuocVatTuHetHan','Kho\KhoController@getListThuocVatTuHetHan');
+ 		Route::get('getListThuocVatTuSapHet','Kho\KhoController@getListThuocVatTuSapHet');
+ 		Route::get('getListTonKhoChiTiet','Kho\KhoController@getListTonKhoChiTiet');
     });
     
     Route::group(['prefix' => 'donvitinh'], function () {

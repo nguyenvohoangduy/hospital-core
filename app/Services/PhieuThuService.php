@@ -32,13 +32,13 @@ class PhieuThuService {
         $result = DB::transaction(function() use ($input) {
             try{
                 $soPhieuThuItem = $this->soPhieuThuRepository->getById($input['so_phieu_thu_id']);
-                //cần check khi chưa có sổ phiếu thu thì sao ???
-                $input['ma_so'] = $soPhieuThuItem->so_phieu_su_dung + 1;
+                $input['ma_so'] = $soPhieuThuItem->so_phieu_dang_su_dung;
                 $input['ngay_tao'] = Carbon::now();
                 $id = $this->phieuThuRepository->create($input);
                 
                 // Update so phieu thu
-                $dataSoPhieuThu['so_phieu_su_dung'] = $input['ma_so'];
+                $dataSoPhieuThu['so_phieu_dang_su_dung'] = $input['ma_so'] + 1;
+                $dataSoPhieuThu['so_phieu_su_dung'] = $soPhieuThuItem->so_phieu_su_dung + 1;
                 $this->soPhieuThuRepository->update($input['so_phieu_thu_id'], $dataSoPhieuThu);
                 
                 // Update Y Lenh

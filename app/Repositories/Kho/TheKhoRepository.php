@@ -7,6 +7,10 @@ use App\Helper\Util;
 
 class TheKhoRepository extends BaseRepositoryV2
 {
+    const SAP_HET_HAN = '1';
+    const DA_HET_HAN = '2';
+    const TAT_CA = '0';
+    
     public function getModel()
     {
         return TheKho::class;
@@ -14,21 +18,33 @@ class TheKhoRepository extends BaseRepositoryV2
     
     public function createTheKho(array $input)
     {
+        $input['ma_con'] = $this->getLastMaCon($input['danh_muc_thuoc_vat_tu_id'], $input['kho_id']);
+        
+        $id = $this->model->create($input)->id;
+        return $id;
+    }
+    
+    public function save(array $input)
+    {
+        $this->model->insert($input);
+    }
+    
+    public function getLastMaCon($id, $khoId)
+    {
         $find = $this->model
-                     ->where('danh_muc_thuoc_vat_tu_id',$input['danh_muc_thuoc_vat_tu_id'])
-                     ->where('kho_id',$input['kho_id'])
+                     ->where('danh_muc_thuoc_vat_tu_id', $id)
+                     ->where('kho_id', $khoId)
                      ->orderBy('ma_con','DESC')
                      ->first();
         if($find) {
             $explode = explode('.',$find['ma_con']);
-            $input['ma_con']=$input['danh_muc_thuoc_vat_tu_id'].'.'.(intval($explode[1])+1);
+            $maCon = $id.'.'.(intval($explode[1])+1);
         }
         else {
-            $input['ma_con']=$input['danh_muc_thuoc_vat_tu_id'].'.1';
+            $maCon = $id.'.1';
         }
         
-        $id = $this->model->create($input)->id;
-        return $id;
+        return $maCon;
     }
     
     public function getTonKhaDungById($id,$khoId)
@@ -207,4 +223,72 @@ class TheKhoRepository extends BaseRepositoryV2
         
         return $result;        
     }    
+    
+    public function getListThuocVatTuHetHan($limit = 100, $page = 1, $keyWords=null, $khoId=null, $loaiHetHan=self::SAP_HET_HAN)
+    {
+        $model = $this->model->whereRaw('sl_ton_kho > 0');
+         
+        if($khoId){
+            $model = $model->where('kho_id',$khoId);
+        }
+        
+        if($loaiHetHan==self::SAP_HET_HAN){
+            $model = $model->whereRaw("han_su_dung < (now()+(canh_bao_het_han||' day')::interval) and han_su_dung > now()");
+        }
+        else if($loaiHetHan==self::DA_HET_HAN){
+            $model = $model->whereRaw("han_su_dung < now()");
+        }
+        else{
+            $model = $model->whereRaw("han_su_dung < (now()+(canh_bao_het_han||' day')::interval)");
+        }
+   
+        $data = $model->select(
+                        'danh_muc_thuoc_vat_tu_id',
+                        DB::raw("SUM(sl_dau_ky) AS sl_dau_ky"),
+                        DB::raw("SUM(sl_kha_dung) AS sl_kha_dung"),
+                        DB::raw("SUM(sl_ton_kho) AS sl_ton_kho"),
+                        'don_vi_co_ban',
+                        'ten',
+                        'ma',
+                        'the_kho.han_su_dung',
+                        'ten_kho'
+                        )
+                ->leftJoin('danh_muc_thuoc_vat_tu','danh_muc_thuoc_vat_tu.id','=','the_kho.danh_muc_thuoc_vat_tu_id')
+                ->leftJoin('kho','kho.id','=','the_kho.kho_id')
+                ->groupBy('the_kho.danh_muc_thuoc_vat_tu_id','the_kho.don_vi_co_ban','the_kho.don_vi_nhap'
+                    ,'danh_muc_thuoc_vat_tu.ten','danh_muc_thuoc_vat_tu.ma','the_kho.han_su_dung','kho.ten_kho');
+
+        if($keyWords){
+            $data = $data->whereRaw('LOWER(ten) LIKE ? ',['%'.strtolower($keyWords).'%']);
+        }
+        
+        return Util::getPartial($data,$limit,$page);
+    }   
+    
+    public function getListTonKhoChiTiet($tvtId=null, $khoId=null)
+    {
+        $model = $this->model->where('the_kho.danh_muc_thuoc_vat_tu_id', $tvtId)
+                            ->whereRaw('the_kho.sl_ton_kho > 0');
+         
+        if($khoId){
+            $model = $model->where('the_kho.kho_id',$khoId);
+        }
+   
+        $data = $model->select(
+                        'the_kho.danh_muc_thuoc_vat_tu_id',
+                        "the_kho.sl_kha_dung",
+                        "the_kho.sl_ton_kho",
+                        'the_kho.don_vi_co_ban',
+                        'danh_muc_thuoc_vat_tu.ten',
+                        'danh_muc_thuoc_vat_tu.ma',
+                        'the_kho.han_su_dung',
+                        'kho.ten_kho'
+                        )
+                ->leftJoin('danh_muc_thuoc_vat_tu','danh_muc_thuoc_vat_tu.id','=','the_kho.danh_muc_thuoc_vat_tu_id')
+                ->leftJoin('kho','kho.id','=','the_kho.kho_id')
+                ->get();
+
+        return ['data' => $data];
+    }   
+    
 }

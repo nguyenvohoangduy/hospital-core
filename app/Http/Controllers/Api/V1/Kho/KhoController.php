@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Api\V1\APIController;
 use App\Services\KhoService;
 use App\Services\TheKhoService;
+use App\Services\GioiHanService;
 use App\Services\DanhMucThuocVatTuService;
 use App\Http\Requests\CreateKhoFormRequest;
 use App\Http\Requests\UpdateKhoFormRequest;
@@ -14,12 +15,14 @@ class KhoController extends APIController
     (
         KhoService $khoService,
         DanhMucThuocVatTuService $danhMucThuocVatTuService,
-        TheKhoService $theKhoService
+        TheKhoService $theKhoService,
+        GioiHanService $gioiHanService
     )
     {
         $this->khoService = $khoService;
         $this->danhMucThuocVatTuService = $danhMucThuocVatTuService;
         $this->theKhoService = $theKhoService;
+        $this->gioiHanService = $gioiHanService;
     }
     
     public function index(Request $request)
@@ -137,4 +140,37 @@ class KhoController extends APIController
         $data = $this->theKhoService->getListThuocVatTu($limit, $page, $keyWords, $khoId);
         return $this->respond($data);
     }      
+    
+    public function getListThuocVatTuHetHan(Request $request)
+    {
+        $limit = $request->query('limit', 100);
+        $page = $request->query('page', 1);
+        $keyWords = $request->query('keyWords', null);
+        $khoId = $request->query('khoId', null);
+        $loaiHetHan = $request->query('loaiHetHan', null);
+        
+        $data = $this->theKhoService->getListThuocVatTuHetHan($limit, $page, $keyWords, $khoId, $loaiHetHan);
+        return $this->respond($data);
+    }
+    
+    public function getListThuocVatTuSapHet(Request $request)
+    {
+        $limit = $request->query('limit', 100);
+        $page = $request->query('page', 1);
+        $keyWords = $request->query('keyWords', null);
+        $khoId = $request->query('khoId', null);
+        $loaiTonKho = $request->query('loaiTonKho', null);
+        
+        $data = $this->gioiHanService->getListThuocVatTuSapHet($limit, $page, $keyWords, $khoId, $loaiTonKho);
+        return $this->respond($data);
+    }
+    
+    public function getListTonKhoChiTiet(Request $request)
+    {
+        $tvtId = $request->query('tvtId', 0);
+        $khoId = $request->query('khoId', null);
+        
+        $data = $this->theKhoService->getListTonKhoChiTiet($tvtId, $khoId);
+        return $this->respond($data);
+    }
 }
