@@ -16,6 +16,7 @@ class HsbaDonViRepository extends BaseRepositoryV2
     const TRANG_THAI_DA_THANH_TOAN = 1;
     const CHO_DIEU_TRI = 0;
     const DANG_DIEU_TRI = 2;
+    const DONG_HSBA = 1;
     
     // Params KhoaPhong
     private $benhVienId = null;
@@ -291,7 +292,8 @@ class HsbaDonViRepository extends BaseRepositoryV2
         $where = [
             ['hsba_don_vi.benh_vien_id', '=', $this->benhVienId],
             ['hsba_don_vi.khoa_hien_tai', '=', $this->khoaId],
-            ['hsba_don_vi.phong_hien_tai', '=', $this->phongId]
+            ['hsba_don_vi.phong_hien_tai', '=', $this->phongId],
+            ['hsba.trang_thai_hsba', '<>', self::DONG_HSBA]
         ];
 
         $column=[
@@ -509,8 +511,6 @@ class HsbaDonViRepository extends BaseRepositoryV2
             'hsba.so_vao_vien',
             //'vienphi.vienphicode',
             'khoa.ten_khoa',
-            'khoa.kho_thuoc',
-            'khoa.kho_vat_tu',
             'phong.ten_phong',
             'hsba.ten_benh_nhan',
             'hsba.ngay_sinh',
@@ -641,8 +641,6 @@ class HsbaDonViRepository extends BaseRepositoryV2
             'hsba.so_vao_vien',
             //'vienphi.vienphicode',
             'khoa.ten_khoa',
-            'khoa.kho_thuoc',
-            'khoa.kho_vat_tu',
             'phong.ten_phong',
             'hsba.ten_benh_nhan',
             'hsba.ngay_sinh',
@@ -683,8 +681,10 @@ class HsbaDonViRepository extends BaseRepositoryV2
             'hsba_don_vi.cdvv_icd10_text',
             'hsba_don_vi.cdvv_icd10_code',
             'hsba_don_vi.loai_benh_an as loai_benh_an_id',
-            'hsba_don_vi.cdrv_icd10_code',
-            'hsba_don_vi.cdrv_icd10_text',
+            'hsba.cdrv_benh_chinh_code',
+            'hsba.cdrv_benh_chinh_text',
+            'hsba.cdrv_benh_phu_code',
+            'hsba.cdrv_benh_phu_text',
             'vien_phi.loai_vien_phi',
             'vien_phi.id as vien_phi_id',
             'bhyt.tuyen_bhyt',

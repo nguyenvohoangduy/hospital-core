@@ -102,5 +102,11 @@ class KhoService {
     {
         $data = $this->khoRepository->getListKhoLap($loaiKho,$benhVienId);
         return $data;
-    }    
+    }  
+    
+    public function getKhoNhinThay($phongId, $benhVienId)
+    {
+        $data = $this->khoRepository->getKhoNhinThay($phongId, $benhVienId);
+        return $data;
+    }
 }

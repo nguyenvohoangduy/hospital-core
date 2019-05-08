@@ -281,10 +281,13 @@ class PhieuKhoService {
             foreach($chiTietPhieuKhoData as $item) {
                 $id = $item['danh_muc_thuoc_vat_tu_id'];
                 $soLuongYeuCau = $item['so_luong_yeu_cau'];
+                $arrInput = [];
                 
                 foreach($dataTheKho as $itemDataTheKho) {
                     if($itemDataTheKho['danh_muc_thuoc_vat_tu_id']==$id && $soLuongYeuCau > 0 && $itemDataTheKho['sl_ton_kho'] > 0){
                         $chenhLech = $itemDataTheKho['sl_ton_kho'] - $soLuongYeuCau;
+                        $soLuongTruKho = $soLuongYeuCau;
+                        
                         if($chenhLech < 0) {
                             $soLuongTonKho = 0;
                             $soLuongTonKhoChan = 0;
@@ -292,7 +295,8 @@ class PhieuKhoService {
                             $soLuongTonKhoLe2 = 0;
                             $soLuongNhapChan = 0;
                             $soLuongNhapLe = 0;
-                            $soLuongYeuCau = $chenhLech;
+                            $soLuongYeuCau = $chenhLech * (-1);
+                            $soLuongTruKho = $itemDataTheKho['sl_ton_kho'];
                         } else {
                             $soLuongTonKho = $chenhLech;
                             $soLuongYeuCau = 0;
@@ -342,8 +346,17 @@ class PhieuKhoService {
                             'sl_nhap_chan'      => $soLuongNhapChan,
                             'sl_nhap_le'        => $soLuongNhapLe
                         ];
+                        
+                        $arrInput[] = [
+                            'the_kho_id'        => $itemDataTheKho['id'],
+                            'so_luong_yeu_cau'  => $soLuongTruKho,
+                            'han_su_dung'       => $itemDataTheKho['han_su_dung']
+                        ];
                     }
                 }
+                
+                $input['ghi_chu'] = json_encode($arrInput);
+                $this->chiTietPhieuKhoRepository->updateChiTietPhieuKho($phieuKhoId, $id, $input);
             }
 
             foreach($arrTheKho as $item) {
@@ -382,6 +395,35 @@ class PhieuKhoService {
                 
                 foreach($chiTietPhieuKhoData as $item) {
                     if($item['trang_thai']==self::THUOC_VAT_TU_DUOC_DUYET) {
+                        $arrGhiChu = json_decode($item['ghi_chu']);
+                        $maCon = $this->theKhoRepository->getLastMaCon($item['danh_muc_thuoc_vat_tu_id'], $data['kho_id_xu_ly']);
+                        $arrTheKho = [];
+                        
+                        if(count($arrGhiChu) > 0) {
+                            foreach($arrGhiChu as $itemTheKho) {
+                                $arrTheKho[] = [
+                                    'kho_id'                    => $data['kho_id_xu_ly'],
+                                    'danh_muc_thuoc_vat_tu_id'  => $item['danh_muc_thuoc_vat_tu_id'],
+                                    'ma_con'                    => $maCon,
+                                    'sl_dau_ky'                 => $itemTheKho->so_luong_yeu_cau,
+                                    'sl_kha_dung'               => $itemTheKho->so_luong_yeu_cau,
+                                    'sl_ton_kho_chan'           => floor($itemTheKho->so_luong_yeu_cau),
+                                    'trang_thai'                => self::SU_DUNG,
+                                    'sl_ton_kho'                => floor($itemTheKho->so_luong_yeu_cau),
+                                    'sl_nhap_chan'              => floor($itemTheKho->so_luong_yeu_cau),
+                                    'don_vi_co_ban'             => $item['don_vi_co_ban'],
+                                    'don_vi_nhap'               => $item['don_vi_co_ban'],
+                                    'he_so_quy_doi'             => self::HE_SO_QUY_DOI,
+                                    'han_su_dung'               => $itemTheKho->han_su_dung
+                                ];
+                                
+                                $explode = explode('.',$maCon);
+                                $maCon = $item['danh_muc_thuoc_vat_tu_id'].'.'.(intval($explode[1])+1);
+                            }
+                            
+                            $this->theKhoRepository->save($arrTheKho);
+                        }
+                        
                         $theKhoParams = [];
                         $theKhoParams['kho_id'] = $data['kho_id_xu_ly'];
                         $theKhoParams['danh_muc_thuoc_vat_tu_id'] = $item['danh_muc_thuoc_vat_tu_id'];
@@ -395,7 +437,7 @@ class PhieuKhoService {
                         $theKhoParams['don_vi_nhap'] = $item['don_vi_co_ban'];
                         $theKhoParams['he_so_quy_doi'] = self::HE_SO_QUY_DOI;
                         
-                        $this->theKhoRepository->createTheKho($theKhoParams);
+                        // $this->theKhoRepository->createTheKho($theKhoParams);
                         
                         //update so_luong_kha_dung in table gioi_han
                         $thuocVatTu = $this->gioiHanRepository->getByThuocVatTuId($theKhoParams['danh_muc_thuoc_vat_tu_id'], $theKhoParams['kho_id']);

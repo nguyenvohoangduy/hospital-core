@@ -25,8 +25,9 @@ class DangKyKhamBenhController extends APIController
     const LOAI_VIEN_PHI = 'loai_vien_phi';
     const DOI_TUONG_BENH_NHAN = 'doi_tuong_benh_nhan';
     const KET_QUA_DIEU_TRI = 'ket_qua_dieu_tri';
-    const GIAU_PHAU_BENH = 'giau_phau_benh';
+    const GIAI_PHAU_BENH = 'giai_phau_benh';
     const XU_TRI = 'xu_tri';
+    const HINH_THUC_RA_VIEN = 'hinh_thuc_ra_vien';
     const HINH_THUC_CHUYEN = 'hinh_thuc_chuyen';
     const TUYEN = 'tuyen';
     const LY_DO_CHUYEN = 'ly_do_chuyen';
@@ -151,13 +152,19 @@ class DangKyKhamBenhController extends APIController
     
     public function getListGiaiPhauBenh()
     {
-        $data = $this->danhMucTrangThaiService->getAllByKhoa(self::GIAU_PHAU_BENH);
+        $data = $this->danhMucTrangThaiService->getAllByKhoa(self::GIAI_PHAU_BENH);
         return $data;
     }
     
     public function getListXuTri()
     {
         $data = $this->danhMucTrangThaiService->getAllByKhoa(self::XU_TRI);
+        return $data;
+    }
+    
+    public function getListHinhThucRaVien()
+    {
+        $data = $this->danhMucTrangThaiService->getAllByKhoa(self::HINH_THUC_RA_VIEN);
         return $data;
     }
     
