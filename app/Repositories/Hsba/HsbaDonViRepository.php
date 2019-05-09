@@ -29,7 +29,7 @@ class HsbaDonViRepository extends BaseRepositoryV2
     private $query = null;
     // Others
     private $keyword = '';
-    private $statusHsbaKp = null;
+    private $statusHsbaDv = null;
     private $statusHsba = null;
     private $khoangThoiGianVaoVien = [];
     private $khoangThoiGianRaVien = [];
@@ -55,6 +55,11 @@ class HsbaDonViRepository extends BaseRepositoryV2
     
     public function setLoaiBenhAnParams($loaiBenhAn) {
         $this->loaiBenhAn = $loaiBenhAn;
+        return $this;
+    }
+    
+    public function setStatusHsbaDvParams($statusHsbaDv) {
+        $this->statusHsbaDv = $statusHsbaDv;
         return $this;
     }
     
@@ -233,14 +238,14 @@ class HsbaDonViRepository extends BaseRepositoryV2
             });
         }
         
-        if($this->statusHsbaKp != self::TAT_CA_TRANG_THAI && $this->phongId) {
+        if($this->statusHsbaDv != self::TAT_CA_TRANG_THAI && $this->phongId) {
             $query = $query->where(function($queryAdv) {
-                if($this->statusHsbaKp == 0){
+                if($this->statusHsbaDv == 0){
                     $queryAdv->whereIn('hsba_don_vi.trang_thai', [self::CHO_DIEU_TRI,self::DANG_DIEU_TRI])
                             ->where('hsba_don_vi.trang_thai_thanh_toan', '=', self::TRANG_THAI_DA_THANH_TOAN);
                 }
                 else {
-                    $queryAdv->where('hsba_don_vi.trang_thai', '=', $this->statusHsbaKp);
+                    $queryAdv->where('hsba_don_vi.trang_thai', '=', $this->statusHsbaDv);
                 }
             });
         }

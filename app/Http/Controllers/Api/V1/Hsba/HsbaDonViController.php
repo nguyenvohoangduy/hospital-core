@@ -43,7 +43,7 @@ class HsbaDonViController extends APIController
         
         $options = [
             'keyword'                   => $keyword,
-            'status_hsba_khoa_phong'    => $status,
+            'status_hsba_don_vi'        => $status,
             'loai_benh_an'              => $loaiBenhAn,
             'thoi_gian_vao_vien_from'   => $thoiGianVaoVienFrom,
             'thoi_gian_vao_vien_to'     => $thoiGianVaoVienTo,

@@ -59,7 +59,7 @@ class HsbaDonViService
                         ->setKhoangThoiGianVaoVienParams($options['thoi_gian_vao_vien_from']??null, $options['thoi_gian_vao_vien_to']??null)
                         ->setKhoangThoiGianRaVienParams($options['thoi_gian_ra_vien_from']??null, $options['thoi_gian_ra_vien_to']??null)
                         ->setLoaiBenhAnParams($options['loai_benh_an']??null)
-                        //->setStatusHsbaKpParams($options['status_hsba_khoa_phong']??-1)
+                        ->setStatusHsbaDvParams($options['status_hsba_don_vi'] != -1 ?? -1)
                         ->setPaginationParams($limit, $page);
         $data = $repo->getListV2();                
         return $data;
