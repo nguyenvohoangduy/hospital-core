@@ -71,6 +71,12 @@ class AuthController extends APIController
                 'msg' => 'Invalid Credentials.'
             ], 400);
         }
+        if(!$this->authService->checkActive($request->email)){
+            return response([
+                'status' => 'error',
+                'msg' => 'User is not active!'
+            ], 401);
+        }
         $this->authService->updateLastVisit($request->email);
         $data = $this->authService->getUserRolesByEmail($request->email,$request->benhVien);
         $userName = $this->authService->getUserNameByEmail($request->email);
