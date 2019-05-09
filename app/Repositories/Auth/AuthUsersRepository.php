@@ -8,6 +8,8 @@ use App\Helper\Util;
 
 class AuthUsersRepository extends BaseRepositoryV2
 {
+    const ACTIVE = 1;
+    
     public function getModel()
     {
         return AuthUsers::class;
@@ -166,4 +168,15 @@ class AuthUsersRepository extends BaseRepositoryV2
         
         return Util::getPartial($data,$limit,$page);
     }
+    
+    public function checkActive($email)
+    {
+        $where = [
+            ['email','=',$email],
+            ['userstatus','=',self::ACTIVE]
+            ];
+       $find = $this->model->where($where)->first();
+       if($find) return true;
+       else return false;
+    }     
 }
