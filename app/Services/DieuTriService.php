@@ -427,7 +427,7 @@ class DieuTriService
         $input['trang_thai'] = $trang_thai; 
         $input['hinh_thuc_ra_vien'] = $hinh_thuc_ra_vien;
         $input['thoi_gian_ra_vien'] = Carbon::now()->toDateTimeString();
-        $input = array_except($input, ['hsba_don_vi_id', 'ten_benh_nhan', 'nam_sinh',
+        $input = array_except($input, ['hsba_don_vi_id', 'ten_benh_nhan', 'nam_sinh', 'dia_chi_benh_vien',
                                         'xu_tri', 'giai_phau_benh', 'loai_stt', 'gioi_tinh_id', 
                                         'stt_don_tiep_id', 'ms_bhyt', 'khoa_id', 'cdrv_benh_chinh_code', 
                                         'cdrv_benh_chinh_text', 'cdrv_benh_phu_code', 'cdrv_benh_phu_text']);
