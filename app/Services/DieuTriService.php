@@ -356,6 +356,7 @@ class DieuTriService
                         //update phong_hien_tai chuyển tới của hsba_khoa_phong hiện tại 
                         $phongParams = $this->phongRepository->getIdPhongByMaNhomPhongAndKhoaId($request['ma_nhom'], $request['khoa_id']);
                         $hsbaDvParams['phong_hien_tai'] = $phongParams['id'];
+                        $hsbaDvParams['trang_thai'] = self::TT_CHO_DIEU_TRI;
                         $this->hsbaDonViRepository->update($hsbaDv['id'], $hsbaDvParams);
                         return $data;
                     break;    
